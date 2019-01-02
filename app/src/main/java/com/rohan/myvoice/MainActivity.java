@@ -1,14 +1,18 @@
 package com.rohan.myvoice;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView t_view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,5 +32,28 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        t_view = (TextView)findViewById(R.id.textView);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            t_view.setText(Html.fromHtml(" <pre>\n" +
+                    "       Welcome to the <span style=\"color:#1453ba\">MyVoice App</span>\n" +
+                    "            The app that lets you have\n" +
+                    "            your voice heard on a wide\n" +
+                    "            range of topics.\n" +
+                    "   </pre>", Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            t_view.setText(Html.fromHtml(" <pre>\n" +
+                    "       Welcome to the <span style=\"color:#1453ba\">MyVoice App</span>\n" +
+                    "            The app that lets you have\n" +
+                    "            your voice heard on a wide\n" +
+                    "            range of topics.\n" +
+                    "   </pre>"));
+        }
+
+
+    }
+
+    public void sign_in(View view) {
     }
 }
