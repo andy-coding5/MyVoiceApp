@@ -11,14 +11,19 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/CustomTheme"
-            android:label=" ">
+            android:theme="@style/CustomTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SignIn"
+            android:theme="@style/CustomTheme" />
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/CustomTheme"></activity>
     </application>
 
 </manifest>

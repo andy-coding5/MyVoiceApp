@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         //getting coustom layout for toolbar- but we don't need it here in main(FIRST) activity
         /*getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton imageButton= (ImageButton)view.findViewById(R.id.action_bar_back);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
+            @Overridef
             public void onClick(View v) {
                 finish();
             }
@@ -56,6 +58,56 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void sign_in(View view) {
+
+
+    //this is SIGN UP button on click method
+    public void sign_up(View view) {
+
+        Intent i = new Intent(getApplicationContext(), SignUp.class);
+        startActivity(i);
+
+
     }
+
+    //this is SIGN IN button on click method
+    public void sign_in(View view) {
+        Intent i = new Intent(getApplicationContext(), SignIn.class);
+        startActivity(i);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

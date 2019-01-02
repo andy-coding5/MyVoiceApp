@@ -135,7 +135,7 @@
         android:fontFamily="@font/quicksand_bold"
         android:paddingLeft="110dp"
         android:paddingRight="110dp"
-        android:text="SIGn UP"
+        android:text="SIGN UP"
         android:textColor="#fff"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

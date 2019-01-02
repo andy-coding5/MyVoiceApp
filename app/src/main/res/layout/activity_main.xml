@@ -29,7 +29,7 @@
 
 
     <Button
-        android:id="@+id/submit_button"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -38,6 +38,7 @@
         android:layout_marginBottom="8dp"
         android:background="@drawable/button_background"
         android:fontFamily="@font/quicksand_bold"
+        android:onClick="sign_up"
         android:paddingLeft="80dp"
         android:paddingRight="80dp"
         android:text="SIGN UP"
