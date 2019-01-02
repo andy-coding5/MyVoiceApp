@@ -13,13 +13,14 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private TextView t_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //getting coustom layout for toolbar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        //getting coustom layout for toolbar- but we don't need it here in main(FIRST) activity
+        /*getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
         View view = getSupportActionBar().getCustomView();
@@ -32,19 +33,20 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        */
 
-        t_view = (TextView)findViewById(R.id.textView);
+        t_view = (TextView) findViewById(R.id.textView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             t_view.setText(Html.fromHtml(" <pre>\n" +
-                    "       Welcome to the <span style=\"color:#1453ba\">MyVoice App</span>\n" +
+                    "       Welcome to the <span style=\"color:#004671\">MyVoice App</span>\n" +
                     "            The app that lets you have\n" +
                     "            your voice heard on a wide\n" +
                     "            range of topics.\n" +
                     "   </pre>", Html.FROM_HTML_MODE_COMPACT));
         } else {
             t_view.setText(Html.fromHtml(" <pre>\n" +
-                    "       Welcome to the <span style=\"color:#1453ba\">MyVoice App</span>\n" +
+                    "       Welcome to the <span style=\"color:#004671\">MyVoice App</span>\n" +
                     "            The app that lets you have\n" +
                     "            your voice heard on a wide\n" +
                     "            range of topics.\n" +
