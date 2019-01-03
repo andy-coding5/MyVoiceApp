@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyVoice</string>
     <string name="welcome_text">Welcome to the MyVoice App </string>
+    <string name="terms_of_use"></string>
 </resources>

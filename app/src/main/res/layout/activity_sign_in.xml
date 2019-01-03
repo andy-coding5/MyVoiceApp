@@ -89,6 +89,7 @@
         android:paddingLeft="90dp"
         android:paddingRight="90dp"
         android:text="SIGN IN"
+        android:onClick="SignIn"
         android:textColor="#fff"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
