@@ -1,6 +1,8 @@
 package com.rohan.myvoice;
 
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -54,9 +56,21 @@ public class SignIn extends AppCompatActivity {
         email = email_address.getText().toString();
         pass = password.getText().toString();
 
-        if (email == null) {
-            Toast.makeText(this, "Please Enter The Email Address", Toast.LENGTH_SHORT).show();
-        } else if (pass == null) {
+        if (email.equals("")) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignIn.this);
+            alertDialog.setTitle("Alert");
+            alertDialog.setCancelable(true);
+            alertDialog.setMessage("Please Enter The Email Address");
+            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alertDialog.show();
+
+            //Toast.makeText(this, "Please Enter The Email Address", Toast.LENGTH_SHORT).show();
+        } else if (pass.equals("")) {
             Toast.makeText(this, "Please Enter The Password", Toast.LENGTH_SHORT).show();
         } else {
             //define the logic to get the use details and match them with the entered details, ,,,,if matched then success  ---RV
@@ -75,11 +89,12 @@ public class SignIn extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
-                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     } else {
                         LOGIN_STATUS = "Invalid Username and/or Password";
                         Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     }
+                    Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
 
                 }
 
