@@ -40,7 +40,7 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
-        dialog = new Dialog(this,android.R.style.Theme_NoTitleBar_Fullscreen);
+        dialog = new Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen);
 
     }
 
@@ -50,7 +50,7 @@ public class SignUp extends AppCompatActivity {
         Button agree_btn;
 
         dialog.setContentView(R.layout.popup_view_layout);
-
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         agree_btn = dialog.findViewById(R.id.agree_button);
         pop_up_text = dialog.findViewById(R.id.pop_up_text);
 
@@ -60,7 +60,7 @@ public class SignUp extends AppCompatActivity {
                 "<br>" +
                 "Welcome to www.lorem-ipsum.info. This site is provided as a service to our visitors and may be used for informational purposes only. Because the Terms and Conditions contain legal obligations, please read them carefully.<br>" +
                 "<br>" +
-                "<b>1. YOUR AGREEMENT</b><br>"    +
+                "<b>1. YOUR AGREEMENT</b><br>" +
                 "<br>" +
                 "By using this Site, you agree to be bound by, and to comply with, these Terms and Conditions. If you do not agree to these Terms and Conditions, please do not use this site.<br>" +
                 "<br>" +
@@ -83,6 +83,7 @@ public class SignUp extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+
         dialog.show();
 
     }

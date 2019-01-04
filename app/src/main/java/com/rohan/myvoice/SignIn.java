@@ -1,11 +1,14 @@
 package com.rohan.myvoice;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.input.InputManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,25 +56,23 @@ public class SignIn extends AppCompatActivity {
     }
 
     public void SignIn(View view) {
+        //hide the keyboard when user press the SIgn IN button
+        InputMethodManager inputManager  = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE) ;
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
         email = email_address.getText().toString();
         pass = password.getText().toString();
 
-        if (email.equals("")) {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignIn.this);
-            alertDialog.setTitle("Alert");
-            alertDialog.setCancelable(true);
-            alertDialog.setMessage("Please Enter The Email Address");
-            alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            alertDialog.show();
+        if (email.equals("") && pass.equals("")) {
+            Build_alert_dialog("Please Enter The Email Address and Password");
 
+        } else if (email.equals("")) {
+            Build_alert_dialog("Please Enter The Email Address");
             //Toast.makeText(this, "Please Enter The Email Address", Toast.LENGTH_SHORT).show();
         } else if (pass.equals("")) {
-            Toast.makeText(this, "Please Enter The Password", Toast.LENGTH_SHORT).show();
+            Build_alert_dialog("Please Enter The Password");
+            //Toast.makeText(this, "Please Enter The Password", Toast.LENGTH_SHORT).show();
         } else {
             //define the logic to get the use details and match them with the entered details, ,,,,if matched then success  ---RV
 
@@ -89,12 +90,15 @@ public class SignIn extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
+
+                        //Build_alert_dialog(LOGIN_STATUS);
                         Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     } else {
                         LOGIN_STATUS = "Invalid Username and/or Password";
-                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                        Build_alert_dialog(LOGIN_STATUS);
+                        //Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -106,6 +110,24 @@ public class SignIn extends AppCompatActivity {
 
             });
         }
+
+    }
+
+
+    //define alert box , message is in argument of calling func tion ... code reusability -- by RV
+
+    private void Build_alert_dialog(String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignIn.this);
+        alertDialog.setTitle("Alert");
+        alertDialog.setCancelable(true);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
 
     }
 }

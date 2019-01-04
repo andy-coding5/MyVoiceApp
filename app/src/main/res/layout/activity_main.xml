@@ -77,13 +77,17 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/quicksand_regular"
         android:onClick="sign_in"
-        android:text="SIGN IN"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:text=" SIGN IN"
+        android:textAlignment="textStart"
         android:textColor="#004671"
         android:textSize="15sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.774"
+        app:layout_constraintHorizontal_bias="0.784"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.934" />
+        app:layout_constraintVertical_bias="0.933" />
 </android.support.constraint.ConstraintLayout>
