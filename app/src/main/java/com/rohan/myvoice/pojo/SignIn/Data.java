@@ -2,6 +2,7 @@ package com.rohan.myvoice.pojo.SignIn;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.rohan.myvoice.pojo.user_profile.Profile;
 
 public class Data {
     @SerializedName("token")
@@ -13,9 +14,24 @@ public class Data {
     @SerializedName("last_name")
     @Expose
     private String lastName;
+
     @SerializedName("profile")
     @Expose
     private Profile profile;
+
+    //try to handle dynamiccaly when error
+    /*@SerializedName("errors")
+    @Expose
+    private String errors;
+
+    public String getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String  errors) {
+        this.errors = errors;
+    }
+    */
 
     public String getToken() {
         return token;

@@ -13,11 +13,19 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.rohan.myvoice.pojo.Register.Register;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUp extends AppCompatActivity {
 
 
     private Dialog dialog;
+    private TextView first_name, last_name, email_id, pass;
 
 
     @Override
@@ -42,8 +50,56 @@ public class SignUp extends AppCompatActivity {
 
         dialog = new Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen);
 
+
+        first_name = findViewById(R.id.f_name);
+        last_name = findViewById(R.id.l_name);
+        email_id = findViewById(R.id.email_id);
+        pass = findViewById(R.id.password);
+
+
     }
 
+
+    //sign_up process function --RV
+    public void SignUp_process(View view) {
+        //take data from all the fields
+        String f_name, l_name, mail, passwrd;
+        f_name = first_name.getText().toString().trim();
+        l_name = last_name.getText().toString().trim();
+        mail = email_id.getText().toString();
+        passwrd = pass.getText().toString();
+
+        if (f_name.equals("") || l_name.equals("") || mail.equals("") || passwrd.equals("")) {
+            new SignIn().Build_alert_dialog("Please enter all the details.!");
+        } else {
+            //Creating an object of our api interface
+            ApiService api = RetroClient.getApiService();
+
+            /**
+             * Calling JSON
+             */
+            Call<Register> call = api.getRegisterJason(mail, passwrd, f_name, l_name);
+
+            //waiting for response
+            call.enqueue(new Callback<Register>() {
+                @Override
+                public void onResponse(Call<Register> call, Response<Register> response) {
+
+                    String temp = response.body().getMessage();
+                    Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<Register> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+    }
+
+
+    //TERMS OF USE BUTTON DIALOG POPUP
     public void TermsAndConditions(View view) {
 
         TextView pop_up_text;
@@ -87,4 +143,6 @@ public class SignUp extends AppCompatActivity {
         dialog.show();
 
     }
+
+
 }

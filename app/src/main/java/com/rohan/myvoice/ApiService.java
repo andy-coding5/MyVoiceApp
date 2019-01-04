@@ -11,16 +11,18 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
+    //for sign In
     @Headers("APIKEY:6815ab00be4c46b597b1567db6cb3def")
     @POST("user/login/")
     @FormUrlEncoded
     Call<Login> getLoginJason(@Field("email_or_phone") String email_or_phone, @Field("password") String password);
 
 
+    //for sign Up
     @Headers("APIKEY:6815ab00be4c46b597b1567db6cb3def")
     @POST("user/register/")
     @FormUrlEncoded
-    Call<Register> getLoginJason(@Field("email") String email, @Field("password") String password,
+    Call<Register> getRegisterJason(@Field("email") String email, @Field("password") String password,
                                  @Field("first_name") String first_name, @Field("last_name") String last_name);
 
 }

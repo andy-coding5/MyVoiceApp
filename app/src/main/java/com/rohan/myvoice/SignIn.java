@@ -90,13 +90,34 @@ public class SignIn extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
+                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                        if(LOGIN_STATUS.equals("Success")){
+                            //Build_alert_dialog("Login status fro the server "+LOGIN_STATUS);
+                            Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+
+                            //coding of succes login
+                        }
+                        else{
+                            /*codiing of unsuccessful login,
+                            now our responce fields are changed , and status, message, data are received but in data
+                            there is one field "error", not all other fields...
+                             */     /* __RV__*/
+
+                            Build_alert_dialog(response.body().getData().toString());
+
+
+                            //Build_alert_dialog("Login status fro the server "+LOGIN_STATUS);
+                        }
+
+
+
 
                         //Build_alert_dialog(LOGIN_STATUS);
-                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     } else {
                         LOGIN_STATUS = "Invalid Username and/or Password";
-                        Build_alert_dialog(LOGIN_STATUS);
-                        //Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                        //Build_alert_dialog(LOGIN_STATUS);
+                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     }
                     //Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
 
@@ -104,7 +125,7 @@ public class SignIn extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Login> call, Throwable t) {
-
+                    Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -116,7 +137,7 @@ public class SignIn extends AppCompatActivity {
 
     //define alert box , message is in argument of calling func tion ... code reusability -- by RV
 
-    private void Build_alert_dialog(String message) {
+    public void Build_alert_dialog(String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignIn.this);
         alertDialog.setTitle("Alert");
         alertDialog.setCancelable(true);

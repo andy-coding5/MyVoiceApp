@@ -137,6 +137,7 @@
         android:paddingRight="110dp"
         android:text="SIGN UP"
         android:textColor="#fff"
+        android:onClick="SignUp_process"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
