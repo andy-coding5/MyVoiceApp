@@ -81,7 +81,7 @@
         android:paddingRight="10dp"
         android:text=" SIGN IN"
         android:textAlignment="textStart"
-        android:textColor="#004671"
+        android:textColor="#0e68af"
         android:textSize="15sp"
 
         app:layout_constraintBottom_toBottomOf="parent"

@@ -15,9 +15,15 @@ import android.widget.Toast;
 
 import com.rohan.myvoice.pojo.SignIn.Login;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class SignIn extends AppCompatActivity {
 
@@ -55,23 +61,27 @@ public class SignIn extends AppCompatActivity {
     public void ForgetPassword(View view) {
     }
 
+
+    //main logic of SIGN IN
     public void SignIn(View view) {
         //hide the keyboard when user press the SIgn IN button
-        InputMethodManager inputManager  = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE) ;
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
         email = email_address.getText().toString();
         pass = password.getText().toString();
 
+
+        //validation of null
         if (email.equals("") && pass.equals("")) {
-            Build_alert_dialog("Please Enter The Email Address and Password");
+            Build_alert_dialog(SignIn.this, "Login Failed", "Credentials required");
 
         } else if (email.equals("")) {
-            Build_alert_dialog("Please Enter The Email Address");
+            Build_alert_dialog(SignIn.this, "Login Failed", "Credentials required");
             //Toast.makeText(this, "Please Enter The Email Address", Toast.LENGTH_SHORT).show();
         } else if (pass.equals("")) {
-            Build_alert_dialog("Please Enter The Password");
+            Build_alert_dialog(SignIn.this, "Login Failed", "Credentials required");
             //Toast.makeText(this, "Please Enter The Password", Toast.LENGTH_SHORT).show();
         } else {
             //define the logic to get the use details and match them with the entered details, ,,,,if matched then success  ---RV
@@ -90,37 +100,35 @@ public class SignIn extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
                         LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
-                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
-                        if(LOGIN_STATUS.equals("Success")){
+                        Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                        if (LOGIN_STATUS.equals("Success")) {
                             //Build_alert_dialog("Login status fro the server "+LOGIN_STATUS);
-                            Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
-
-                            //coding of succes login
+                            Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                         }
-                        else{
+
+                        //coding of succes login
+                    } else {
                             /*codiing of unsuccessful login,
                             now our responce fields are changed , and status, message, data are received but in data
                             there is one field "error", not all other fields...
                              */     /* __RV__*/
 
-                            Build_alert_dialog(response.body().getData().toString());
+                        //but but i can access the error body here.,
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            String status = jObjError.getString("message");
+                            String error_msg = jObjError.getJSONObject("data").getString("errors");
+                            Build_alert_dialog(SignIn.this, status, error_msg);
 
 
-                            //Build_alert_dialog("Login status fro the server "+LOGIN_STATUS);
+                        } catch (Exception e) {
+                            Toast.makeText(SignIn.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
-
-
-
-
-                        //Build_alert_dialog(LOGIN_STATUS);
-                       // Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
-                    } else {
-                        LOGIN_STATUS = "Invalid Username and/or Password";
-                        //Build_alert_dialog(LOGIN_STATUS);
-                        Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     }
-                    //Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
 
+
+                    //Build_alert_dialog(LOGIN_STATUS);
+                    // Toast.makeText(getApplicationContext(), LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -130,25 +138,11 @@ public class SignIn extends AppCompatActivity {
 
 
             });
+
+            /*end of the logic*/
         }
 
     }
 
 
-    //define alert box , message is in argument of calling func tion ... code reusability -- by RV
-
-    public void Build_alert_dialog(String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SignIn.this);
-        alertDialog.setTitle("Alert");
-        alertDialog.setCancelable(true);
-        alertDialog.setMessage(message);
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        alertDialog.show();
-
-    }
 }

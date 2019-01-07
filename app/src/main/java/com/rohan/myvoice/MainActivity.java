@@ -1,8 +1,11 @@
 package com.rohan.myvoice;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -74,6 +77,26 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), SignIn.class);
         startActivity(i);
     }
+
+
+
+    //define alert box , message is in argument of calling func tion ... code reusability -- by RV
+
+    public static void Build_alert_dialog(final Context context, String title, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(title);
+        alertDialog.setCancelable(true);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+
+    }
+
 
 }
 

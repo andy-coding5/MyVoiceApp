@@ -1,25 +1,25 @@
 package com.rohan.myvoice;
 
 import android.app.Dialog;
-import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Html;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rohan.myvoice.pojo.Register.Register;
+import com.rohan.myvoice.pojo.Register.success.Register;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class SignUp extends AppCompatActivity {
 
@@ -70,7 +70,7 @@ public class SignUp extends AppCompatActivity {
         passwrd = pass.getText().toString();
 
         if (f_name.equals("") || l_name.equals("") || mail.equals("") || passwrd.equals("")) {
-            new SignIn().Build_alert_dialog("Please enter all the details.!");
+            Build_alert_dialog(this, "ALERT", "Please enter all the details!");
         } else {
             //Creating an object of our api interface
             ApiService api = RetroClient.getApiService();
@@ -85,13 +85,31 @@ public class SignUp extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Register> call, Response<Register> response) {
 
-                    String temp = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+                    if (response.isSuccessful()) {
+                        String temp = response.body().getMessage();
+                        Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            String status = jObjError.getString("status");
+                            String msg = jObjError.getString("message");
+                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
+                            Build_alert_dialog(SignUp.this, status, msg);
+
+
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+
                 }
 
                 @Override
                 public void onFailure(Call<Register> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
+
+
                 }
             });
 

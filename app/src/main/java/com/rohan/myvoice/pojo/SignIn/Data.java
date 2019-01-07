@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rohan.myvoice.pojo.user_profile.Profile;
 
-public class Data {
+public class Data extends Error {
     @SerializedName("token")
     @Expose
     private String token;
