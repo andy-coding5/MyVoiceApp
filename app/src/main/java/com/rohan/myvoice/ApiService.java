@@ -1,6 +1,6 @@
 package com.rohan.myvoice;
 
-import com.rohan.myvoice.pojo.Register.success.Register;
+import com.rohan.myvoice.pojo.Register.Register;
 import com.rohan.myvoice.pojo.SignIn.Login;
 
 import retrofit2.Call;

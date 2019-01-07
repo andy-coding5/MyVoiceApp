@@ -11,7 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rohan.myvoice.pojo.Register.success.Register;
+import com.rohan.myvoice.pojo.Register.Register;
 
 import org.json.JSONObject;
 

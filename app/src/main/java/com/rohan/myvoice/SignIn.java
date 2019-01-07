@@ -2,6 +2,7 @@ package com.rohan.myvoice;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.input.InputManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -13,7 +14,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.myvoice.pojo.SignIn.Data;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.user_profile.Profile;
 
 import org.json.JSONObject;
 
@@ -101,11 +104,14 @@ public class SignIn extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
                         Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
-                        if (LOGIN_STATUS.equals("Success")) {
-                            //Build_alert_dialog("Login status fro the server "+LOGIN_STATUS);
-                            Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
-                        }
+                        //login successful redirect to "Getstarted activity" if not filled the personal details ..!!- RV
 
+                        Intent i = new Intent(getApplicationContext(), GetStarted.class);
+                        Data data = response.body().getData();
+                        String uname = data.getFirstName();
+                        // Profile profile = data.getProfile().get
+                        i.putExtra("username", uname);
+                        startActivity(i);
                         //coding of succes login
                     } else {
                             /*codiing of unsuccessful login,
