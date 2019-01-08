@@ -26,7 +26,8 @@
         <activity
             android:name=".SignUp"
             android:theme="@style/CustomTheme" />
-        <activity android:name=".GetStarted"></activity>
+        <activity android:name=".GetStarted" />
+        <activity android:name=".personal_info_1"></activity>
     </application>
 
 </manifest>

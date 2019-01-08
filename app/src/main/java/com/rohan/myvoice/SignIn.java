@@ -3,7 +3,9 @@ package com.rohan.myvoice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.input.InputManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +36,7 @@ public class SignIn extends AppCompatActivity {
     private TextView password;
     private String email, pass;
     private String LOGIN_STATUS = "NoT Initilize";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +109,40 @@ public class SignIn extends AppCompatActivity {
                         Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                         //login successful redirect to "Getstarted activity" if not filled the personal details ..!!- RV
 
-                        Intent i = new Intent(getApplicationContext(), GetStarted.class);
                         Data data = response.body().getData();
+                        String country_details = data.getProfile().getCountry();
                         String uname = data.getFirstName();
-                        // Profile profile = data.getProfile().get
-                        i.putExtra("username", uname);
-                        startActivity(i);
+                        String token_response = response.body().getData().getToken();
+
+                        //PUT LOGGED IN ENTRY INTO SHARED PREFERENCES
+                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putBoolean("isUserLoggedIn", true);
+                        editor.putString("token", token_response);
+                        editor.putString("username", uname);
+                        editor.commit();
+
+                        //token used also in ApiService Interface
+                        Token.token_string = response.body().getData().getToken();
+
+
+                        if (country_details == null) {//checking whether the user details is filled or not
+
+                            /*user has not filled details yet so in get started activity
+                              user will fill it first*/
+
+                            Intent i = new Intent(getApplicationContext(), GetStarted.class);
+
+                            // Profile profile = data.getProfile().get
+                            //i.putExtra("username", uname);
+                            startActivity(i);
+
+
+                        } else {
+                            //REDIRECT USER TO THE MAIN DASHBOARD
+
+
+                        }
                         //coding of succes login
                     } else {
                             /*codiing of unsuccessful login,
