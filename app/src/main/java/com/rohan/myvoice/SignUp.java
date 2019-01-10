@@ -1,7 +1,9 @@
 package com.rohan.myvoice;
 
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -63,7 +65,7 @@ public class SignUp extends AppCompatActivity {
     //sign_up process function --RV
     public void SignUp_process(View view) {
         //take data from all the fields
-        String f_name, l_name, mail, passwrd;
+        final String f_name, l_name, mail, passwrd;
         f_name = first_name.getText().toString().trim();
         l_name = last_name.getText().toString().trim();
         mail = email_id.getText().toString();
@@ -86,8 +88,13 @@ public class SignUp extends AppCompatActivity {
                 public void onResponse(Call<Register> call, Response<Register> response) {
 
                     if (response.isSuccessful()) {
+
+
                         String temp = response.body().getMessage();
+                        write_shared_pref(mail, passwrd);
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+
+
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -114,6 +121,15 @@ public class SignUp extends AppCompatActivity {
             });
 
         }
+    }
+
+    private void write_shared_pref(String email, String pass) {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("email", email);
+        editor.putString("password", pass);
+        editor.commit();
     }
 
 
