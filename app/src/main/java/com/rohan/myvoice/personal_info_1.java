@@ -1,11 +1,13 @@
 package com.rohan.myvoice;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.myvoice.Retrofit.ApiService;
+import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.country_details.CountryList;
@@ -69,7 +73,7 @@ public class personal_info_1 extends AppCompatActivity {
 
         //CALL
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
-        /**final ProgressDialog progressDoalog;
+        final ProgressDialog progressDoalog;
          progressDoalog = new ProgressDialog(personal_info_1.this);
 
          progressDoalog.setMessage("Its loading...");
@@ -78,7 +82,7 @@ public class personal_info_1 extends AppCompatActivity {
          progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
          // show it
          progressDoalog.show();
-         */
+
 
 
         //Toast.makeText(this, "Token " + pref.getString("token", null), Toast.LENGTH_LONG).show();
@@ -93,7 +97,7 @@ public class personal_info_1 extends AppCompatActivity {
         call.enqueue(new Callback<Country>() {
             @Override
             public void onResponse(Call<Country> call, Response<Country> response) {
-                //  progressDoalog.dismiss();
+                  progressDoalog.dismiss();
                 if (response.isSuccessful()) {
 
 
@@ -172,6 +176,7 @@ public class personal_info_1 extends AppCompatActivity {
         dialog.setTitle("Select Country");
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
 
         //prepare a list view in dialog
@@ -189,14 +194,15 @@ public class personal_info_1 extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        /*Button cancel_btn = findViewById(R.id.cancel_btn);
+        View view1 = dialog.findViewById(R.id.cancel_btn);
+        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-*/
+
 
         dialog.show();
     }
