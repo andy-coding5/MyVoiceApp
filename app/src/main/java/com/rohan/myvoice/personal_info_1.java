@@ -239,7 +239,6 @@ public class personal_info_1 extends AppCompatActivity {
                         String error_msg = jObjError.getJSONObject("data").getString("errors");
                         Build_alert_dialog(getApplicationContext(), status, error_msg);
 
-
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
