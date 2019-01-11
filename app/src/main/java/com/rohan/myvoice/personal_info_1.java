@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -163,6 +164,43 @@ public class personal_info_1 extends AppCompatActivity {
         editor.commit();*/
     }
 
+    public void showDialogListView(View view) {
+
+
+        dialog = new Dialog(personal_info_1.this);
+        dialog.setContentView(R.layout.list_view);
+        dialog.setTitle("Select Country");
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+
+        //prepare a list view in dialog
+        listview_country = dialog.findViewById(R.id.dialogList);
+
+
+        //String[] aray = {"rohn0", "fdad", "aqwe"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, country_name);
+        listview_country.setAdapter(adapter);
+        listview_country.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                textview_country_info.setText(parent.getItemAtPosition(position).toString());
+                dialog.dismiss();
+            }
+        });
+        /*Button cancel_btn = findViewById(R.id.cancel_btn);
+        cancel_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+*/
+
+        dialog.show();
+    }
+
     //FOR CALLING API WHENEVER REQUIRED
 
 
@@ -211,39 +249,6 @@ public class personal_info_1 extends AppCompatActivity {
 
     }
 
-    public void next_page(View view) {
-
-    }
-
-    public void showDialogListView(View view) {
-
-
-        dialog = new Dialog(personal_info_1.this);
-        dialog.setContentView(R.layout.list_view);
-        dialog.setTitle("Select Country");
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
-
-        //prepare a list view in dialog
-        listview_country = dialog.findViewById(R.id.dialogList);
-
-
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.txtitem, country_name);
-        listview_country.setAdapter(adapter);
-        listview_country.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                textview_country_info.setText(parent.getItemAtPosition(position).toString());
-                dialog.dismiss();
-            }
-        });
-
-
-        dialog.show();
-    }
 
     @Override
     public void onBackPressed() {
