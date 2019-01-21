@@ -2,7 +2,9 @@ package com.rohan.myvoice.Retrofit;
 
 import com.rohan.myvoice.pojo.Register.Register;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
+import com.rohan.myvoice.pojo.state_details.States;
 
 import java.util.Map;
 
@@ -14,14 +16,15 @@ import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface ApiService {
 
-   // public static String token = null;
+    // public static String token = null;
 
     //for sign In
     @Headers("APIKEY:6815ab00be4c46b597b1567db6cb3def")
-    @POST("accounts/api/v1/user/login/")
+    @POST("accounts/api/v1/user/l ogin/")
     @FormUrlEncoded
     Call<Login> getLoginJason(@Field("email_or_phone") String email_or_phone, @Field("password") String password);
 
@@ -35,11 +38,19 @@ public interface ApiService {
 
 
     //for country
-   // @Headers({"APIKEY:6815ab00be4c46b597b1567db6cb3def","Authorization: Token 0604c253f8bd6ba9ccbf6ed470387c1f3ee77223"})
+    // @Headers({"APIKEY:6815ab00be4c46b597b1567db6cb3def","Authorization: Token 0604c253f8bd6ba9ccbf6ed470387c1f3ee77223"})
     /*@Headers({
             "APIKEY:6815ab00be4c46b597b1567db6cb3def",
             "Authorization:Token 0604c253f8bd6ba9ccbf6ed470387c1f3ee77223"
     })*/
     @GET("mobileapp/api/v1/data/countries/get/")
-    Call <Country> getCountryJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+    Call<Country> getCountryJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    @GET("mobileapp/api/v1/data/{path}/states/get/")
+    Call<States> getStateJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+
+    @GET("mobileapp/api/v1/data/{path1}/{path2}/cities/get/")
+    Call<Cities> getCityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path1") String path1, @Path("path2") String path2);
+
+
 }

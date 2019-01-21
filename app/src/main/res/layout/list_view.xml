@@ -10,6 +10,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/title_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -25,7 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:background="@drawable/listview_background"></ListView>
+            android:background="@drawable/listview_background">
+
+        </ListView>
 
 
         <Button
@@ -35,12 +38,12 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_weight="1"
+
             android:background="@drawable/button_background"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="center_horizontal"
-            android:paddingStart="50dp"
-            android:paddingEnd="50dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
             android:text="cancel"
             android:textColor="#fff" />
 
