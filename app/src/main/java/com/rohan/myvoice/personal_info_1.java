@@ -4,14 +4,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +22,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -48,12 +49,6 @@ import retrofit2.Response;
 
 import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-
 public class personal_info_1 extends AppCompatActivity {
 
     private TextView textview_country_info, textview_state_info, textview_city_info, textView_zip_info;
@@ -65,7 +60,8 @@ public class personal_info_1 extends AppCompatActivity {
     private Dialog dialog;
 
 
-    public String selected_country, selected_state, selected_city, country_code, state_code, selected_zip;
+    public String selected_country, selected_state, selected_city = "", country_code, state_code, selected_zip;
+    public String prev_selected_country = "not_selected", prev_selected_state = "not_selected", prev_selected_city = "not_selected";
     ApiService api;
     String api_key;
     Map<String, String> country_map, state_map;
@@ -103,7 +99,7 @@ public class personal_info_1 extends AppCompatActivity {
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
 
         final ProgressDialog progressDoalog;
-     /*   progressDoalog = new ProgressDialog(personal_info_1.this);
+        progressDoalog = new ProgressDialog(personal_info_1.this);
 
         progressDoalog.setMessage("Its loading...");
         progressDoalog.setTitle("Fetching the response");
@@ -111,7 +107,7 @@ public class personal_info_1 extends AppCompatActivity {
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // show it
 
-        progressDoalog.show();*/
+        progressDoalog.show();
 
 
         //Toast.makeText(this, "Token " + pref.getString("token", null), Toast.LENGTH_LONG).show();
@@ -129,7 +125,7 @@ public class personal_info_1 extends AppCompatActivity {
             @Override
             public void onResponse(Call<Country> call, Response<Country> response) {
 
-                /*progressDoalog.dismiss();*/
+                progressDoalog.dismiss();
 
                 if (response.isSuccessful()) {
 
@@ -201,7 +197,7 @@ public class personal_info_1 extends AppCompatActivity {
         editor.commit();*/
     }
 
-    public void showDialogListView(View view) {
+    public void country_selection(View view) {             //dialog of country selection
         if (country_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_1.this);
@@ -219,13 +215,22 @@ public class personal_info_1 extends AppCompatActivity {
             //String[] aray = {"rohn0", "fdad", "aqwe"};
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, country_name);
             listview_country.setAdapter(adapter);
+
+
             listview_country.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                    view.setSelected(true);
                     selected_country = parent.getItemAtPosition(position).toString();
+
+                    if (!prev_selected_country.equals(selected_country)) {
+                        prev_selected_country = selected_country;
+                        textview_state_info.setText("Select State");
+
+                    }
                     textview_country_info.setText(selected_country);
-                    textview_state_info.setText("Select State");
+
                     dialog.dismiss();
 
                     //remove these if not works
@@ -238,6 +243,8 @@ public class personal_info_1 extends AppCompatActivity {
                     fetch_states();
                 }
             });
+
+
             View view1 = dialog.findViewById(R.id.cancel_btn);
             Button cancel_btn = view1.findViewById(R.id.cancel_btn);
             cancel_btn.setOnClickListener(new View.OnClickListener() {
@@ -300,6 +307,7 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
     private void fetch_states() {
+
         Call<States> call = api.getStateJson(api_key, "Token " + pref.getString("token", null), country_code);
 
         call.enqueue(new Callback<States>() {
@@ -388,8 +396,14 @@ public class personal_info_1 extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                     selected_state = parent.getItemAtPosition(position).toString();
+                    if (!prev_selected_state.equals(selected_state)) {
+                        prev_selected_state = selected_state;
+
+                        textview_city_info.setText("Select City");
+
+                    }
                     textview_state_info.setText(selected_state);
-                    textview_city_info.setText("Select City");
+
                     dialog.dismiss();
 
                     //remove these if not works
@@ -503,6 +517,13 @@ public class personal_info_1 extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                     selected_city = parent.getItemAtPosition(position).toString();
+
+                    if (!prev_selected_city.equals(selected_city)) {
+                        prev_selected_city = selected_city;
+
+                        textView_zip_info.setText("Select Zip Code");
+
+                    }
                     textview_city_info.setText(selected_city);
                     dialog.dismiss();
                 }
@@ -519,32 +540,21 @@ public class personal_info_1 extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();       //to completely close the entire application
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //   startActivity(getIntent());
-        //    finish();
-    }
-
     public void zip_selection(View view) {
-        try {
-            Intent i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
-            startActivityForResult(i, 2);
+        if (!selected_city.equals("")) {
+            try {
+                Intent i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
+                startActivityForResult(i, 2);
 
 
-        } catch (
-                GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (
-                GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+            } catch (
+                    GooglePlayServicesRepairableException e) {
+                // TODO: Handle the error.
+            } catch (
+                    GooglePlayServicesNotAvailableException e) {
+                // TODO: Handle the error.
+            }
+
         }
 
     }
@@ -562,7 +572,6 @@ public class personal_info_1 extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
 
                 Log.i("TAG", "Place: " + place.getName());
@@ -587,7 +596,7 @@ public class personal_info_1 extends AppCompatActivity {
             e.printStackTrace();
         }
         if (addresses.get(0).getPostalCode() != null) {
-            selected_zip= addresses.get(0).getPostalCode();
+            selected_zip = addresses.get(0).getPostalCode();
             Log.d("ZIP CODE", selected_zip);
         }
 
@@ -605,6 +614,19 @@ public class personal_info_1 extends AppCompatActivity {
             String country = addresses.get(0).getCountryName();
             Log.d("COUNTRY", country);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();       //to completely close the entire application
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //   startActivity(getIntent());
+        //    finish();
     }
 }
 
