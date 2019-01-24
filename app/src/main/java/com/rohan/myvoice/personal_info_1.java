@@ -65,6 +65,7 @@ public class personal_info_1 extends AppCompatActivity {
     ApiService api;
     String api_key;
     Map<String, String> country_map, state_map;
+    private String city_for_validation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -568,7 +569,13 @@ public class personal_info_1 extends AppCompatActivity {
 
                 try {
                     getPlaceInfo(place.getLatLng().latitude, place.getLatLng().longitude);
-                    textView_zip_info.setText(selected_zip);
+                    if (city_for_validation.equals(selected_city)) {
+                        textView_zip_info.setText(selected_zip);
+                    } else {
+                        Build_alert_dialog(this, "Incorrect Details", "Selected city not matched with the zip code");
+                        textView_zip_info.setText("Select Zip Code");
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -601,11 +608,11 @@ public class personal_info_1 extends AppCompatActivity {
         }
 
         if (addresses.get(0).getLocality() != null) {
-            String city = addresses.get(0).getLocality();
-            Log.d("CITY", city);
+            city_for_validation = addresses.get(0).getLocality();
+            Log.d("CITY", city_for_validation);
         }
 
-        if (addresses.get(0).getAdminArea() != null) {
+     /*   if (addresses.get(0).getAdminArea() != null) {
             String state = addresses.get(0).getAdminArea();
             Log.d("STATE", state);
         }
@@ -614,6 +621,7 @@ public class personal_info_1 extends AppCompatActivity {
             String country = addresses.get(0).getCountryName();
             Log.d("COUNTRY", country);
         }
+        */
     }
 
     @Override
