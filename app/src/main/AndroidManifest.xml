@@ -27,7 +27,11 @@
             android:name=".SignUp"
             android:theme="@style/CustomTheme" />
         <activity android:name=".GetStarted" />
-        <activity android:name=".personal_info_1"></activity>
+        <activity android:name=".personal_info_1" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCreI3jUpdeXl0GeMipjqcIEyjrzSsXPQY" />
     </application>
 
 </manifest>

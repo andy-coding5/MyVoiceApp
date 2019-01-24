@@ -109,7 +109,7 @@ public class SignIn extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
-                    Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
                     //login successful redirect to "Getstarted activity" if not filled the personal details ..!!- RV
 
                     Data data = response.body().getData();

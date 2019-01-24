@@ -115,7 +115,7 @@
         android:padding="10dp"
         android:text="Select Zip Code"
         android:textSize="16sp"
-
+        android:onClick="zip_selection"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
