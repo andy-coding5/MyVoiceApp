@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".personal_info_2"
+            android:theme="@style/CustomTheme"></activity>
+        <activity
             android:name=".MainActivity"
             android:theme="@style/CustomTheme">
             <intent-filter>
@@ -27,7 +30,9 @@
             android:name=".SignUp"
             android:theme="@style/CustomTheme" />
         <activity android:name=".GetStarted" />
-        <activity android:name=".personal_info_1" />
+        <activity
+            android:name=".personal_info_1"
+            android:theme="@style/CustomTheme" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

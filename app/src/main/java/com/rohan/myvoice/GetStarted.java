@@ -18,7 +18,7 @@ public class GetStarted extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_started);
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         username = findViewById(R.id.hi_user);
         bold = findViewById(R.id.bold_text);
         regular = findViewById(R.id.reg_text);
@@ -28,7 +28,7 @@ public class GetStarted extends AppCompatActivity {
 
         //taking token valu and setting
 
-        Token.token_string = pref.getString("token", "not fetched from shared pref.");
+        //Token.token_string = pref.getString("token", "not fetched from shared pref.");
 
         //Toast.makeText(this, "USERNAME: "+u_name, Toast.LENGTH_SHORT).show();
 

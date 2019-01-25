@@ -32,6 +32,8 @@ public class SignIn extends AppCompatActivity {
     private TextView password;
     private String email, pass;
     private String LOGIN_STATUS = "NoT Initilize";
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
 
     @Override
@@ -40,6 +42,7 @@ public class SignIn extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         //getting coustom layout for toolbar-
+        //have to change the menifest file too - change theme of this activity to cutomeTheme
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_layout);
@@ -54,6 +57,8 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
+        pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
+        editor = pref.edit();
         email_address = findViewById(R.id.email_address);
         password = findViewById(R.id.password);
 
@@ -118,15 +123,19 @@ public class SignIn extends AppCompatActivity {
                     String token_response = response.body().getData().getToken();
 
                     //PUT LOGGED IN ENTRY INTO SHARED PREFERENCES
-                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    SharedPreferences.Editor editor = pref.edit();
+
                     editor.putBoolean("isUserLoggedIn", true);
                     editor.putString("token", token_response);
-                    editor.putString("username", uname);
+                    editor.putString("username", uname);        //username is first name of looged in user, required in Getstarted activity :_RV_
+
+                    //If user(after fresh install of apk), sign in directly rather signup then signIn , Then for that scenario i have to store email and pass.!
+                    editor.putString("email", email);
+                    editor.putString("password", pass);
+
                     editor.commit();
 
                     //token used also in ApiService Interface
-                    Token.token_string = response.body().getData().getToken();
+
 
 
                     if (country_details == null) {//checking whether the user details is filled or not

@@ -30,7 +30,8 @@ public class SignUp extends AppCompatActivity {
 
     private Dialog dialog;
     private TextView first_name, last_name, email_id, pass;
-
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,9 @@ public class SignUp extends AppCompatActivity {
                 finish();
             }
         });
+
+        pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
+        editor = pref.edit();
 
         dialog = new Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen);
 
@@ -91,47 +95,34 @@ public class SignUp extends AppCompatActivity {
 
                     if (response.isSuccessful()) {
 
-
                         String temp = response.body().getMessage();
-                        write_shared_pref(mail, passwrd);
+                        editor.putString("email", mail);
+                        editor.putString("password", passwrd);
+                        editor.commit();
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
-
 
                     } else {
                         try {
+
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
                             String status = jObjError.getString("status");
                             String msg = jObjError.getString("message");
                             //String error_msg = jObjError.getJSONObject("data").getString("errors");
                             Build_alert_dialog(SignUp.this, status, msg);
 
-
                         } catch (Exception e) {
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
-
-
                 }
 
                 @Override
                 public void onFailure(Call<Register> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
-
-
                 }
             });
 
         }
-    }
-
-    private void write_shared_pref(String email, String pass) {
-
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("email", email);
-        editor.putString("password", pass);
-        editor.commit();
     }
 
 

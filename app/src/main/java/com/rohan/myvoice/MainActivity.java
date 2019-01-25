@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
 
         //If user is already logged in then send him to getstarted activity and user has filled
         //all the detils already then from getStarted,send him to the main Dashboard activity
-        Boolean temp = pref.getBoolean("isUserLoggedIn", false);
+        //Boolean temp = pref.getBoolean("isUserLoggedIn", false);
         if (pref.getBoolean("isUserLoggedIn", false)) {
             startActivity(new Intent(this, GetStarted.class));
         }

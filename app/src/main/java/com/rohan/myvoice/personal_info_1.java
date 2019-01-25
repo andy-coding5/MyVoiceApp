@@ -10,12 +10,15 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,7 +63,7 @@ public class personal_info_1 extends AppCompatActivity {
     private Dialog dialog;
 
 
-    public String selected_country, selected_state, selected_city = "", country_code, state_code, selected_zip;
+    public String selected_country = "not_selected", selected_state = "not_selected", selected_city = "not_selected", selected_zip = "not_selected", country_code, state_code;
     public String prev_selected_country = "not_selected", prev_selected_state = "not_selected", prev_selected_city = "not_selected";
     ApiService api;
     String api_key;
@@ -71,7 +74,25 @@ public class personal_info_1 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_info_1);
-        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //getting coustom layout for toolbar-
+        //have to change the menifest file too - change theme of this activity to cutomeTheme
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.dots_custom_action_bar);
+        View view = getSupportActionBar().getCustomView();
+
+
+        ImageButton imageButton = (ImageButton) view.findViewById(R.id.action_bar_back);
+        imageButton.setVisibility(View.INVISIBLE);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
 
         textview_country_info = findViewById(R.id.country);
@@ -91,7 +112,6 @@ public class personal_info_1 extends AppCompatActivity {
          * Calling JSON
          */
         //   String t = Token.token_string;
-        //Call<Country> call = api.getCountryJson("6815ab00be4c46b597b1567db6cb3def", Token.token_string);
         update_token();
         api_key = getResources().getString(R.string.APIKEY);
 
@@ -99,7 +119,7 @@ public class personal_info_1 extends AppCompatActivity {
 
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
 
-        final ProgressDialog progressDoalog;
+        /*final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(personal_info_1.this);
 
         progressDoalog.setMessage("Its loading...");
@@ -108,7 +128,8 @@ public class personal_info_1 extends AppCompatActivity {
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // show it
 
-        progressDoalog.show();
+        progressDoalog.show();/*
+        */
 
 
         //Toast.makeText(this, "Token " + pref.getString("token", null), Toast.LENGTH_LONG).show();
@@ -126,7 +147,7 @@ public class personal_info_1 extends AppCompatActivity {
             @Override
             public void onResponse(Call<Country> call, Response<Country> response) {
 
-                progressDoalog.dismiss();
+                //progressDoalog.dismiss();
 
                 if (response.isSuccessful()) {
 
@@ -198,6 +219,50 @@ public class personal_info_1 extends AppCompatActivity {
         editor.commit();*/
     }
 
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null));
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+                    editor.commit();
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    //call_api_coutry();
+                } else {
+                    //but but i can access the error body here.,
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String status = jObjError.getString("message");
+                        String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(getApplicationContext(), status, error_msg);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
     public void country_selection(View view) {             //dialog of country selection
         if (country_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
@@ -258,53 +323,6 @@ public class personal_info_1 extends AppCompatActivity {
 
             dialog.show();
         }
-    }
-
-    //FOR CALLING API WHENEVER REQUIRED
-
-
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
-        ApiService api = RetroClient.getApiService();
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null));
-
-        call.enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                if (response.isSuccessful()) {
-                    //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
-                    editor.commit();
-
-                    Map<String, ?> allEntries = pref.getAll();
-                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                    }
-
-                    //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getApplicationContext(), status, error_msg);
-
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-
-            }
-        });
-
-
     }
 
     private void fetch_states() {
@@ -570,7 +588,7 @@ public class personal_info_1 extends AppCompatActivity {
                 try {
                     getPlaceInfo(place.getLatLng().latitude, place.getLatLng().longitude);
                     if (city_for_validation.equals(selected_city)) {
-                        textView_zip_info.setText(selected_zip);
+                        textView_zip_info.setText(selected_zip);        //selected zip was set in getPlaceInfo function
                     } else {
                         Build_alert_dialog(this, "Incorrect Details", "Selected city not matched with the zip code");
                         textView_zip_info.setText("Select Zip Code");
@@ -636,5 +654,26 @@ public class personal_info_1 extends AppCompatActivity {
         //   startActivity(getIntent());
         //    finish();
     }
+
+    public void next_activity(View view) {
+        //put validation of all fields before submitting
+        //send answers in intent to second activity
+        if ((selected_country.equals("Select Country") || selected_state.equals("Select State") || selected_city.equals("Select City") || selected_zip.equals("Select Zip Code"))
+                || (selected_country.equals("not_selected") || selected_state.equals("not_selected") || selected_city.equals("not_selected") || selected_zip.equals("not_selected"))) {
+            Build_alert_dialog(this, "Incomplete Details", "Please fill all the details");
+        } else {
+            Intent intent = new Intent(personal_info_1.this, personal_info_2.class);
+            intent.putExtra("country_name", selected_country);
+            intent.putExtra("state_name", selected_state);
+            intent.putExtra("city_name", selected_city);
+            intent.putExtra("zip_code", selected_zip);
+
+            startActivity(intent);
+        }
+
+
+    }
+
+
 }
 

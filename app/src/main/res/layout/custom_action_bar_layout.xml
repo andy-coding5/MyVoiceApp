@@ -30,7 +30,6 @@
             android:textSize="22sp"
             android:textStyle="bold"
             android:visibility="gone" />
-        />
 
 
     </TableRow>
