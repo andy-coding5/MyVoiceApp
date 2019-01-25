@@ -4,6 +4,8 @@ import com.rohan.myvoice.pojo.Register.Register;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
+import com.rohan.myvoice.pojo.education_details.Education;
+import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.state_details.States;
 
 import java.util.Map;
@@ -52,5 +54,12 @@ public interface ApiService {
     @GET("mobileapp/api/v1/data/{path1}/{path2}/cities/get/")
     Call<Cities> getCityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path1") String path1, @Path("path2") String path2);
 
+
+    @GET("mobileapp/api/v1/data/gender/get/")
+    Call<Gender> getGenderJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+
+    @GET("mobileapp/api/v1/data/{path}/edu/get/")
+    Call<Education> getEducationJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
 }

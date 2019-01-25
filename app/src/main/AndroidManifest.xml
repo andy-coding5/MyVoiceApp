@@ -11,9 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".personal_info_2"
-            android:theme="@style/CustomTheme"></activity>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/CustomTheme">
@@ -23,16 +21,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SignIn"
             android:theme="@style/CustomTheme" />
+
         <activity
             android:name=".SignUp"
             android:theme="@style/CustomTheme" />
+
         <activity android:name=".GetStarted" />
+
         <activity
             android:name=".personal_info_1"
             android:theme="@style/CustomTheme" />
+
+        <activity
+            android:name=".personal_info_2"
+            android:theme="@style/CustomTheme"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

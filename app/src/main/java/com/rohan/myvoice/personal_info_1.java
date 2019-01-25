@@ -560,7 +560,7 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
     public void zip_selection(View view) {
-        if (!selected_city.equals("")) {
+        if (!selected_city.equals("not_selected")) {
             try {
                 Intent i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
                 startActivityForResult(i, 2);
@@ -667,6 +667,7 @@ public class personal_info_1 extends AppCompatActivity {
             intent.putExtra("state_name", selected_state);
             intent.putExtra("city_name", selected_city);
             intent.putExtra("zip_code", selected_zip);
+            intent.putExtra("country_code",country_code);
 
             startActivity(intent);
         }
