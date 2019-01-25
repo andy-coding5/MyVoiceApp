@@ -15,6 +15,7 @@ public class personal_info_2 extends AppCompatActivity {
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +40,14 @@ public class personal_info_2 extends AppCompatActivity {
         Intent i = getIntent();
         Toast.makeText(this, i.getStringExtra("country_name"), Toast.LENGTH_SHORT).show();
 
-        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
+
 
     }
 
     public void income_selection(View view) {
+
 
     }
 

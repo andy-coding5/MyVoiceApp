@@ -1,6 +1,7 @@
 package com.rohan.myvoice;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -93,13 +94,19 @@ public class SignUp extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Register> call, Response<Register> response) {
 
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
 
                         String temp = response.body().getMessage();
                         editor.putString("email", mail);
                         editor.putString("password", passwrd);
+                        editor.putString("username", f_name);
+                        editor.putBoolean("isUserLoggedIn", true);
+
                         editor.commit();
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(), GetStarted.class);
+
+                        startActivity(i);
 
                     } else {
                         try {
