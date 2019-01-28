@@ -30,6 +30,7 @@ import com.rohan.myvoice.pojo.education_details.EduList;
 import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.gender_details.GenderList;
+import com.rohan.myvoice.pojo.salary_details.Salary;
 
 import org.json.JSONObject;
 
@@ -49,21 +50,21 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class personal_info_2 extends AppCompatActivity {
 
-    private TextView textview_gender_info, textview_education_info, textview_dob_info;
+    private TextView textview_gender_info, textview_education_info, textview_dob_info, textview_income_info;
     private EditText edittext_income_info;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private String country_code;
+    private String country_code, state_code, city_name, zip_code;
     private ApiService api;
     private String api_key;
-    private Map<String, String> gender_map, education_map;
-    private ArrayList<String> gender_name_list, education_name_list;
-    private static String[] gender_name, education_name;
+    private Map<String, String> gender_map, education_map, salary_map;
+    private ArrayList<String> gender_name_list, education_name_list, salary_name_list;
+    private static String[] gender_name, education_name, salary_name;
     private Dialog dialog;
-    private ListView listview_gender, listview_education;
-    public String selected_gender = "not_selected", selected_education = "not_selected", selected_dob = "not_selected", selected_income = "not_selected";
+    private ListView listview_gender, listview_education, listview_salary;
+    public String selected_gender = "not_selected", selected_education = "not_selected", selected_salary = "not_selected", selected_dob = "not_selected";
     public String gender_code, education_code;
-    public String prev_selected_gender = "not_selected";
+
     private String isValid = "not_initialized";
 
     @Override
@@ -90,6 +91,10 @@ public class personal_info_2 extends AppCompatActivity {
 
         Intent i = getIntent();
         country_code = i.getStringExtra("country_code");
+        state_code = i.getStringExtra("state_code");
+        zip_code = i.getStringExtra("zip_code");
+        city_name = i.getStringExtra("city_name");
+
         Toast.makeText(this, i.getStringExtra("country_name"), Toast.LENGTH_SHORT).show();
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
@@ -98,8 +103,7 @@ public class personal_info_2 extends AppCompatActivity {
         textview_gender_info = findViewById(R.id.gender);
         textview_education_info = findViewById(R.id.highest_qualification);
         textview_dob_info = findViewById(R.id.dob);
-        edittext_income_info = findViewById(R.id.income);
-        edittext_income_info.setSelected(false);
+        textview_income_info = findViewById(R.id.income);
 
         api = RetroClient.getApiService();
         update_token();
@@ -208,6 +212,64 @@ public class personal_info_2 extends AppCompatActivity {
             }
         });
 
+        //For INCOME
+        Call<Salary> call3 = api.getSalaryJson(api_key, "Token " + pref.getString("token", null));
+
+        call3.enqueue(new Callback<Salary>() {
+            @Override
+            public void onResponse(Call<Salary> call, Response<Salary> response) {
+                if (response.isSuccessful()) {
+                    List<String> salary_obj_list = response.body().getData().getList();
+                    //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
+                    salary_map = new HashMap<>();
+
+
+                    salary_name_list = new ArrayList<>();
+
+                    for (String g : salary_obj_list) {
+
+                        //  gender_map.put(g.getCode(), g.getName());
+                        //making an array from MAP's values
+                        salary_name_list.add(g);
+                    }
+                    //printing -- LOG for testing
+
+                    salary_name = new String[salary_name_list.size()];
+
+                    for (int i = 0; i < salary_name_list.size(); i++) {
+                        salary_name[i] = salary_name_list.get(i);
+                        Log.i("TAG", salary_name[i]);
+                    }
+
+
+                } else {
+                    //first chk for TOKEN EXPIRE??
+                    //calling a function
+                    update_token();
+
+
+                    Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                        //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Salary> call, Throwable t) {
+
+            }
+        });
+
     }
 
     public void update_token() {
@@ -311,7 +373,6 @@ public class personal_info_2 extends AppCompatActivity {
 
             dialog.show();
         }
-
     }
 
     public void gender_selection(View view) {
@@ -405,13 +466,12 @@ public class personal_info_2 extends AppCompatActivity {
     private String age_validation(int dayOfMonth, int mon, int year) {
         Calendar today = Calendar.getInstance();
         Calendar dob = Calendar.getInstance();
-        dob.set(year, mon-1, dayOfMonth);
-        Toast.makeText(this, "today's date : "+ today.get(Calendar.YEAR)+"-"+today.get(Calendar.MONTH)+"-"+today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
+        dob.set(year, mon - 1, dayOfMonth);
+        Toast.makeText(this, "today's date : " + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
         if ((today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) ||
-                (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH) && (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR))))
-        {
+                (today.get(Calendar.MONTH) == dob.get(Calendar.MONTH) && (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)))) {
             age--;
         }
         Integer ageInt = new Integer(age);
@@ -422,14 +482,66 @@ public class personal_info_2 extends AppCompatActivity {
 
     }
 
+    public void income_selection(View view) {
+
+        //loading the data in a view
+        if (salary_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+            dialog = new Dialog(personal_info_2.this);
+            dialog.setContentView(R.layout.list_view);
+            dialog.setTitle("Select Annual Income");
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+            //prepare a list view in dialog
+            listview_salary = dialog.findViewById(R.id.dialogList);
+
+
+            //String[] aray = {"rohn0", "fdad", "aqwe"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, salary_name);
+            listview_salary.setAdapter(adapter);
+
+
+            listview_salary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                    view.setSelected(true);
+                    selected_salary = parent.getItemAtPosition(position).toString();
+
+
+                    textview_income_info.setText(selected_salary);
+
+                    dialog.dismiss();
+
+
+                }
+            });
+
+
+            View view1 = dialog.findViewById(R.id.cancel_btn);
+            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+            cancel_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
+            dialog.show();
+        }
+
+
+    }
 
     public void next_activity(View view) {
 
-        selected_income = edittext_income_info.getText().toString();
-
         //printing toast of all values with codes
         if (selected_gender.equals("not_selected") || selected_education.equals("not_selected") || selected_dob.equals("not_selected") ||
-                selected_income.equals("not_selected")) {
+                selected_salary.equals("not_selected")) {
             Build_alert_dialog(this, "Incomplete Details", "Please fill all the details");
         } else {
             if (Integer.parseInt(isValid) >= 18) {
@@ -437,7 +549,24 @@ public class personal_info_2 extends AppCompatActivity {
                 selected_dob = (String) textview_dob_info.getText();
 
                 Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
-                        + "dob: " + selected_dob + "\n" + "income: " + selected_income, Toast.LENGTH_SHORT).show();
+                        + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
+
+                //if all ok then redirect to thenext activity
+                //but first store all the gethered info. of 8 items into shared pref.
+
+                editor.putString("country_code", country_code);
+                editor.putString("state_code", state_code);
+                editor.putString("city_name", city_name);
+                editor.putString("zip_code", zip_code);
+                editor.putString("education_code", education_code);
+                editor.putString("gender_code", gender_code);
+                editor.putString("dob", selected_dob);
+                editor.putString("income", selected_salary);
+                editor.commit();
+
+                Intent i = new Intent(this, permission_screen.class);
+                startActivity(i);
+
 
             } else {
                 Build_alert_dialog(this, "Age restriction", "you must be 18+");
@@ -447,5 +576,8 @@ public class personal_info_2 extends AppCompatActivity {
 
         }
 
+
     }
+
+
 }

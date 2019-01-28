@@ -13,7 +13,6 @@
             android:id="@+id/title_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/quicksand_regular"
             android:text="Please select country"
@@ -26,11 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:choiceMode="singleChoice"
-
-            android:background="@drawable/listview_background">
-
-        </ListView>
+            android:background="@drawable/listview_background"
+            android:choiceMode="singleChoice"></ListView>
 
 
         <Button
@@ -40,7 +36,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
-
             android:background="@drawable/button_background"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="center_horizontal"

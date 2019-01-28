@@ -26,11 +26,12 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
 
+        startActivity(new Intent(this, permission_screen.class));
         //If user is already logged in then send him to getstarted activity and user has filled
         //all the detils already then from getStarted,send him to the main Dashboard activity
         //Boolean temp = pref.getBoolean("isUserLoggedIn", false);
         if (pref.getBoolean("isUserLoggedIn", false)) {
-            startActivity(new Intent(this, GetStarted.class));
+            //startActivity(new Intent(this, GetStarted.class));
         }
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);

@@ -121,13 +121,11 @@ public class personal_info_1 extends AppCompatActivity {
 
         /*final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(personal_info_1.this);
-
         progressDoalog.setMessage("Its loading...");
         progressDoalog.setTitle("Fetching the response");
         progressDoalog.setCancelable(true);
         progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // show it
-
         progressDoalog.show();/*
         */
 
@@ -634,7 +632,6 @@ public class personal_info_1 extends AppCompatActivity {
             String state = addresses.get(0).getAdminArea();
             Log.d("STATE", state);
         }
-
         if (addresses.get(0).getCountryName() != null) {
             String country = addresses.get(0).getCountryName();
             Log.d("COUNTRY", country);
@@ -664,7 +661,7 @@ public class personal_info_1 extends AppCompatActivity {
         } else {
             Intent intent = new Intent(personal_info_1.this, personal_info_2.class);
             intent.putExtra("country_name", selected_country);
-            intent.putExtra("state_name", selected_state);
+            intent.putExtra("state_code", state_code);
             intent.putExtra("city_name", selected_city);
             intent.putExtra("zip_code", selected_zip);
             intent.putExtra("country_code",country_code);
@@ -677,4 +674,3 @@ public class personal_info_1 extends AppCompatActivity {
 
 
 }
-

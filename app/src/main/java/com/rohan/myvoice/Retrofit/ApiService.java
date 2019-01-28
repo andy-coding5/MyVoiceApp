@@ -6,6 +6,7 @@ import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
+import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 
 import java.util.Map;
@@ -61,5 +62,8 @@ public interface ApiService {
 
     @GET("mobileapp/api/v1/data/{path}/edu/get/")
     Call<Education> getEducationJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+
+    @GET("mobileapp/api/v1/data/income/get/")
+    Call<Salary> getSalaryJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
 }
