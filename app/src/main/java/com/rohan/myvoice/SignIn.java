@@ -152,6 +152,7 @@ public class SignIn extends AppCompatActivity {
 
                     } else {
                         //REDIRECT USER TO THE MAIN DASHBOARD
+                        Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
 
 
                     }
