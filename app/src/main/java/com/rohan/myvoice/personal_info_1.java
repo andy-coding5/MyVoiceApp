@@ -70,6 +70,8 @@ public class personal_info_1 extends AppCompatActivity {
     Map<String, String> country_map, state_map;
     private String city_for_validation;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +106,13 @@ public class personal_info_1 extends AppCompatActivity {
         state_name_list = new ArrayList<>();
         city_name_list = new ArrayList<>();
 
+        // Set up progress before call
+        progressDialog = new ProgressDialog(personal_info_1.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Fetching Data");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+
         //call_api_coutry();
 
         api = RetroClient.getApiService();
@@ -119,25 +128,10 @@ public class personal_info_1 extends AppCompatActivity {
 
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
 
-        /*final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(personal_info_1.this);
-        progressDoalog.setMessage("Its loading...");
-        progressDoalog.setTitle("Fetching the response");
-        progressDoalog.setCancelable(true);
-        progressDoalog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         // show it
-        progressDoalog.show();/*
-        */
+        progressDialog.show();
 
-
-        //Toast.makeText(this, "Token " + pref.getString("token", null), Toast.LENGTH_LONG).show();
-       /* try {
-            Response<Country> response = call.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        //WHEN WE RECEIVE RESPONSE
 
         call.enqueue(new Callback<Country>() {
 
@@ -145,8 +139,7 @@ public class personal_info_1 extends AppCompatActivity {
             @Override
             public void onResponse(Call<Country> call, Response<Country> response) {
 
-                //progressDoalog.dismiss();
-
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
 
                     List<CountryList> country_obj_list = response.body().getData().getCountryList();
@@ -203,9 +196,8 @@ public class personal_info_1 extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Country> call, Throwable t) {
-                /*progressDoalog.dismiss();*/
-
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
@@ -224,9 +216,13 @@ public class personal_info_1 extends AppCompatActivity {
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null));
 
+        progressDialog.show();
+
         call.enqueue(new Callback<Login>() {
             @Override
             public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
                     editor.putString("token", response.body().getData().getToken());
@@ -254,7 +250,8 @@ public class personal_info_1 extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Login> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
@@ -327,9 +324,13 @@ public class personal_info_1 extends AppCompatActivity {
 
         Call<States> call = api.getStateJson(api_key, "Token " + pref.getString("token", null), country_code);
 
+        // show it
+        progressDialog.show();
+
         call.enqueue(new Callback<States>() {
             @Override
             public void onResponse(Call<States> call, Response<States> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
 
 
@@ -383,6 +384,8 @@ public class personal_info_1 extends AppCompatActivity {
             @Override
             public void onFailure(Call<States> call, Throwable t) {
 
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
     }
@@ -453,9 +456,12 @@ public class personal_info_1 extends AppCompatActivity {
         if (state_name_list.size() != 0) {
             Call<Cities> call = api.getCityJson(api_key, "Token " + pref.getString("token", null), country_code, state_code);
 
+            progressDialog.show();
+
             call.enqueue(new Callback<Cities>() {
                 @Override
                 public void onResponse(Call<Cities> call, Response<Cities> response) {
+                    progressDialog.dismiss();
                     if (response.isSuccessful()) {
 
 
@@ -503,7 +509,8 @@ public class personal_info_1 extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Cities> call, Throwable t) {
-
+                    progressDialog.dismiss();
+                    Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
                 }
             });
         }
@@ -627,29 +634,6 @@ public class personal_info_1 extends AppCompatActivity {
             city_for_validation = addresses.get(0).getLocality();
             Log.d("CITY", city_for_validation);
         }
-
-     /*   if (addresses.get(0).getAdminArea() != null) {
-            String state = addresses.get(0).getAdminArea();
-            Log.d("STATE", state);
-        }
-        if (addresses.get(0).getCountryName() != null) {
-            String country = addresses.get(0).getCountryName();
-            Log.d("COUNTRY", country);
-        }
-        */
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();       //to completely close the entire application
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //   startActivity(getIntent());
-        //    finish();
     }
 
     public void next_activity(View view) {
@@ -664,7 +648,7 @@ public class personal_info_1 extends AppCompatActivity {
             intent.putExtra("state_code", state_code);
             intent.putExtra("city_name", selected_city);
             intent.putExtra("zip_code", selected_zip);
-            intent.putExtra("country_code",country_code);
+            intent.putExtra("country_code", country_code);
 
             startActivity(intent);
         }
@@ -672,5 +656,17 @@ public class personal_info_1 extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();       //to completely close the entire application
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //   startActivity(getIntent());
+        //    finish();
+    }
 
 }

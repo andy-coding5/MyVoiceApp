@@ -67,6 +67,8 @@ public class personal_info_2 extends AppCompatActivity {
 
     private String isValid = "not_initialized";
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -105,6 +107,13 @@ public class personal_info_2 extends AppCompatActivity {
         textview_dob_info = findViewById(R.id.dob);
         textview_income_info = findViewById(R.id.income);
 
+        // Set up progress before call
+        progressDialog = new ProgressDialog(personal_info_2.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Fetching Data");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+
         api = RetroClient.getApiService();
         update_token();
         api_key = getResources().getString(R.string.APIKEY);
@@ -113,10 +122,12 @@ public class personal_info_2 extends AppCompatActivity {
         //FOR EDUCATION
 
         Call<Education> call2 = api.getEducationJson(api_key, "Token " + pref.getString("token", null), country_code);
-
+        // show it
+        progressDialog.show();
         call2.enqueue(new Callback<Education>() {
             @Override
             public void onResponse(Call<Education> call, Response<Education> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     List<EduList> education_obj_list = response.body().getData().getEduList();
                     //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
@@ -144,22 +155,43 @@ public class personal_info_2 extends AppCompatActivity {
 
 
                 } else {
+                    //first chk for TOKEN EXPIRE??
+                    //calling a function
+                    update_token();
 
+
+                    Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                        //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<Education> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
         //FOR GENDER
         Call<Gender> call = api.getGenderJson(api_key, "Token " + pref.getString("token", null));
 
+        progressDialog.show();
+
         call.enqueue(new Callback<Gender>() {
             @Override
             public void onResponse(Call<Gender> call, Response<Gender> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     List<GenderList> gender_obj_list = response.body().getData().getGenderList();
                     //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
@@ -208,16 +240,20 @@ public class personal_info_2 extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Gender> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
         //For INCOME
         Call<Salary> call3 = api.getSalaryJson(api_key, "Token " + pref.getString("token", null));
 
+        progressDialog.show();
+
         call3.enqueue(new Callback<Salary>() {
             @Override
             public void onResponse(Call<Salary> call, Response<Salary> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     List<String> salary_obj_list = response.body().getData().getList();
                     //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
@@ -266,7 +302,8 @@ public class personal_info_2 extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Salary> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
@@ -279,9 +316,12 @@ public class personal_info_2 extends AppCompatActivity {
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null));
 
+        progressDialog.show();
+
         call.enqueue(new Callback<Login>() {
             @Override
             public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
                     editor.putString("token", response.body().getData().getToken());
@@ -309,7 +349,8 @@ public class personal_info_2 extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Login> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
 
@@ -571,7 +612,6 @@ public class personal_info_2 extends AppCompatActivity {
             } else {
                 Build_alert_dialog(this, "Age restriction", "you must be 18+");
                 selected_dob = "not_selected";
-
             }
 
         }
