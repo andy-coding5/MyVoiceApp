@@ -5,10 +5,9 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
-import com.rohan.myvoice.pojo.country_details.CountryList;
 import com.rohan.myvoice.pojo.education_details.EduList;
 import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
@@ -34,7 +32,6 @@ import com.rohan.myvoice.pojo.salary_details.Salary;
 
 import org.json.JSONObject;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.CallAdapter;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -159,7 +155,6 @@ public class personal_info_2 extends AppCompatActivity {
                     //calling a function
                     update_token();
 
-
                     Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -168,7 +163,6 @@ public class personal_info_2 extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
-
 
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -605,6 +599,10 @@ public class personal_info_2 extends AppCompatActivity {
                 editor.putString("income", selected_salary);
                 editor.commit();
 
+                //call to api for submitting the response.
+
+
+                //start the activity of taking the permission
                 Intent i = new Intent(this, permission_screen.class);
                 startActivity(i);
 

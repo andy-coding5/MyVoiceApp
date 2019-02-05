@@ -1,6 +1,7 @@
 package com.rohan.myvoice;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -100,4 +101,7 @@ public class permission_screen extends AppCompatActivity {
         }
     }
 
+    public void set_my_pref(View view) {
+        startActivity(new Intent(this, Dashboard.class));
+    }
 }

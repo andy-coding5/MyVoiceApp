@@ -8,6 +8,7 @@ import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
+import com.rohan.myvoice.pojo.zip_details.Zip;
 
 import java.util.Map;
 
@@ -65,5 +66,14 @@ public interface ApiService {
 
     @GET("mobileapp/api/v1/data/income/get/")
     Call<Salary> getSalaryJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+
+    //for Zip Details
+
+    @POST("mobileapp/api/v1/data/zipcode/")
+    @FormUrlEncoded
+    Call<Zip> getZipJason(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                          @Field("country") String country, @Field("state") String state,
+                          @Field("city") String city, @Field("zipcode") String zipcode);
 
 }

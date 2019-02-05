@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -37,6 +38,7 @@ import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.country_details.CountryList;
 import com.rohan.myvoice.pojo.state_details.StateList;
 import com.rohan.myvoice.pojo.state_details.States;
+import com.rohan.myvoice.pojo.zip_details.Zip;
 
 import org.json.JSONObject;
 
@@ -54,7 +56,8 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class personal_info_1 extends AppCompatActivity {
 
-    private TextView textview_country_info, textview_state_info, textview_city_info, textView_zip_info;
+    private TextView textview_country_info, textview_state_info, textview_city_info;
+    private EditText edittext_zip_info;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private static String[] country_name, state_name, city_name;
@@ -100,7 +103,7 @@ public class personal_info_1 extends AppCompatActivity {
         textview_country_info = findViewById(R.id.country);
         textview_state_info = findViewById(R.id.state);
         textview_city_info = findViewById(R.id.city);
-        textView_zip_info = findViewById(R.id.zipcode);
+        edittext_zip_info = findViewById(R.id.zipcode);
 
         country_name_list = new ArrayList<>();
         state_name_list = new ArrayList<>();
@@ -545,7 +548,7 @@ public class personal_info_1 extends AppCompatActivity {
                     if (!prev_selected_city.equals(selected_city)) {
                         prev_selected_city = selected_city;
 
-                        textView_zip_info.setText("Select Zip Code");
+                        edittext_zip_info.setHint("Select Zip Code");
 
                     }
                     textview_city_info.setText(selected_city);
@@ -564,7 +567,11 @@ public class personal_info_1 extends AppCompatActivity {
         }
     }
 
-    public void zip_selection(View view) {
+    public void zip_selection() {
+
+    }
+
+   /* public void zip_selection(View view) {
         if (!selected_city.equals("not_selected")) {
             try {
                 Intent i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
@@ -603,7 +610,6 @@ public class personal_info_1 extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
                 Log.i("TAG", "Place: " + place.getName());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -636,25 +642,95 @@ public class personal_info_1 extends AppCompatActivity {
         }
     }
 
+    */
+
     public void next_activity(View view) {
         //put validation of all fields before submitting
         //send answers in intent to second activity
-        if ((selected_country.equals("Select Country") || selected_state.equals("Select State") || selected_city.equals("Select City") || selected_zip.equals("Select Zip Code"))
-                || (selected_country.equals("not_selected") || selected_state.equals("not_selected") || selected_city.equals("not_selected") || selected_zip.equals("not_selected"))) {
-            Build_alert_dialog(this, "Incomplete Details", "Please fill all the details");
-        } else {
-            Intent intent = new Intent(personal_info_1.this, personal_info_2.class);
-            intent.putExtra("country_name", selected_country);
-            intent.putExtra("state_code", state_code);
-            intent.putExtra("city_name", selected_city);
-            intent.putExtra("zip_code", selected_zip);
-            intent.putExtra("country_code", country_code);
-
-            startActivity(intent);
-        }
+        take_zip_code();
 
 
     }
+
+    private void take_zip_code() {
+        if (!selected_city.equals("not_selected")) {
+
+            //taking user input of Zip code
+            final String s = edittext_zip_info.getText().toString();
+
+            //call API for validation
+
+            Call<Zip> c = api.getZipJason(api_key, "Token " + pref.getString("token", null), country_code, state_code, selected_city, s);
+
+            progressDialog.show();
+
+
+            c.enqueue(new Callback<Zip>() {
+                @Override
+                public void onResponse(Call<Zip> call, Response<Zip> response) {
+                    progressDialog.dismiss();
+                    if (response.isSuccessful()) {
+
+                        if (response.body().getStatus().equals("Success")) {      //if zip is valid
+
+                            selected_zip = s;
+                            if ((selected_country.equals("Select Country") ||
+                                    selected_state.equals("Select State") ||
+                                    selected_city.equals("Select City") ||
+                                    selected_zip.equals("Select Zip Code")) ||
+                                    selected_zip.equals("") ||
+                                    selected_country.equals("not_selected") ||
+                                    selected_state.equals("not_selected") ||
+                                    selected_city.equals("not_selected") ||
+                                    selected_zip.equals("not_selected")) {
+                                Build_alert_dialog(personal_info_1.this, "Incomplete Information", "Please Fill the details in all the fields");
+
+                            } else {
+                                Intent intent = new Intent(personal_info_1.this, personal_info_2.class);
+                                intent.putExtra("country_name", selected_country);
+                                intent.putExtra("state_code", state_code);
+                                intent.putExtra("city_name", selected_city);
+                                intent.putExtra("zip_code", selected_zip);
+                                intent.putExtra("country_code", country_code);
+
+                                startActivity(intent);
+                            }
+
+                        } else {                       //if zip is not valid
+                            Build_alert_dialog(personal_info_1.this, "Invalid Information", "Please Enter a valid Zip Code!");
+                        }
+
+
+                    } else {
+                        //first chk for TOKEN EXPIRE??
+                        //calling a function
+                        update_token();
+
+                        Toast.makeText(personal_info_1.this, "response not received", Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            String status = jObjError.getString("detail");
+
+                            Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                            //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Zip> call, Throwable t) {
+                    progressDialog.dismiss();
+                }
+            });
+
+        } else {
+            Build_alert_dialog(personal_info_1.this, "Incomplete Information", "Please Select The City First!");
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
