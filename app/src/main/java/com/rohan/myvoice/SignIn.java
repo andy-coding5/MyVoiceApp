@@ -172,7 +172,11 @@ public class SignIn extends AppCompatActivity {
                     } else {
                         //REDIRECT USER TO THE MAIN DASHBOARD
                         Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
+                        editor.putString("IsComplete", "true");
+                        editor.commit();
                         startActivity(new Intent(getApplicationContext(), Dashboard.class));
+
+
 
                     }
                     //end of coding of succes login

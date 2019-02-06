@@ -117,6 +117,71 @@ public class personal_info_1 extends AppCompatActivity {
         update_token();
         api_key = getResources().getString(R.string.APIKEY);
 
+
+        //FOR TESTING PURPOSE -- CHANGING THE TOKEN KEY
+        /*pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        editor = pref.edit();
+        editor.putString("token", "12312");
+        editor.commit();*/
+    }
+
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        progressDialog.show();
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    //call_api_coutry();
+                } else {
+                    //but but i can access the error body here.,
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String status = jObjError.getString("message");
+                        String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(getApplicationContext(), status, error_msg);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+
+    }
+
+    public void country_selection(View view) {             //dialog of country selection
         //CALL
 
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
@@ -130,7 +195,7 @@ public class personal_info_1 extends AppCompatActivity {
 
 
             @Override
-            public void onResponse(Call<Country> call, Response<Country> response) {
+            public void onResponse(Call<Country> call, Response<Country> response) e3{
 
                 progressDialog.dismiss();
                 if (response.isSuccessful()) {
@@ -195,70 +260,6 @@ public class personal_info_1 extends AppCompatActivity {
         });
 
 
-        //FOR TESTING PURPOSE -- CHANGING THE TOKEN KEY
-        /*pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        editor = pref.edit();
-        editor.putString("token", "12312");
-        editor.commit();*/
-    }
-
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
-        ApiService api = RetroClient.getApiService();
-
-        //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
-            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
-            editor.commit();
-        }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),pref.getString("fcm_token", null),"android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-
-        progressDialog.show();
-
-        call.enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                progressDialog.dismiss();
-
-                if (response.isSuccessful()) {
-                    //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
-
-                    editor.commit();
-
-                    Map<String, ?> allEntries = pref.getAll();
-                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                    }
-
-                    //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getApplicationContext(), status, error_msg);
-
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-                progressDialog.dismiss();
-                Build_alert_dialog(personal_info_1.this, "Connection Error", "Please Check You Internet Connection");
-            }
-        });
-
-
-    }
-
-    public void country_selection(View view) {             //dialog of country selection
         if (country_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_1.this);
@@ -449,7 +450,7 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
     public void state_selection(View view) {
-       fetch_states();
+        fetch_states();
        /* if (state_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_1.this);
