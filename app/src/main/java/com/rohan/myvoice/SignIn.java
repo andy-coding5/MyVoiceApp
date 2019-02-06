@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
@@ -34,6 +36,7 @@ public class SignIn extends AppCompatActivity {
     private String LOGIN_STATUS = "NoT Initilize";
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    public static String DEVICE_ID;
 
 
     @Override
@@ -61,6 +64,8 @@ public class SignIn extends AppCompatActivity {
         editor = pref.edit();
         email_address = findViewById(R.id.email_address);
         password = findViewById(R.id.password);
+
+        DEVICE_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
     }
@@ -106,7 +111,8 @@ public class SignIn extends AppCompatActivity {
         /**
          * Calling JSON
          */
-        Call<Login> call = api.getLoginJason(email, pass);
+        String FcmToken = pref.getString("fcm_token", null);
+        Call<Login> call = api.getLoginJason(email, pass, FcmToken,"android", DEVICE_ID);
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -135,7 +141,6 @@ public class SignIn extends AppCompatActivity {
                     editor.commit();
 
                     //token used also in ApiService Interface
-
 
 
                     if (country_details == null) {//checking whether the user details is filled or not
@@ -184,6 +189,8 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onFailure(Call<Login> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignIn.this,t.toString(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
             }
 
 

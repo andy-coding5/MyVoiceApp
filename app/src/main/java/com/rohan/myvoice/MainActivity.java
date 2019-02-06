@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,11 @@ import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        if (!(PublicClass.FCM_TOKEN.equals("") || PublicClass.FCM_TOKEN != null)) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+        }
+
 
         // startActivity(new Intent(this, permission_screen.class));
         //If user is already logged in then send him to getstarted activity and user has filled

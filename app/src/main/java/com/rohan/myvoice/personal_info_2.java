@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -308,7 +309,7 @@ public class personal_info_2 extends AppCompatActivity {
         Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null));
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),"android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
 
@@ -604,6 +605,15 @@ public class personal_info_2 extends AppCompatActivity {
 
                 //start the activity of taking the permission
                 Intent i = new Intent(this, permission_screen.class);
+                i.putExtra("country_code", country_code);
+                i.putExtra("state_code", state_code);
+                i.putExtra("city_name", city_name);
+                i.putExtra("zip_code", zip_code);
+                i.putExtra("education_code", education_code);
+                i.putExtra("gender_code", gender_code);
+                i.putExtra("dob", selected_dob);
+                i.putExtra("income", selected_salary);
+                i.putExtra("fcm_token", PublicClass.FCM_TOKEN);
                 startActivity(i);
 
 

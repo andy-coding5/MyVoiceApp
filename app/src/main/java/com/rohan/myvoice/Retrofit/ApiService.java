@@ -30,7 +30,8 @@ public interface ApiService {
     @Headers("APIKEY:6815ab00be4c46b597b1567db6cb3def")
     @POST("accounts/api/v1/user/login/")
     @FormUrlEncoded
-    Call<Login> getLoginJason(@Field("email_or_phone") String email_or_phone, @Field("password") String password);
+    Call<Login> getLoginJason(@Field("email_or_phone") String email_or_phone, @Field("password") String password, @Field("DeviceToken") String DeviceToken,
+                              @Field("Source") String Source, @Field("device_id") String device_id);
 
 
     //for sign Up

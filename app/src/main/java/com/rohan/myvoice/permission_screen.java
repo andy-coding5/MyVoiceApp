@@ -3,6 +3,7 @@ package com.rohan.myvoice;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -102,6 +103,9 @@ public class permission_screen extends AppCompatActivity {
     }
 
     public void set_my_pref(View view) {
+        String devide_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
         startActivity(new Intent(this, Dashboard.class));
     }
 }
