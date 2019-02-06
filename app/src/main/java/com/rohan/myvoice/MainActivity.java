@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //define alert box , message is in argument of calling func tion ... code reusability -- by RV
+    //define alert box , message is in argument of calling function ... code reusability -- by RV
 
     public static void Build_alert_dialog(final Context context, String title, String message) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
