@@ -1,6 +1,7 @@
 package com.rohan.myvoice;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class SignUp extends AppCompatActivity {
     private TextView first_name, last_name, email_id, pass;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,12 @@ public class SignUp extends AppCompatActivity {
         email_id = findViewById(R.id.email_id);
         pass = findViewById(R.id.password);
 
+        // Set up progress before call
+        progressDialog = new ProgressDialog(SignUp.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Fetching Data");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
 
     }
 
@@ -89,10 +97,13 @@ public class SignUp extends AppCompatActivity {
              */
             Call<Register> call = api.getRegisterJason(mail, passwrd, f_name, l_name);
 
+            progressDialog.show();
             //waiting for response
             call.enqueue(new Callback<Register>() {
                 @Override
                 public void onResponse(Call<Register> call, Response<Register> response) {
+
+                    progressDialog.dismiss();
 
                     if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
 

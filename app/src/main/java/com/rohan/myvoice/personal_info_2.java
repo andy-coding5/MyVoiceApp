@@ -55,7 +55,7 @@ public class personal_info_2 extends AppCompatActivity {
     private ApiService api;
     private String api_key;
     private Map<String, String> gender_map, education_map, salary_map;
-    private ArrayList<String> gender_name_list, education_name_list, salary_name_list;
+    private ArrayList<String> gender_name_list=null, education_name_list = null, salary_name_list=null;
     private static String[] gender_name, education_name, salary_name;
     private Dialog dialog;
     private ListView listview_gender, listview_education, listview_salary;
@@ -306,10 +306,10 @@ public class personal_info_2 extends AppCompatActivity {
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),"android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
 
@@ -320,6 +320,7 @@ public class personal_info_2 extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
                     editor.putString("token", response.body().getData().getToken());
+
                     editor.commit();
 
                     Map<String, ?> allEntries = pref.getAll();
@@ -354,7 +355,7 @@ public class personal_info_2 extends AppCompatActivity {
 
     public void qualification_selection(View view) {
         //loading the data in a view
-        if (education_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+        if (education_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_2.this);
             dialog.setContentView(R.layout.list_view);
@@ -415,7 +416,7 @@ public class personal_info_2 extends AppCompatActivity {
 
 
         //loading the data in a view
-        if (gender_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+        if (gender_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_2.this);
             dialog.setContentView(R.layout.list_view);
@@ -490,9 +491,9 @@ public class personal_info_2 extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        textview_dob_info.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        textview_dob_info.setText((monthOfYear + 1) + "-" + dayOfMonth + "-" + year);       //for showing - format is: m-d-y
                         isValid = age_validation(dayOfMonth, monthOfYear + 1, year);
-                        selected_dob = (String) textview_dob_info.getText();
+                        selected_dob = (String) (year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);        //for database_sending, format is : y-m-d
 
                     }
                 }, mYear, mMonth, mDay);
@@ -521,7 +522,7 @@ public class personal_info_2 extends AppCompatActivity {
     public void income_selection(View view) {
 
         //loading the data in a view
-        if (salary_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+        if (salary_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_2.this);
             dialog.setContentView(R.layout.list_view);
@@ -582,7 +583,7 @@ public class personal_info_2 extends AppCompatActivity {
         } else {
             if (Integer.parseInt(isValid) >= 18) {
 
-                selected_dob = (String) textview_dob_info.getText();
+
 
                 Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
                         + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
@@ -590,21 +591,12 @@ public class personal_info_2 extends AppCompatActivity {
                 //if all ok then redirect to thenext activity
                 //but first store all the gethered info. of 8 items into shared pref.
 
-                editor.putString("country_code", country_code);
-                editor.putString("state_code", state_code);
-                editor.putString("city_name", city_name);
-                editor.putString("zip_code", zip_code);
-                editor.putString("education_code", education_code);
-                editor.putString("gender_code", gender_code);
-                editor.putString("dob", selected_dob);
-                editor.putString("income", selected_salary);
-                editor.commit();
-
                 //call to api for submitting the response.
 
 
                 //start the activity of taking the permission
-                Intent i = new Intent(this, permission_screen.class);
+                String FcmToken = pref.getString("fcm_token", null);
+                Intent i = new Intent(personal_info_2.this, preference.class);
                 i.putExtra("country_code", country_code);
                 i.putExtra("state_code", state_code);
                 i.putExtra("city_name", city_name);
@@ -613,7 +605,12 @@ public class personal_info_2 extends AppCompatActivity {
                 i.putExtra("gender_code", gender_code);
                 i.putExtra("dob", selected_dob);
                 i.putExtra("income", selected_salary);
-                i.putExtra("fcm_token", PublicClass.FCM_TOKEN);
+                i.putExtra("fcm_token", FcmToken);
+
+
+
+
+
                 startActivity(i);
 
 

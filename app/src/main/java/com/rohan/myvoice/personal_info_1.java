@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.citi_details.CityList;
@@ -206,6 +207,12 @@ public class personal_info_1 extends AppCompatActivity {
         Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),pref.getString("fcm_token", null),"android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
@@ -218,6 +225,7 @@ public class personal_info_1 extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
                     editor.putString("token", response.body().getData().getToken());
+
                     editor.commit();
 
                     Map<String, ?> allEntries = pref.getAll();
@@ -293,7 +301,7 @@ public class personal_info_1 extends AppCompatActivity {
                             break;
                         }
                     }
-                    fetch_states();
+
                 }
             });
 
@@ -350,6 +358,64 @@ public class personal_info_1 extends AppCompatActivity {
                         //Log.i("TAG", state_name[i]);
                     }
 
+                    if (state_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+                        dialog = new Dialog(personal_info_1.this);
+                        dialog.setContentView(R.layout.list_view);
+                        dialog.setTitle("Select State");
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+                        //prepare a list view in dialog
+                        listview_state = dialog.findViewById(R.id.dialogList);
+                        TextView t = dialog.findViewById(R.id.title_textView);
+                        t.setText("Please select State");
+
+
+                        //String[] aray = {"rohn0", "fdad", "aqwe"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, state_name);
+                        listview_state.setAdapter(adapter);
+                        listview_state.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                selected_state = parent.getItemAtPosition(position).toString();
+                                if (!prev_selected_state.equals(selected_state)) {
+                                    prev_selected_state = selected_state;
+
+                                    textview_city_info.setText("Select City");
+
+                                }
+                                textview_state_info.setText(selected_state);
+
+                                dialog.dismiss();
+
+                                //remove these if not works
+                                for (Map.Entry entry : state_map.entrySet()) {
+                                    if (selected_state.equals(entry.getValue())) {
+                                        state_code = entry.getKey().toString();
+                                        break;
+                                    }
+                                }
+                                //  fetch_cities();
+
+                            }
+                        });
+                        View view1 = dialog.findViewById(R.id.cancel_btn);
+                        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                        cancel_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dialog.show();
+                    }
+
 
                 } else {
                     //first chk for TOKEN EXPIRE??
@@ -383,8 +449,8 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
     public void state_selection(View view) {
-
-        if (state_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
+       fetch_states();
+       /* if (state_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_1.this);
             dialog.setContentView(R.layout.list_view);
@@ -425,7 +491,7 @@ public class personal_info_1 extends AppCompatActivity {
                             break;
                         }
                     }
-                    fetch_cities();
+                  //  fetch_cities();
 
                 }
             });
@@ -440,7 +506,7 @@ public class personal_info_1 extends AppCompatActivity {
 
 
             dialog.show();
-        }
+        }*/
     }
 
     private void fetch_cities() {
@@ -476,6 +542,52 @@ public class personal_info_1 extends AppCompatActivity {
                             //Log.i("TAG", state_name[i]);
                         }
 
+                        if (city_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+                            dialog = new Dialog(personal_info_1.this);
+                            dialog.setContentView(R.layout.list_view);
+                            dialog.setTitle("Select City");
+                            dialog.setCancelable(true);
+                            dialog.setCanceledOnTouchOutside(true);
+                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+                            //prepare a list view in dialog
+                            listview_city = dialog.findViewById(R.id.dialogList);
+                            TextView t = dialog.findViewById(R.id.title_textView);
+                            t.setText("Please select City");
+
+
+                            //String[] aray = {"rohn0", "fdad", "aqwe"};
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, city_name);
+                            listview_city.setAdapter(adapter);
+                            listview_city.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                    selected_city = parent.getItemAtPosition(position).toString();
+
+                                    if (!prev_selected_city.equals(selected_city)) {
+                                        prev_selected_city = selected_city;
+
+                                        edittext_zip_info.setHint("Select Zip Code");
+
+                                    }
+                                    textview_city_info.setText(selected_city);
+                                    dialog.dismiss();
+                                }
+                            });
+                            View view1 = dialog.findViewById(R.id.cancel_btn);
+                            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                            cancel_btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            dialog.show();
+                        }
+
 
                     } else {
                         //first chk for TOKEN EXPIRE??
@@ -509,7 +621,8 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
     public void city_selection(View view) {
-        if (city_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
+        fetch_cities();
+        /*if (city_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
             dialog = new Dialog(personal_info_1.this);
             dialog.setContentView(R.layout.list_view);
@@ -553,95 +666,13 @@ public class personal_info_1 extends AppCompatActivity {
                 }
             });
             dialog.show();
-        }
+        }*/
     }
 
-    public void zip_selection() {
-
-    }
-
-   /* public void zip_selection(View view) {
-        if (!selected_city.equals("not_selected")) {
-            try {
-                Intent i = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(this);
-                startActivityForResult(i, 2);
-
-
-            } catch (
-                    GooglePlayServicesRepairableException e) {
-                // TODO: Handle the error.
-            } catch (
-                    GooglePlayServicesNotAvailableException e) {
-                // TODO: Handle the error.
-            }
-
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(getApplicationContext(), data);
-
-                try {
-                    getPlaceInfo(place.getLatLng().latitude, place.getLatLng().longitude);
-                    if (city_for_validation.equals(selected_city)) {
-                        textView_zip_info.setText(selected_zip);        //selected zip was set in getPlaceInfo function
-                    } else {
-                        Build_alert_dialog(this, "Incorrect Details", "Selected city not matched with the zip code");
-                        textView_zip_info.setText("Select Zip Code");
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Log.i("TAG", "Place: " + place.getName());
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
-                Log.i("TAG", status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
-
-    }
-
-    private void getPlaceInfo(double lat, double lon) {
-        Geocoder mGeocoder = new Geocoder(this);
-        List<Address> addresses = null;
-        try {
-            addresses = mGeocoder.getFromLocation(lat, lon, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (addresses.get(0).getPostalCode() != null) {
-            selected_zip = addresses.get(0).getPostalCode();
-            Log.d("ZIP CODE", selected_zip);
-        }
-
-        if (addresses.get(0).getLocality() != null) {
-            city_for_validation = addresses.get(0).getLocality();
-            Log.d("CITY", city_for_validation);
-        }
-    }
-
-    */
 
     public void next_activity(View view) {
         //put validation of all fields before submitting
         //send answers in intent to second activity
-        take_zip_code();
-
-
-    }
-
-    private void take_zip_code() {
         if (!selected_city.equals("not_selected")) {
 
             //taking user input of Zip code
@@ -718,8 +749,9 @@ public class personal_info_1 extends AppCompatActivity {
         } else {
             Build_alert_dialog(personal_info_1.this, "Incomplete Information", "Please Select The City First!");
         }
-    }
 
+
+    }
 
     @Override
     public void onBackPressed() {

@@ -1,14 +1,13 @@
 package com.rohan.myvoice;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.SignIn.Data;
 import com.rohan.myvoice.pojo.SignIn.Login;
 
@@ -37,6 +37,7 @@ public class SignIn extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     public static String DEVICE_ID;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -66,6 +67,12 @@ public class SignIn extends AppCompatActivity {
         password = findViewById(R.id.password);
 
         DEVICE_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Set up progress before call
+        progressDialog = new ProgressDialog(SignIn.this);
+        progressDialog.setMax(100);
+        progressDialog.setMessage("Fetching Data");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 
     }
@@ -111,13 +118,20 @@ public class SignIn extends AppCompatActivity {
         /**
          * Calling JSON
          */
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
         String FcmToken = pref.getString("fcm_token", null);
-        Call<Login> call = api.getLoginJason(email, pass, FcmToken,"android", DEVICE_ID);
+        Call<Login> call = api.getLoginJason(email, pass, FcmToken, "android", DEVICE_ID);
+
+        progressDialog.show();
 
         call.enqueue(new Callback<Login>() {
             @Override
             public void onResponse(Call<Login> call, Response<Login> response) {
-
+                progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     LOGIN_STATUS = response.body().getStatus();                 //getStatus method in POJO class
                     //Toast.makeText(SignIn.this, LOGIN_STATUS, Toast.LENGTH_SHORT).show();
@@ -142,8 +156,8 @@ public class SignIn extends AppCompatActivity {
 
                     //token used also in ApiService Interface
 
-
-                    if (country_details == null) {//checking whether the user details is filled or not
+                    Boolean is_complete = response.body().getData().getProfile().getIsComplete();
+                    if (!is_complete) {//checking whether the user details is filled or not
 
                             /*user has not filled details yet so in get started activity
                               user will fill it first*/
@@ -158,7 +172,7 @@ public class SignIn extends AppCompatActivity {
                     } else {
                         //REDIRECT USER TO THE MAIN DASHBOARD
                         Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
-
+                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
 
                     }
                     //end of coding of succes login
@@ -189,7 +203,7 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onFailure(Call<Login> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(SignIn.this,t.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignIn.this, t.toString(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
 

@@ -8,6 +8,7 @@ import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
+import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
 
 import java.util.Map;
@@ -76,5 +77,17 @@ public interface ApiService {
     Call<Zip> getZipJason(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                           @Field("country") String country, @Field("state") String state,
                           @Field("city") String city, @Field("zipcode") String zipcode);
+
+    @POST("mobileapp/api/v1/user/profile/update/")
+    @FormUrlEncoded
+    Call<UpdateProfile> getUpdateProfileJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                             @Field("zipcode") String zipcode, @Field("country") String country,
+                                             @Field("state") String state, @Field("city") String city,
+                                             @Field("education") String education, @Field("gender") String gender,
+                                             @Field("dob") String dob, @Field("nosurveysperday") String nosurveysperday,
+                                             @Field("income") String income,
+                                             @Field("DeviceToken") String DeviceToken, @Field("Source") String Source,
+                                             @Field("device_id") String device_id, @Field("is_pushnotification") String is_pushnotification,
+                                             @Field("is_complete") String is_complete);
 
 }

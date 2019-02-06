@@ -17,7 +17,7 @@
             android:name=".Dashboard"
             android:theme="@style/CustomTheme"></activity>
         <activity
-            android:name=".permission_screen"
+            android:name=".preference"
             android:theme="@style/CustomTheme" />
         <activity
             android:name=".MainActivity"

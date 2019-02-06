@@ -32,24 +32,20 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
 
-        SharedPreferences.Editor editor = pref.edit();
 
-        if (!(PublicClass.FCM_TOKEN.equals("") || PublicClass.FCM_TOKEN != null)) {
-            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
-        }
-
-
-        // startActivity(new Intent(this, permission_screen.class));
+        // startActivity(new Intent(this, preference.class));
         //If user is already logged in then send him to getstarted activity and user has filled
         //all the detils already then from getStarted,send him to the main Dashboard activity
         //Boolean temp = pref.getBoolean("isUserLoggedIn", false);
-        String country_details = pref.getString("country_code", "not given");
+        String IsComplete = pref.getString("IsComplete", "false");
+
         if (pref.getBoolean("isUserLoggedIn", false)) {
-            if (!country_details.equals("not given")) {
-                startActivity(new Intent(this, Dashboard.class));
+
+            if (IsComplete.equals("false")) {
+                startActivity(new Intent(this, GetStarted.class));      //for filling the details
 
             } else {
-                startActivity(new Intent(this, GetStarted.class));
+                startActivity(new Intent(this, Dashboard.class));       //redirecting to main dashboard
             }
         }
 

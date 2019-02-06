@@ -44,7 +44,7 @@ public class GetStarted extends AppCompatActivity {
     }
 
     public void getstarted(View view) {
-        Intent i = new Intent(this, personal_info_1.class);
+        Intent i = new Intent(GetStarted.this, personal_info_1.class);
         startActivity(i);
         finish();
     }

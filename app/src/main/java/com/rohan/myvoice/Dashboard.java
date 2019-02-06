@@ -15,9 +15,6 @@ public class Dashboard extends AppCompatActivity {
       getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.dashboard_custom_action_bar);
-
-
-
     }
 
     @Override
