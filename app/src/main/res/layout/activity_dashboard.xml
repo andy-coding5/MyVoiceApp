@@ -10,8 +10,9 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="10dp"
+        android:elevation="2dp"
         app:contentInsetStart="0dp"
+        android:background="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -51,15 +52,15 @@
 
 
     <android.support.design.widget.BottomNavigationView
-
         android:id="@+id/bottom_navigation"
-        style="android:theme="
+        style="android:theme=Widget.BottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="45dp"
+        android:background="@android:color/white"
         android:theme="@style/Widget.BottomNavigationView"
+        app:elevation="8dp"
         app:itemIconTint="@drawable/tab_style"
         app:itemTextColor="@drawable/tab_style"
-
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
