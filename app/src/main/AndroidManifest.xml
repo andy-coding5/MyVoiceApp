@@ -13,9 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Dashboard"
-            android:theme="@style/CustomTheme"></activity>
+            android:theme="@style/dashBoardTheme"></activity>
         <activity
             android:name=".preference"
             android:theme="@style/CustomTheme" />

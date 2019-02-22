@@ -7,20 +7,63 @@
     tools:context=".Dashboard">
 
     <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:translationZ="5dp"
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="10dp"
+        app:contentInsetStart="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <!--
+        <ImageView
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back"
+            android:focusable="true" />
+
+            -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/quicksand_bold"
             android:gravity="center_horizontal"
             android:text="Dashboard"
-            android:fontFamily="@font/quicksand_bold"
+            android:textColor="@color/dark_blue"
             android:textSize="21sp" />
+
     </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+    </android.support.v4.view.ViewPager>
+
+
+    <android.support.design.widget.BottomNavigationView
+
+        android:id="@+id/bottom_navigation"
+        style="android:theme="
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:theme="@style/Widget.BottomNavigationView"
+        app:itemIconTint="@drawable/tab_style"
+        app:itemTextColor="@drawable/tab_style"
+
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_main" />
+
 </android.support.constraint.ConstraintLayout>

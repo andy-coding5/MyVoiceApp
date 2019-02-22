@@ -6,23 +6,24 @@
 
     <LinearLayout
         android:id="@+id/ll"
-        android:paddingTop="2dp"
-        android:paddingBottom="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:gravity="center_horizontal">
+        android:elevation="10dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="center_horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:text="DashBoard"
-            android:textSize="22sp" />
+            android:textColor="@color/dark_blue"
+            android:textSize="20sp" />
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

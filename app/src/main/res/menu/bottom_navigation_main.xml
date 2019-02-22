@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/icon_home"
+        android:title="Home"
+        />
+    <item
+        android:id="@+id/activity"
+        android:enabled="true"
+        android:icon="@drawable/icon_activity"
+        android:title="Activity" />
+    <item
+        android:id="@+id/invitations"
+        android:enabled="true"
+        android:icon="@drawable/icon_invitations"
+        android:title="invitations" />
+    <item
+        android:id="@+id/settings"
+        android:enabled="true"
+        android:icon="@drawable/icon_settings"
+        android:title="Settings" />
+</menu>
