@@ -11,22 +11,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/welcome_title"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/lighter_grey"
-            android:fontFamily="@font/quicksand_medium"
 
-            android:text="Welcome Rohan"
-            android:textAlignment="textStart"
-            android:textColor="@color/dark_blue"
-            android:textSize="30sp"
-
-
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/welcome_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fontFamily="@font/quicksand_medium"
+                android:gravity="center_vertical"
+                android:paddingLeft="16dp"
+                android:text="Welcome Rohan!"
+                android:textColor="@color/dark_blue"
+                android:textSize="28sp" />
+
+            <ImageView
+
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                android:padding="5dp"
+                android:src="@mipmap/ic_launcher_foreground" />
+        </LinearLayout>
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="Recent Survey"
+            android:textColor="@color/grey"
+            android:textSize="19sp"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     </android.support.constraint.ConstraintLayout>
 
