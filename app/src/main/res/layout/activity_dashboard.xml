@@ -31,8 +31,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/quicksand_bold"
             android:gravity="center_horizontal"
-            android:text="Dashboard"
-            android:textColor="@color/dark_blue"
+            android:text="Home"
+            android:textColor="@color/grey"
             android:textSize="21sp" />
 
     </android.support.v7.widget.Toolbar>
@@ -52,6 +52,7 @@
 
 
     <android.support.design.widget.BottomNavigationView
+        tools:override="true"
         android:id="@+id/bottom_navigation"
         style="android:theme=Widget.BottomNavigationView"
         android:layout_width="match_parent"
