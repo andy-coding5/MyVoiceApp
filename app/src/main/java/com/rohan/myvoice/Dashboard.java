@@ -1,54 +1,93 @@
 package com.rohan.myvoice;
 
-import android.support.design.widget.TabLayout;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+
+import com.rohan.myvoice.Fragments.ActivityFragment;
+import com.rohan.myvoice.Fragments.HomeFragment;
+import com.rohan.myvoice.Fragments.InvitationsFragment;
+import com.rohan.myvoice.Fragments.SettingsFragment;
 
 public class Dashboard extends AppCompatActivity {
-    private int[] navIcons;
-    private String[] navLabels;
-    // another resouces array for active state for the icon
-    private int[] navIconsActive;
+
 
     private ViewPager viewPager;
-    private TabLayout navigation;
+    private ViewPagerAdapter viewPagerAdapter;
+    private BottomNavigationView bottomNavigationView;
+    private FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-       /* getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.dashboard_custom_action_bar);*/
-
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        //  viewPager = findViewById(R.id.pager);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        frameLayout = findViewById(R.id.framelayout);
 
-        viewPager = findViewById(R.id.pager);
+       /* viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragments(new HomeFragment());
+        viewPagerAdapter.addFragments(new ActivityFragment());
+        viewPagerAdapter.addFragments(new InvitationsFragment());
+        viewPagerAdapter.addFragments(new SettingsFragment());
+
+        viewPager.setAdapter(viewPagerAdapter);*/
 
 
-        //navigation = findViewById(R.id.tabs);
-       // navigation.setupWithViewPager(viewPager);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment selectedFragment = null;
+                        switch (item.getItemId()) {
+                            case R.id.home:
+                                selectedFragment = new HomeFragment();
+                                break;
+                            case R.id.activity:
+                                selectedFragment = new ActivityFragment();
+                                break;
+                            case R.id.invitations:
+                                selectedFragment = new InvitationsFragment();
+                                break;
+                            case R.id.settings:
+                                selectedFragment = new SettingsFragment();
+                                break;
+                        }
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.framelayout, selectedFragment);
+                        transaction.commit();
+                        return true;
 
-       // navIcons = new int[]{R.drawable.icon_home, R.drawable.icon_activity, R.drawable.icon_profile, R.drawable.icon_settings};
-       // navLabels = new String[]{"Home", "Activity", "Profile", "Settings"};
-        // another resouces array for active state for the icon
-       // navIconsActive = new int[]{R.drawable.icon_active_home, R.drawable.icon_active_activity, R.drawable.icon_active_profile, R.drawable.icon_active_settings};
+                    }
+                });
+
+        //Manually displaying the first fragment - one time only
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.framelayout, new HomeFragment());
+        transaction.commit();
+
+
+        // viewPager.setOnTouchListener(new View.OnTouchListener() {
+       /* @Override
+        public boolean onTouch (View v, MotionEvent event){
+            return true;
+        }*/
+
 
     }
-
-
 
 
     @Override
@@ -57,7 +96,5 @@ public class Dashboard extends AppCompatActivity {
         finishAffinity();       //to completely close the entire application
 
         //ViewPager source with Tab activity view; like YouTube Application ..._RV
-
-
     }
 }
