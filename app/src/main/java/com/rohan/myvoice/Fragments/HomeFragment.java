@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -44,34 +47,36 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
-
-
     View v;
     private RecyclerView recyclerView;
     private RecyclerViewAdapeter recyclerViewAdapeter;
-    private List<ProjectDatum> survey_list;
+    private List<ProjectDatum> survey_list, new_survey_list;
     ApiService api;
     String api_key;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView empty_textview;
+
 
     public HomeFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_home, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
 
-
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
+        empty_textview = v.findViewById(R.id.empty_view);
         // Set up progress before call
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
-        progressDialog.setMessage("Fetching Data");
+        progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         return v;
@@ -85,7 +90,9 @@ public class HomeFragment extends Fragment {
         editor = pref.edit();
 
         api = RetroClient.getApiService();
-        Log.d("token","Token " + pref.getString("token", null));
+        TextView t = v.findViewById(R.id.welcome_title);
+        t.setText("Welcome " + pref.getString("username", "User") + "!");
+        Log.d("token", "Token " + pref.getString("token", null));
         update_token();
 
         /**
@@ -105,11 +112,19 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Survey> call, Response<Survey> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    survey_list = response.body().getProjectData();
-                    recyclerView = v.findViewById(R.id.recyclerView);
-                    recyclerViewAdapeter = new RecyclerViewAdapeter(getContext(), survey_list);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    recyclerView.setAdapter(recyclerViewAdapeter);
+                    if (response.body().getRequestcount().equals("0")) {
+                        mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                        empty_textview.setVisibility(View.VISIBLE);
+
+                    } else {
+                        survey_list = response.body().getProjectData();
+                        recyclerView = v.findViewById(R.id.recyclerView);
+                        recyclerViewAdapeter = new RecyclerViewAdapeter(getContext(), survey_list);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                                DividerItemDecoration.VERTICAL));
+                        recyclerView.setAdapter(recyclerViewAdapeter);
+                    }
 
                 } else {
                     update_token();
@@ -136,12 +151,67 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
+
+                //progressDialog.show();
+
+                call.enqueue(new Callback<Survey>() {
+                    @Override
+                    public void onResponse(Call<Survey> call, Response<Survey> response) {
+                        //progressDialog.dismiss();
+
+                        if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+
+                            if (response.body().getRequestcount().equals("0")) {
+                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                                empty_textview.setVisibility(View.VISIBLE);
+
+                            } else {
+
+                                recyclerViewAdapeter.notifyDataSetChanged();
+
+                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
+
+
+                        } else {
+                            update_token();
+
+                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                /* String status = jObjError.getString("detail");
+                                 */
+                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                                //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Survey> call, Throwable t) {
+                        //progressDialog.dismiss();
+                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                    }
+                });
+
+
+            }
+        });
+
 
     }
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
@@ -165,7 +235,7 @@ public class HomeFragment extends Fragment {
                     editor.putString("token", response.body().getData().getToken());
 
                     editor.commit();
-                    Log.d("token","Token " + pref.getString("token", null));
+                    Log.d("token", "Token " + pref.getString("token", null));
 
                     Map<String, ?> allEntries = pref.getAll();
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {

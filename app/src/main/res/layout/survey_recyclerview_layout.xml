@@ -3,33 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+    android:layout_height="wrap_content">
 
     <ImageView
 
         android:id="@+id/survey_img"
-        android:layout_width="0dp"
-        android:layout_height="94dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="263dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        android:layout_marginBottom="8dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/survey_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="Car Satisfaction Survey"
         android:textColor="#000"
         android:textSize="16sp"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintEnd_toStartOf="@+id/imageView2"
-        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/survey_img"
         app:layout_constraintTop_toTopOf="@+id/survey_img" />
 
@@ -37,7 +40,7 @@
         android:id="@+id/survey_company"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="Device Lee LLC."
         android:textColor="@color/grey"
@@ -49,10 +52,12 @@
         android:id="@+id/survey_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="Fabruary 15, 2019"
         android:textColor="@color/light_gery"
         android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/survey_company"
         app:layout_constraintTop_toBottomOf="@+id/survey_company" />
 
@@ -61,12 +66,11 @@
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/spinner_dropdown"
         android:tint="#000"
         app:layout_constraintBottom_toBottomOf="@+id/survey_img"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/survey_img"
         app:layout_constraintTop_toTopOf="@+id/survey_img"
         app:layout_constraintVertical_bias="0.485" />
 </android.support.constraint.ConstraintLayout>
