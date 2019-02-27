@@ -9,24 +9,24 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
-import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
+import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
-import com.rohan.myvoice.pojo.survey_details.ProjectDatum;
-import com.rohan.myvoice.pojo.survey_details.Survey;
+import com.rohan.myvoice.pojo.survey_questions_list.QuestionDatum;
+import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 
 import org.json.JSONObject;
 
@@ -42,36 +42,49 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeFragment extends Fragment {
+public class QuestionsListFragment extends Fragment {
+
     View v;
-    private RecyclerView recyclerView;
-    private RecyclerViewAdapterSurveyList recyclerViewAdapeter;
-    private List<ProjectDatum> survey_list, new_survey_list;
+    private ImageView logo;
+    private TextView question_title, empty_textview;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerViewAdapterQuestionList recyclerViewAdapeter;
+    private String q_id, c_logo, q_title;
+
     ApiService api;
     String api_key;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private TextView empty_textview;
+    private RecyclerView mRecyclerView;
 
+    private List<QuestionDatum> question_list;
 
-    public HomeFragment() {
+    public QuestionsListFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_home, container, false);
+        v = inflater.inflate(R.layout.fragment_questions_list, container, false);
+        logo = v.findViewById(R.id.company_logo);
+        question_title = v.findViewById(R.id.question_text);
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
         empty_textview = v.findViewById(R.id.empty_view);
-        // Set up progress before call
+
+        Bundle bundle = this.getArguments();
+        q_id = bundle.get("q_id").toString();
+        c_logo = bundle.get("logo").toString();
+        q_title = bundle.get("q_title").toString();
+
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
+
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
@@ -79,132 +92,77 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 
-        api = RetroClient.getApiService();
-        TextView t = v.findViewById(R.id.welcome_title);
-        t.setText("Welcome " + pref.getString("username", "User") + "!");
-        Log.d("token", "Token " + pref.getString("token", null));
-        update_token();
-
-        /**
-         * Calling JSON
-         */
-        //   String t = Token.token_string;
-
         api_key = getResources().getString(R.string.APIKEY);
 
+        api = RetroClient.getApiService();
 
-        Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
+        Glide.with(getActivity()).load(c_logo).into(logo);
+        question_title.setText(q_title);
+
+        Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
 
-        call.enqueue(new Callback<Survey>() {
+        call.enqueue(new Callback<QuestionList>() {
             @Override
-            public void onResponse(Call<Survey> call, Response<Survey> response) {
+            public void onResponse(Call<QuestionList> call, Response<QuestionList> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    if (response.body().getRequestcount().equals("0")) {
+                    if (response.body().getQuestionCount().equals("0")) {
                         mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
                         empty_textview.setVisibility(View.VISIBLE);
 
                     } else {
-                        survey_list = response.body().getProjectData();
-                        recyclerView = v.findViewById(R.id.recyclerView);
-                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getContext(), survey_list);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
-                                DividerItemDecoration.VERTICAL));
-                        recyclerView.setAdapter(recyclerViewAdapeter);
+                        question_list = response.body().getQuestionData();
+                        mRecyclerView = v.findViewById(R.id.swipeToRefresh);
+                        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getContext(), question_list);
+                        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        mRecyclerView.setAdapter(recyclerViewAdapeter);
                     }
-
                 } else {
-                    update_token();
 
-                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+
+                    // update_token();
+
+                    //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        if (jObjError.getString("message").equals("Questions not found")) {
+                            empty_textview.setVisibility(View.VISIBLE);
+                            mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                        }
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                        }
+
+                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
+
+
             }
 
             @Override
-            public void onFailure(Call<Survey> call, Throwable t) {
+            public void onFailure(Call<QuestionList> call, Throwable t) {
                 progressDialog.dismiss();
-                Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
-
-                //progressDialog.show();
-
-                call.enqueue(new Callback<Survey>() {
-                    @Override
-                    public void onResponse(Call<Survey> call, Response<Survey> response) {
-                        //progressDialog.dismiss();
-
-                        if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-
-                            if (response.body().getRequestcount().equals("0")) {
-                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
-                                empty_textview.setVisibility(View.VISIBLE);
-
-                            } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getContext(), survey_list);
-                                recyclerViewAdapeter.notifyDataSetChanged();
-
-                            }
-                            mSwipeRefreshLayout.setRefreshing(false);
-
-
-                        } else {
-                            update_token();
-
-                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                /* String status = jObjError.getString("detail");
-                                 */
-                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                                //Build_alert_dialog(getApplicationContext(), "Error", status);
-
-                            } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Survey> call, Throwable t) {
-                        //progressDialog.dismiss();
-                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
-                    }
-                });
-
-
-            }
-        });
-
 
     }
-
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -249,7 +207,7 @@ public class HomeFragment extends Fragment {
                         Build_alert_dialog(getActivity(), status, error_msg);
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -262,17 +220,5 @@ public class HomeFragment extends Fragment {
         });
 
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        progressDialog.dismiss();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        progressDialog.dismiss();
     }
 }

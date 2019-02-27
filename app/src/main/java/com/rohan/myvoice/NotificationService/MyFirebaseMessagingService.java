@@ -1,4 +1,4 @@
-package com.rohan.myvoice.Service;
+package com.rohan.myvoice.NotificationService;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

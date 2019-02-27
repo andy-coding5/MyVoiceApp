@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.rohan.myvoice.Fragments.ActivityFragment;
@@ -36,7 +34,7 @@ public class Dashboard extends AppCompatActivity {
 
         //  viewPager = findViewById(R.id.pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        frameLayout = findViewById(R.id.framelayout);
+        frameLayout = findViewById(R.id.framelayout_container);
 
        /* viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragments(new HomeFragment());
@@ -67,7 +65,7 @@ public class Dashboard extends AppCompatActivity {
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.framelayout, selectedFragment);
+                        transaction.replace(R.id.framelayout_container, selectedFragment);
                         transaction.commit();
                         return true;
 
@@ -76,7 +74,7 @@ public class Dashboard extends AppCompatActivity {
 
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.framelayout, new HomeFragment());
+        transaction.replace(R.id.framelayout_container, new HomeFragment());
         transaction.commit();
 
 
@@ -92,8 +90,13 @@ public class Dashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();       //to completely close the entire application
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+
+            super.onBackPressed();
+            finishAffinity();       //to completely close the entire application
+        }
 
         //ViewPager source with Tab activity view; like YouTube Application ..._RV
     }
