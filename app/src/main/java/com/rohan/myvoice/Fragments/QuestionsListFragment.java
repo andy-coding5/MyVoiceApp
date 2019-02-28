@@ -17,14 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
+import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.survey_details.Survey;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionDatum;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 
@@ -48,6 +51,7 @@ public class QuestionsListFragment extends Fragment {
     private ImageView logo;
     private TextView question_title, empty_textview;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView recyclerView;
     private RecyclerViewAdapterQuestionList recyclerViewAdapeter;
     private String q_id, c_logo, q_title;
 
@@ -76,6 +80,7 @@ public class QuestionsListFragment extends Fragment {
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
         empty_textview = v.findViewById(R.id.empty_view);
+        recyclerView = v.findViewById(R.id.recyclerView);
 
         Bundle bundle = this.getArguments();
         q_id = bundle.get("q_id").toString();
@@ -119,15 +124,13 @@ public class QuestionsListFragment extends Fragment {
                         empty_textview.setVisibility(View.VISIBLE);
 
                     } else {
+                        empty_textview.setVisibility(View.INVISIBLE);
                         question_list = response.body().getQuestionData();
-                        mRecyclerView = v.findViewById(R.id.swipeToRefresh);
                         recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getContext(), question_list);
-                        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        mRecyclerView.setAdapter(recyclerViewAdapeter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setAdapter(recyclerViewAdapeter);
                     }
                 } else {
-
-
                     // update_token();
 
                     //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
@@ -145,15 +148,12 @@ public class QuestionsListFragment extends Fragment {
                         }
 
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
-
-
             }
 
             @Override
@@ -162,6 +162,63 @@ public class QuestionsListFragment extends Fragment {
             }
         });
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null),q_id);
+
+                //progressDialog.show();
+
+                call.enqueue(new Callback<QuestionList>() {
+                    @Override
+                    public void onResponse(Call<QuestionList> call, Response<QuestionList> response) {
+                        //progressDialog.dismiss();
+
+                        if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+
+                            if (response.body().getQuestionCount().toString().equals("0")) {
+                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                                empty_textview.setVisibility(View.VISIBLE);
+
+                            } else {
+                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getContext(), question_list);
+                                recyclerViewAdapeter.notifyDataSetChanged();
+
+                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
+
+
+                        } else {
+                            //update_token();
+
+                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                /* String status = jObjError.getString("detail");
+                                 */
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token();
+                                }
+                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                                //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuestionList> call, Throwable t) {
+                        progressDialog.dismiss();
+                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                    }
+                });
+
+
+            }
+        });
     }
 
     public void update_token() {
@@ -207,7 +264,7 @@ public class QuestionsListFragment extends Fragment {
                         Build_alert_dialog(getActivity(), status, error_msg);
 
                     } catch (Exception e) {
-                       // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

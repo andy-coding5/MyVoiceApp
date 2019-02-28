@@ -1,12 +1,12 @@
 package com.rohan.myvoice;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -90,13 +90,10 @@ public class Dashboard extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
-        } else {
 
-            super.onBackPressed();
-            finishAffinity();       //to completely close the entire application
-        }
+        super.onBackPressed();
+        finishAffinity();       //to completely close the entire application
+
 
         //ViewPager source with Tab activity view; like YouTube Application ..._RV
     }

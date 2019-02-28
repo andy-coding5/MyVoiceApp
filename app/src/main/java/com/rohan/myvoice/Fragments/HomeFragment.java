@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment {
         TextView t = v.findViewById(R.id.welcome_title);
         t.setText("Welcome " + pref.getString("username", "User") + "!");
         Log.d("token", "Token " + pref.getString("token", null));
-        update_token();
+            update_token();
 
         /**
          * Calling JSON
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Survey> call, Response<Survey> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    if (response.body().getRequestcount().equals("0")) {
+                    if (response.body().getProjectData().size() == 0) {
                         mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
                         empty_textview.setVisibility(View.VISIBLE);
 
@@ -174,13 +174,16 @@ public class HomeFragment extends Fragment {
 
 
                         } else {
-                            update_token();
+                            //update_token();
 
                             Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 /* String status = jObjError.getString("detail");
                                  */
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token();
+                                }
                                 Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                                 //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -193,7 +196,7 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<Survey> call, Throwable t) {
-                        //progressDialog.dismiss();
+                        progressDialog.dismiss();
                         //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
