@@ -117,9 +117,10 @@ public class HomeFragment extends Fragment {
                         recyclerView = v.findViewById(R.id.recyclerView);
                         recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getContext(), survey_list);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
-                                DividerItemDecoration.VERTICAL));
+
                         recyclerView.setAdapter(recyclerViewAdapeter);
+                        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                DividerItemDecoration.VERTICAL));
                     }
 
                 } else {
