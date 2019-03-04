@@ -61,6 +61,12 @@ public class RecyclerViewAdapterSurveyList extends RecyclerView.Adapter<Recycler
     }
 
 
+    public void clearData() {
+
+
+        RecyclerViewAdapterSurveyList.this.notifyDataSetChanged(); // let your adapter know about the changes and reload view.
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageView;
@@ -73,7 +79,6 @@ public class RecyclerViewAdapterSurveyList extends RecyclerView.Adapter<Recycler
             title = itemView.findViewById(R.id.survey_title);
             company = itemView.findViewById(R.id.survey_company);
             date = itemView.findViewById(R.id.survey_date);
-
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

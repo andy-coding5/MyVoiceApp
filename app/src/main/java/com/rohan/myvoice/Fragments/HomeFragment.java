@@ -9,9 +9,11 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,8 +66,22 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (v != null) {
+            if (v.getParent() != null) {
+                ((ViewGroup) v.getParent()).removeView(v);
+            }
+            return v;
+        }
+
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
@@ -81,7 +97,7 @@ public class HomeFragment extends Fragment {
         editor = pref.edit();
 
         api = RetroClient.getApiService();
-        update_token();
+//        update_token();
         return v;
     }
 
@@ -92,15 +108,13 @@ public class HomeFragment extends Fragment {
         TextView t = v.findViewById(R.id.welcome_title);
         t.setText("Welcome " + pref.getString("username", "User") + "!");
         Log.d("token", "Token " + pref.getString("token", null));
-
-
         /**
          * Calling JSON
          */
         //   String t = Token.token_string;
 
         api_key = getResources().getString(R.string.APIKEY);
-
+        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -121,10 +135,20 @@ public class HomeFragment extends Fragment {
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
-                                recyclerViewAdapeter.notifyDataSetChanged();
+                                //survey_list.clear();
+                                //survey_list = response.body().getProjectData();
+                                if (survey_list != null) {
+                                    recyclerViewAdapeter.clearData();
+                                    /*survey_list = response.body().getProjectData();
+                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
+                                    recyclerViewAdapeter.notifyDataSetChanged();*/
+                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                                } else {
+                                    call_function();
+                                }
 
                             }
+
                             mSwipeRefreshLayout.setRefreshing(false);
 
 
@@ -155,14 +179,10 @@ public class HomeFragment extends Fragment {
                         //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
-
-
             }
         });
 
-
         call_function();
-
 
     }
 
@@ -183,7 +203,7 @@ public class HomeFragment extends Fragment {
                     } else {
                         survey_list = response.body().getProjectData();
                         recyclerView = v.findViewById(R.id.recyclerView);
-                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
+                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
                         recyclerView.setAdapter(recyclerViewAdapeter);
@@ -223,7 +243,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
@@ -234,7 +253,6 @@ public class HomeFragment extends Fragment {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
@@ -257,7 +275,6 @@ public class HomeFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
-
                     //call_api_coutry();
                 } else {
                     //but but i can access the error body here.,
@@ -266,7 +283,6 @@ public class HomeFragment extends Fragment {
                         String status = jObjError.getString("message");
                         String error_msg = jObjError.getJSONObject("data").getString("errors");
                         Build_alert_dialog(getActivity(), status, error_msg);
-
                     } catch (Exception e) {
                         Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }

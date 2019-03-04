@@ -27,8 +27,8 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+    /*    Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);*/
 
         //  viewPager = findViewById(R.id.pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -89,8 +89,16 @@ public class Dashboard extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        super.onBackPressed();
-        finishAffinity();       //to completely close the entire application
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            finishAffinity();       //to completely close the entire application
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
 
 
         //ViewPager source with Tab activity view; like YouTube Application ..._RV

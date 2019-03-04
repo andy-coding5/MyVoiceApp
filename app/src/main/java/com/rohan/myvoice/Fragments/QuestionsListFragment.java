@@ -9,17 +9,22 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.rohan.myvoice.Dashboard;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
@@ -74,6 +79,31 @@ public class QuestionsListFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_questions_list, container, false);
         logo = v.findViewById(R.id.company_logo);
         question_title = v.findViewById(R.id.question_text);
+
+
+        Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(mToolbar);
+
+
+        ImageView action_bar_back = v.findViewById(R.id.back_imagebutton);
+        action_bar_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Back Clicked", Toast.LENGTH_SHORT).show();
+                /*AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                Fragment myFragment = new HomeFragment();
+
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();*/
+
+                if (getFragmentManager().getBackStackEntryCount() != 0) {
+                    getFragmentManager().popBackStack();
+                }
+            }
+        });
+
+
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
@@ -97,6 +127,7 @@ public class QuestionsListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
@@ -163,7 +194,7 @@ public class QuestionsListFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null),q_id);
+                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
 
                 //progressDialog.show();
 
@@ -273,7 +304,6 @@ public class QuestionsListFragment extends Fragment {
                 //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
-
 
     }
 }
