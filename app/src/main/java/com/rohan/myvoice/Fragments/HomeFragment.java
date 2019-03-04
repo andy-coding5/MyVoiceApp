@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,11 +77,12 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_home, container, false);
 
-
+/*
         Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);
+*/
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
 
@@ -112,6 +114,12 @@ public class HomeFragment extends Fragment {
          * Calling JSON
          */
         //   String t = Token.token_string;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        TextView tt = toolbar.findViewById(R.id.title_text);
+        tt.setText("Home");
+
+        ImageView back = toolbar.findViewById(R.id.back_image);
+        back.setVisibility(View.INVISIBLE);
 
         api_key = getResources().getString(R.string.APIKEY);
         recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);

@@ -81,22 +81,20 @@ public class QuestionsListFragment extends Fragment {
         question_title = v.findViewById(R.id.question_text);
 
 
-        Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
+       /* Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbar);
+        activity.setSupportActionBar(mToolbar);*/
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
+        TextView t = toolbar.findViewById(R.id.title_text);
+        t.setText("Question");
 
-        ImageView action_bar_back = v.findViewById(R.id.back_imagebutton);
-        action_bar_back.setOnClickListener(new View.OnClickListener() {
+        ImageView back = toolbar.findViewById(R.id.back_image);
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getActivity(), "Back Clicked", Toast.LENGTH_SHORT).show();
-                /*AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                Fragment myFragment = new HomeFragment();
-
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();*/
-
                 if (getFragmentManager().getBackStackEntryCount() != 0) {
                     getFragmentManager().popBackStack();
                 }
