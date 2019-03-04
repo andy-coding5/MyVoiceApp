@@ -23,11 +23,9 @@ import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
-import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
-import com.rohan.myvoice.pojo.survey_details.Survey;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionDatum;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 
@@ -126,7 +124,7 @@ public class QuestionsListFragment extends Fragment {
                     } else {
                         empty_textview.setVisibility(View.INVISIBLE);
                         question_list = response.body().getQuestionData();
-                        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getContext(), question_list);
+                        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity().getApplicationContext(), question_list);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         recyclerView.setAdapter(recyclerViewAdapeter);
                     }
@@ -181,7 +179,7 @@ public class QuestionsListFragment extends Fragment {
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getContext(), question_list);
+                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity().getApplicationContext(), question_list);
                                 recyclerViewAdapeter.notifyDataSetChanged();
 
                             }
@@ -233,7 +231,7 @@ public class QuestionsListFragment extends Fragment {
         }
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
-                "android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
 

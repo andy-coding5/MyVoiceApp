@@ -19,8 +19,6 @@ import com.rohan.myvoice.Fragments.SettingsFragment;
 public class Dashboard extends AppCompatActivity {
 
 
-    private ViewPager viewPager;
-    private ViewPagerAdapter viewPagerAdapter;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
 

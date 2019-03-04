@@ -30,6 +30,7 @@ import com.rohan.myvoice.pojo.survey_details.Survey;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class HomeFragment extends Fragment {
     View v;
     private RecyclerView recyclerView;
     private RecyclerViewAdapterSurveyList recyclerViewAdapeter;
-    private List<ProjectDatum> survey_list, new_survey_list;
+    private List<ProjectDatum> survey_list;
     ApiService api;
     String api_key;
     private SharedPreferences pref;
@@ -75,6 +76,12 @@ public class HomeFragment extends Fragment {
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
+
+        pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
+        editor = pref.edit();
+
+        api = RetroClient.getApiService();
+        update_token();
         return v;
     }
 
@@ -82,14 +89,10 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
-        editor = pref.edit();
-
-        api = RetroClient.getApiService();
         TextView t = v.findViewById(R.id.welcome_title);
         t.setText("Welcome " + pref.getString("username", "User") + "!");
         Log.d("token", "Token " + pref.getString("token", null));
-            update_token();
+
 
         /**
          * Calling JSON
@@ -98,55 +101,6 @@ public class HomeFragment extends Fragment {
 
         api_key = getResources().getString(R.string.APIKEY);
 
-
-        Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
-
-        progressDialog.show();
-
-        call.enqueue(new Callback<Survey>() {
-            @Override
-            public void onResponse(Call<Survey> call, Response<Survey> response) {
-                progressDialog.dismiss();
-                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    if (response.body().getProjectData().size() == 0) {
-                        mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
-                        empty_textview.setVisibility(View.VISIBLE);
-
-                    } else {
-                        survey_list = response.body().getProjectData();
-                        recyclerView = v.findViewById(R.id.recyclerView);
-                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getContext(), survey_list);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-                        recyclerView.setAdapter(recyclerViewAdapeter);
-                        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                                DividerItemDecoration.VERTICAL));
-                    }
-
-                } else {
-                    update_token();
-
-                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        /* String status = jObjError.getString("detail");
-                         */
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                        //Build_alert_dialog(getApplicationContext(), "Error", status);
-
-                    } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Survey> call, Throwable t) {
-                progressDialog.dismiss();
-                Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
-            }
-        });
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -167,7 +121,7 @@ public class HomeFragment extends Fragment {
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getContext(), survey_list);
+                                recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
                                 recyclerViewAdapeter.notifyDataSetChanged();
 
                             }
@@ -207,6 +161,66 @@ public class HomeFragment extends Fragment {
         });
 
 
+        call_function();
+
+
+    }
+
+    private void call_function() {
+        Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
+
+        progressDialog.show();
+
+        call.enqueue(new Callback<Survey>() {
+            @Override
+            public void onResponse(Call<Survey> call, Response<Survey> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+                    if (response.body().getProjectData().size() == 0) {
+                        mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                        empty_textview.setVisibility(View.VISIBLE);
+
+                    } else {
+                        survey_list = response.body().getProjectData();
+                        recyclerView = v.findViewById(R.id.recyclerView);
+                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+                        recyclerView.setAdapter(recyclerViewAdapeter);
+                        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                DividerItemDecoration.VERTICAL));
+                    }
+
+                } else {
+                    // update_token();
+
+                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            call_function();
+
+                        }
+                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                        //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Survey> call, Throwable t) {
+                progressDialog.dismiss();
+                Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
     }
 
 
@@ -221,8 +235,9 @@ public class HomeFragment extends Fragment {
             editor.commit();
         }
 
+
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
-                "android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
 
@@ -271,12 +286,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        progressDialog.dismiss();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        progressDialog.dismiss();
     }
 }
