@@ -9,6 +9,7 @@ import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
+import com.rohan.myvoice.pojo.survey_question_detail.QuestionDetail;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
@@ -101,6 +102,8 @@ public interface ApiService {
     @GET("mobileapp/api/v1/data/questions/get/list/{path}")
     Call<QuestionList> getSurveyQuestionsListJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
-
+    //clicked questions details
+    @GET("mobileapp/api/v1/data/questions/get/{path}/details")
+    Call<QuestionDetail> getSurveyQuestionsDetailsJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
 }

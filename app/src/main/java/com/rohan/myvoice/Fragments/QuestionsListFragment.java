@@ -88,7 +88,7 @@ public class QuestionsListFragment extends Fragment {
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
         TextView t = toolbar.findViewById(R.id.title_text);
-        t.setText("Question");
+        t.setText("Questions");
 
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.VISIBLE);
