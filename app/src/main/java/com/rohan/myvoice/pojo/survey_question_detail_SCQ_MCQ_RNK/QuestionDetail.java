@@ -1,4 +1,4 @@
-package com.rohan.myvoice.pojo.survey_question_detail;
+package com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

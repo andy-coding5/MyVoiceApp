@@ -9,19 +9,15 @@ import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
-import com.rohan.myvoice.pojo.survey_question_detail.QuestionDetail;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
-
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -102,8 +98,17 @@ public interface ApiService {
     @GET("mobileapp/api/v1/data/questions/get/list/{path}")
     Call<QuestionList> getSurveyQuestionsListJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
-    //clicked questions details
+    //clicked questions detail  --  SCQ and MCQ and RNK
     @GET("mobileapp/api/v1/data/questions/get/{path}/details")
-    Call<QuestionDetail> getSurveyQuestionsDetailsJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+    Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> getSCQ_MCQ_RNKJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
+
+    //clicked questions detail  --  OTT
+    @GET("mobileapp/api/v1/data/questions/get/{path}/details")
+    Call<com.rohan.myvoice.pojo.survey_question_detail_OTT.QuestionDetail> getOTTJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+
+
+    //clicked questions detail  --  SCL
+    @GET("mobileapp/api/v1/data/questions/get/{path}/details")
+    Call<com.rohan.myvoice.pojo.survey_question_detail_SCL.QuestionDetail> getSCLJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 }

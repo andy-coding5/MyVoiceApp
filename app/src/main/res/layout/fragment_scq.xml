@@ -2,85 +2,108 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+    android:id="@+id/frameLayoutSCQ"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.QuestionTypes_Fragments.SCQFragment">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-        <ScrollView
-            android:id="@+id/scrollView2"
+        <TextView
+            android:id="@+id/full_que"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/quicksand_medium"
+            android:text="Question detail here"
+            android:textAllCaps="false"
+            android:textColor="@color/grey"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/full_que"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/quicksand_medium"
-                android:text="Question detail here"
-                android:textAllCaps="false"
-                android:textColor="@color/grey"
-                android:textSize="22sp" />
-        </ScrollView>
-
-
-        <FrameLayout
-            android:id="@+id/frame_view"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:maxHeight="150dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView2">
-
-            <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxHeight="150dp"
-                android:src="@mipmap/ic_launcher_foreground"
-                android:visibility="gone" />
-
-            <WebView
-                android:id="@+id/web_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxHeight="150dp"
-                android:visibility="gone" />
-
-        </FrameLayout>
-
-
-        <ListView
-            android:id="@+id/options_list"
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/button3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frame_view"
-            app:layout_constraintVertical_bias="0.725"></ListView>
+            app:layout_constraintTop_toBottomOf="@+id/full_que">
+
+            <LinearLayout
+                android:id="@+id/inside_ll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/frame_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="16dp"
+                    android:maxHeight="150dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:maxHeight="150dp"
+                        android:scaleType="fitCenter"
+                        android:src="@mipmap/ic_launcher_foreground"
+                        android:visibility="gone" />
+
+                    <WebView
+                        android:id="@+id/web_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:maxHeight="150dp"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+
+                <!--
+                <ListView
+                    android:id="@+id/options_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:scrollbars="none"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/frame_view"
+                    app:layout_constraintVertical_bias="0.0">
+
+                </ListView>
+
+                -->
+            </LinearLayout>
+        </ScrollView>
+
 
         <Button
             android:id="@+id/button3"
@@ -88,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/button_background"
             android:fontFamily="@font/quicksand_bold"
 

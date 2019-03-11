@@ -28,6 +28,7 @@ import com.rohan.myvoice.Dashboard;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
+import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -85,6 +86,33 @@ public class QuestionsListFragment extends Fragment {
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(mToolbar);*/
+
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
+
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
+        empty_textview = v.findViewById(R.id.empty_view);
+
+        Bundle bundle = this.getArguments();
+        q_id = bundle.get("q_id").toString();
+        c_logo = bundle.get("logo").toString();
+        q_title = bundle.get("q_title").toString();
+
+        progressDialog = new ProgressDialog(this.getActivity());
+        progressDialog.setMax(100);
+
+        progressDialog.setMessage("Loading");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+
+
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
         TextView t = toolbar.findViewById(R.id.title_text);
@@ -101,32 +129,6 @@ public class QuestionsListFragment extends Fragment {
             }
         });
 
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
-
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
-        empty_textview = v.findViewById(R.id.empty_view);
-        recyclerView = v.findViewById(R.id.recyclerView);
-
-        Bundle bundle = this.getArguments();
-        q_id = bundle.get("q_id").toString();
-        c_logo = bundle.get("logo").toString();
-        q_title = bundle.get("q_title").toString();
-
-        progressDialog = new ProgressDialog(this.getActivity());
-        progressDialog.setMax(100);
-
-        progressDialog.setMessage("Loading");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-        return v;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 
@@ -136,6 +138,7 @@ public class QuestionsListFragment extends Fragment {
 
         Glide.with(getActivity()).load(c_logo).into(logo);
         question_title.setText(q_title);
+        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
 
         Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
 
@@ -153,7 +156,8 @@ public class QuestionsListFragment extends Fragment {
                     } else {
                         empty_textview.setVisibility(View.INVISIBLE);
                         question_list = response.body().getQuestionData();
-                        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity().getApplicationContext(), question_list);
+                        recyclerView = v.findViewById(R.id.recyclerView);
+                        recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         recyclerView.setAdapter(recyclerViewAdapeter);
                     }
@@ -208,7 +212,7 @@ public class QuestionsListFragment extends Fragment {
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity().getApplicationContext(), question_list);
+                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
                                 recyclerViewAdapeter.notifyDataSetChanged();
 
                             }

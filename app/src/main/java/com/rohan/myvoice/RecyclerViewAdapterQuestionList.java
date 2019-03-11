@@ -24,15 +24,16 @@ import java.util.List;
 public class RecyclerViewAdapterQuestionList extends RecyclerView.Adapter<RecyclerViewAdapterQuestionList.MyViewHolder> {
     Context mcontext;
     List<QuestionDatum> mdata;
-    RecyclerViewAdapterQuestionList.OnItemClickListener mListener;
+    OnItemClickListener mListener;
 
 
     public interface OnItemClickListener {
         void onItemClick(int Position);
     }
 
-    public void setOnItemClickListener(RecyclerViewAdapterQuestionList.OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mListener = listener;
+
     }
 
     public RecyclerViewAdapterQuestionList(Context mcontext, List<QuestionDatum> mdata) {

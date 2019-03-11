@@ -121,12 +121,15 @@ public class HomeFragment extends Fragment {
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.INVISIBLE);
 
+        recyclerView = v.findViewById(R.id.recyclerView);
+
         api_key = getResources().getString(R.string.APIKEY);
         recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                recyclerView.setVisibility(View.VISIBLE);
                 Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
 
                 //progressDialog.show();
@@ -138,8 +141,8 @@ public class HomeFragment extends Fragment {
 
                         if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
 
-                            if (response.body().getRequestcount().equals("0")) {
-                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                            if (response.body().getProjectData().size() == 0) {
+                                recyclerView.setVisibility(View.INVISIBLE);
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
@@ -184,13 +187,15 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onFailure(Call<Survey> call, Throwable t) {
                         progressDialog.dismiss();
-                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
             }
         });
 
         call_function();
+
 
     }
 
@@ -209,8 +214,9 @@ public class HomeFragment extends Fragment {
                         empty_textview.setVisibility(View.VISIBLE);
 
                     } else {
+                        empty_textview.setVisibility(View.INVISIBLE);
                         survey_list = response.body().getProjectData();
-                        recyclerView = v.findViewById(R.id.recyclerView);
+
                         recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -222,7 +228,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     // update_token();
 
-                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
@@ -232,7 +238,7 @@ public class HomeFragment extends Fragment {
                             call_function();
 
                         }
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
@@ -292,7 +298,7 @@ public class HomeFragment extends Fragment {
                         String error_msg = jObjError.getJSONObject("data").getString("errors");
                         Build_alert_dialog(getActivity(), status, error_msg);
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

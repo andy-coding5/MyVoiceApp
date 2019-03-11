@@ -4,10 +4,14 @@ package com.rohan.myvoice.Fragments.QuestionTypes_Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +19,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -25,10 +38,11 @@ import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
-import com.rohan.myvoice.pojo.survey_question_detail.QuestionDetail;
+import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Option;
 
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -40,9 +54,10 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class SCQFragment extends Fragment {
 
-
+    private static String MEDIA = "false";
     View v;
     private String q_id, q_text;
     private ProgressDialog progressDialog;
@@ -51,6 +66,8 @@ public class SCQFragment extends Fragment {
     private FrameLayout frameLayout;
     private ImageView imageView;
     private WebView webView;
+
+    private ListView option_list_view;
 
     ApiService api;
     String api_key;
@@ -90,6 +107,9 @@ public class SCQFragment extends Fragment {
         imageView = v.findViewById(R.id.image_view);
         webView = v.findViewById(R.id.web_view);
 
+        //option_list_view = v.findViewById(R.id.options_list);
+
+
         //intially visibility is gone
         frameLayout.setVisibility(View.INVISIBLE);
         imageView.setVisibility(View.INVISIBLE);
@@ -120,49 +140,125 @@ public class SCQFragment extends Fragment {
 
         api = RetroClient.getApiService();
 
-        textView.setText(q_text);
 
-        Call<QuestionDetail> call = api.getSurveyQuestionsDetailsJson(api_key, "Token " + pref.getString("token", null), q_id);
+        textView.setText(q_text);       //q_text
+        Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call = api.getSCQ_MCQ_RNKJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
 
-        call.enqueue(new Callback<QuestionDetail>() {
+        call.enqueue(new Callback<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail>() {
             @Override
-            public void onResponse(Call<QuestionDetail> call, Response<QuestionDetail> response) {
+            public void onResponse(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Response<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Sucess")) {
+                    if (response.body().getData().getQuestionIsMedia()) {
 
-                    //checking and loading for image audio or video
-                    if (!"".equals(response.body().getData().getQuestionMedia())) {
-                        frameLayout.setVisibility(View.VISIBLE);
-                        imageView.setVisibility(View.VISIBLE);
-                        Glide.with(v).load(response.body().getData().getQuestionMedia()).into(imageView);
-                    } else if (!"".equals(response.body().getData().getQuestionVideoMedia())) {
-                        frameLayout.setVisibility(View.VISIBLE);
-                        webView.setVisibility(View.VISIBLE);
-                        // Enable Javascript
-                        WebSettings webSettings = webView.getSettings();
-                        webSettings.setJavaScriptEnabled(true);
-                        webView.loadUrl(response.body().getData().getQuestionVideoMedia());
-                    } else if (!"".equals(response.body().getData().getQuestionAudioMedia())) {
-                        frameLayout.setVisibility(View.VISIBLE);
-                        webView.setVisibility(View.VISIBLE);
-                        // Enable Javascript
-                        WebSettings webSettings = webView.getSettings();
-                        webSettings.setJavaScriptEnabled(true);
-                        webView.loadUrl(response.body().getData().getQuestionAudioMedia());
+                        MEDIA = "true";
+                        //checking and loading for image audio or video
+                        if (!"".equals(response.body().getData().getQuestionMedia())) {
+                            frameLayout.setVisibility(View.VISIBLE);
+                            imageView.setVisibility(View.VISIBLE);
+                            Glide.with(v).load(response.body().getData().getQuestionMedia()).into(imageView);
+                        } else if (!"".equals(response.body().getData().getQuestionVideoMedia())) {
+                            frameLayout.setVisibility(View.VISIBLE);
+                            webView.setVisibility(View.VISIBLE);
+                            // Enable Javascript
+                            WebSettings webSettings = webView.getSettings();
+                            webSettings.setJavaScriptEnabled(true);
+                            webView.loadUrl(response.body().getData().getQuestionVideoMedia());
+                        } else if (!"".equals(response.body().getData().getQuestionAudioMedia())) {
+                            frameLayout.setVisibility(View.VISIBLE);
+                            webView.setVisibility(View.VISIBLE);
+                            // Enable Javascript
+                            WebSettings webSettings = webView.getSettings();
+                            webSettings.setJavaScriptEnabled(true);
+                            webView.loadUrl(response.body().getData().getQuestionAudioMedia());
+                        }
                     }
+
+
+                 /*   ConstraintLayout constraintLayout = new ConstraintLayout(getActivity());
+                    ConstraintSet constraintSet = new ConstraintSet();
+                    constraintSet.clone(constraintLayout);
+
+                    if (MEDIA.equals("false")) {
+                        constraintSet.connect(R.id.radiogroup, ConstraintSet.TOP, R.id.inside_constriant_layout, ConstraintSet.BOTTOM, 8);
+                    } else {
+                        constraintSet.connect(R.id.radiogroup, ConstraintSet.TOP, R.id.frame_view, ConstraintSet.BOTTOM, 8);
+                    }*/
+
 
                     //loading the options
 
-                    
+                    //design dynamic buttons and add them into the constrain view resides inside the scroll view
+                    List<Option> op = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
+                    LinearLayout ll = v.findViewById(R.id.inside_ll);
+
+
+                    RadioGroup rg = (RadioGroup) new RadioGroup(getActivity());
+                    RadioButton[] rb = new RadioButton[10];
+
+                    RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
+
+                    for (int i = 0; i < op.size(); i++) {
+                        rb[i] = new RadioButton(getActivity());
+                        rb[i].setTag("rb" + i);             //rb1, rb2, rb3, etc...
+
+                        rb[i].setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                        params.setMargins(2, 10, 2, 10);
+                        rb[i].setLayoutParams(params);
+                        rb[i].setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
+
+                        Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
+                        rb[i].setTypeface(fonts);
+                        rb[i].setTextColor(getActivity().getResources().getColor(R.color.grey));
+                        rb[i].setTextSize(15);
+
+                        rb[i].setButtonTintList(
+                                ContextCompat.getColorStateList(getActivity(),
+                                        R.color.grey));
+
+                        rg.addView(rb[i]);
+
+                        rb[i].setText(op.get(i).getValue());
+                    }
+
+                   /* for (int i = 1; i < 10; i++) {
+                        rb[i] = new RadioButton(getActivity());
+                        rb[i].setTag("rb" + i);             //rb1, rb2, rb3, etc...
+
+                        rb[i].setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+                        params.setMargins(2, 16, 2, 0);
+                        rb[i].setLayoutParams(params);
+                        rb[i].setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
+
+                        rg.addView(rb[i]);
+
+                        rb[i].setText("sdfsfdsfdsfsdfsdfgsdfsdfsdfsdfsdfsdfsd sdf s");
+                    }*/
+
+
+                    ll.addView(rg);
+
+                    //op is a list question option key and value of that option
+
+                   /* ArrayAdapter<Option> adapter = new ArrayAdapter<Option>(v.getContext(), R.layout.scq_items, R.id.option_text, op);
+                    option_list_view.setAdapter(adapter);
+
+                    option_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getActivity(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });*/
 
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
+                        //call update token function only when Error is "Invalid token" received form the server
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                         }
@@ -174,7 +270,7 @@ public class SCQFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<QuestionDetail> call, Throwable t) {
+            public void onFailure(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Throwable t) {
                 progressDialog.dismiss();
             }
         });
@@ -215,7 +311,7 @@ public class SCQFragment extends Fragment {
 
                     //call_api_coutry();
                 } else {
-                    //but but i can access the error body here.,
+                    //but but i can access the error body here.
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         String status = jObjError.getString("message");
