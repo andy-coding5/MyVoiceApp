@@ -176,30 +176,37 @@ public class SCQFragment extends Fragment {
                         }
                     }
 
-
-                 /*   ConstraintLayout constraintLayout = new ConstraintLayout(getActivity());
-                    ConstraintSet constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    if (MEDIA.equals("false")) {
-                        constraintSet.connect(R.id.radiogroup, ConstraintSet.TOP, R.id.inside_constriant_layout, ConstraintSet.BOTTOM, 8);
-                    } else {
-                        constraintSet.connect(R.id.radiogroup, ConstraintSet.TOP, R.id.frame_view, ConstraintSet.BOTTOM, 8);
-                    }*/
-
-
                     //loading the options
 
                     //design dynamic buttons and add them into the constrain view resides inside the scroll view
-                    List<Option> op = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
+                    final List<Option> op = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
                     LinearLayout ll = v.findViewById(R.id.inside_ll);
-
-
-                    RadioGroup rg = (RadioGroup) new RadioGroup(getActivity());
-                    RadioButton[] rb = new RadioButton[10];
+                    
+                    final RadioGroup rg = (RadioGroup) new RadioGroup(getActivity());
+                    final RadioButton[] rb = new RadioButton[10];
 
                     RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
+
+                    rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                        @Override
+                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                            // checkedId is the RadioButton selected
+                            RadioButton rb_selected = v.findViewById(checkedId);
+                            Typeface fonts_1 = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_medium.ttf");
+                            rb_selected.setTypeface(fonts_1);
+                            Log.d("selected", rb_selected.getText().toString());
+                            for (int i = 0; i < op.size(); i++) {
+                                if (rb[i] != rb_selected) {
+                                    Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
+                                    rb[i].setTypeface(fonts);
+                                }
+                            }
+
+                        }
+
+                    });
 
                     for (int i = 0; i < op.size(); i++) {
                         rb[i] = new RadioButton(getActivity());
@@ -222,36 +229,9 @@ public class SCQFragment extends Fragment {
                         rg.addView(rb[i]);
 
                         rb[i].setText(op.get(i).getValue());
+
                     }
-
-                   /* for (int i = 1; i < 10; i++) {
-                        rb[i] = new RadioButton(getActivity());
-                        rb[i].setTag("rb" + i);             //rb1, rb2, rb3, etc...
-
-                        rb[i].setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                        params.setMargins(2, 16, 2, 0);
-                        rb[i].setLayoutParams(params);
-                        rb[i].setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
-
-                        rg.addView(rb[i]);
-
-                        rb[i].setText("sdfsfdsfdsfsdfsdfgsdfsdfsdfsdfsdfsdfsd sdf s");
-                    }*/
-
-
                     ll.addView(rg);
-
-                    //op is a list question option key and value of that option
-
-                   /* ArrayAdapter<Option> adapter = new ArrayAdapter<Option>(v.getContext(), R.layout.scq_items, R.id.option_text, op);
-                    option_list_view.setAdapter(adapter);
-
-                    option_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getActivity(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    });*/
 
                 } else {
                     try {
