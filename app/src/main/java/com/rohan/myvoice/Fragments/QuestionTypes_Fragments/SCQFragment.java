@@ -182,7 +182,10 @@ public class SCQFragment extends Fragment {
                     final List<Option> op = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
                     LinearLayout ll = v.findViewById(R.id.inside_ll);
-                    
+                    if(MEDIA.equals("false")){
+                        ll.removeAllViews();
+                    }
+
                     final RadioGroup rg = (RadioGroup) new RadioGroup(getActivity());
                     final RadioButton[] rb = new RadioButton[10];
 
