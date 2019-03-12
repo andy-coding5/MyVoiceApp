@@ -182,7 +182,7 @@ public class SCQFragment extends Fragment {
                     final List<Option> op = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
                     LinearLayout ll = v.findViewById(R.id.inside_ll);
-                    if(MEDIA.equals("false")){
+                    if (MEDIA.equals("false")) {
                         ll.removeAllViews();
                     }
 
@@ -206,9 +206,7 @@ public class SCQFragment extends Fragment {
                                     rb[i].setTypeface(fonts);
                                 }
                             }
-
                         }
-
                     });
 
                     for (int i = 0; i < op.size(); i++) {

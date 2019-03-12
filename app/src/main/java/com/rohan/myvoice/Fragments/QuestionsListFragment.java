@@ -103,9 +103,6 @@ public class QuestionsListFragment extends Fragment {
 
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-
-
-
         return v;
     }
 
@@ -152,7 +149,6 @@ public class QuestionsListFragment extends Fragment {
                     if (response.body().getQuestionCount().equals("0")) {
                         mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
                         empty_textview.setVisibility(View.VISIBLE);
-
                     } else {
                         empty_textview.setVisibility(View.INVISIBLE);
                         question_list = response.body().getQuestionData();
@@ -162,8 +158,7 @@ public class QuestionsListFragment extends Fragment {
                         recyclerView.setAdapter(recyclerViewAdapeter);
                     }
                 } else {
-                    // update_token();
-
+                    //update_token();
                     //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
