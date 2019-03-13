@@ -173,9 +173,6 @@ public class QuestionsListFragment extends Fragment {
                             update_token();
                         }
 
-                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-                        //Build_alert_dialog(getApplicationContext(), "Error", status);
-
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -215,7 +212,6 @@ public class QuestionsListFragment extends Fragment {
                             }
                             mSwipeRefreshLayout.setRefreshing(false);
 
-
                         } else {
                             //update_token();
 
@@ -243,8 +239,6 @@ public class QuestionsListFragment extends Fragment {
                         //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
-
-
             }
         });
     }

@@ -66,7 +66,7 @@ public class MCQFragment extends Fragment {
     private ImageView imageView;
     private WebView webView;
 
-    private ListView option_list_view;
+    private Button submit_button;
 
     ApiService api;
     String api_key;
@@ -110,7 +110,7 @@ public class MCQFragment extends Fragment {
         frameLayout = v.findViewById(R.id.frame_view);
         imageView = v.findViewById(R.id.image_view);
         webView = v.findViewById(R.id.web_view);
-
+        submit_button = v.findViewById(R.id.submit_btn);
         //option_list_view = v.findViewById(R.id.options_list);
 
 
@@ -143,7 +143,6 @@ public class MCQFragment extends Fragment {
         api_key = getResources().getString(R.string.APIKEY);
 
         api = RetroClient.getApiService();
-
 
         textView.setText(q_text);       //q_text
         selected_options = new ArrayList<>();
@@ -200,24 +199,25 @@ public class MCQFragment extends Fragment {
 
                     for (int i = 0; i < cb.length; i++) {
 
-                        checkBox = new CheckBox(getActivity());
-                        checkBox.setId(i);
-                        checkBox.setText(op.get(i).getValue());
-                        checkBox.setTextColor(getActivity().getResources().getColor(R.color.grey));
-                        checkBox.setTextSize(15);
-                        checkBox.setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
+                        cb[i] = new CheckBox(getActivity());
+                        cb[i].setTag(op.get(i).getKey());
+                        cb[i].setText(op.get(i).getValue());
+                        cb[i].setTextColor(getActivity().getResources().getColor(R.color.grey));
+                        cb[i].setTextSize(15);
+                        cb[i].setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
 
                         Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
-                        checkBox.setTypeface(fonts);
+                        cb[i].setTypeface(fonts);
                         //checkBox.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                         params.setMargins(2, 10, 2, 10);
-                        checkBox.setOnClickListener(getOnClickDoSomething(checkBox));
+                        cb[i].setOnClickListener(getOnClickDoSomething(cb[i]));
 
-                        checkBox.setButtonTintList(
+                        cb[i].setButtonTintList(
                                 ContextCompat.getColorStateList(getActivity(),
                                         R.color.grey));
-                        ll.addView(checkBox, params);
+                        ll.addView(cb[i], params);
                     }
+                    //final List<Option> op2 = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
 
                 } else {
@@ -242,6 +242,14 @@ public class MCQFragment extends Fragment {
                 progressDialog.dismiss();
             }
         });
+
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("check_box", selected_options.toString());
+            }
+        });
     }
 
     private View.OnClickListener getOnClickDoSomething(final CheckBox checkBox) {
@@ -254,11 +262,18 @@ public class MCQFragment extends Fragment {
                 checkBox.setTypeface(fonts_1);
                 checkBox.getId();
 
+                //first clear all the options
+                selected_options.clear();
 
                 for (int i = 0; i < cb.length; i++) {
-                    if (!checkBox.isChecked()) {
+
+                    if (cb[i].isChecked()) {
+                        selected_options.add(cb[i].getTag().toString());
+                    } else {
+                        //add the selected options here
                         Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
-                        checkBox.setTypeface(fonts);
+                        cb[i].setTypeface(fonts);
+
                     }
                 }
 
@@ -266,7 +281,7 @@ public class MCQFragment extends Fragment {
         };
 
     }
-    
+
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
