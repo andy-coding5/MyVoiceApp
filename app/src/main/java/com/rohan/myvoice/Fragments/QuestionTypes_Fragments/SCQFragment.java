@@ -67,12 +67,13 @@ public class SCQFragment extends Fragment {
     private ImageView imageView;
     private WebView webView;
 
-    private ListView option_list_view;
+    private Button submit_button;
 
     ApiService api;
     String api_key;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private String selected_radio_button;
 
     public SCQFragment() {
         // Required empty public constructor
@@ -114,6 +115,8 @@ public class SCQFragment extends Fragment {
         frameLayout.setVisibility(View.INVISIBLE);
         imageView.setVisibility(View.INVISIBLE);
         webView.setVisibility(View.INVISIBLE);
+
+        submit_button = v.findViewById(R.id.submit_btn);
 
         Bundle bundle = this.getArguments();
         q_id = bundle.get("q_id").toString();
@@ -200,10 +203,15 @@ public class SCQFragment extends Fragment {
                             Typeface fonts_1 = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_medium.ttf");
                             rb_selected.setTypeface(fonts_1);
                             Log.d("selected", rb_selected.getText().toString());
+
                             for (int i = 0; i < op.size(); i++) {
                                 if (rb[i] != rb_selected) {
                                     Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
                                     rb[i].setTypeface(fonts);
+                                }
+                                else{
+                                    selected_radio_button = rb[i].getTag().toString();
+
                                 }
                             }
                         }
@@ -211,7 +219,7 @@ public class SCQFragment extends Fragment {
 
                     for (int i = 0; i < op.size(); i++) {
                         rb[i] = new RadioButton(getActivity());
-                        rb[i].setTag("rb" + i);             //rb1, rb2, rb3, etc...
+                        rb[i].setTag(op.get(i).getKey());       //for getting key later when radio button is selected
 
                         rb[i].setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
                         params.setMargins(2, 10, 2, 10);
@@ -253,6 +261,15 @@ public class SCQFragment extends Fragment {
             @Override
             public void onFailure(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Throwable t) {
                 progressDialog.dismiss();
+            }
+        });
+
+
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("radio_btn", selected_radio_button);
             }
         });
     }
