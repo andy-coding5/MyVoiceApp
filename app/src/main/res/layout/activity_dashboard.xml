@@ -82,6 +82,7 @@
         android:layout_height="45dp"
         android:background="@android:color/white"
         android:theme="@style/Widget.BottomNavigationView"
+
         app:elevation="8dp"
         app:itemIconTint="@drawable/tab_style"
         app:itemTextColor="@drawable/tab_style"

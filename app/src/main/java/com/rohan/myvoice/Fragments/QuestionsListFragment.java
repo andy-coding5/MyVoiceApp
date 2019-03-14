@@ -236,6 +236,8 @@ public class QuestionsListFragment extends Fragment {
                     @Override
                     public void onFailure(Call<QuestionList> call, Throwable t) {
                         progressDialog.dismiss();
+                        mSwipeRefreshLayout.setRefreshing(false);
+
                         //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });

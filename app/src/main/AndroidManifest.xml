@@ -16,7 +16,8 @@
 
         <activity
             android:name=".Dashboard"
-            android:theme="@style/dashBoardTheme" />
+            android:theme="@style/dashBoardTheme"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".preference"

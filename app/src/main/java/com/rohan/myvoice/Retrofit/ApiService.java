@@ -103,9 +103,9 @@ public interface ApiService {
     Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> getSCQ_MCQ_RNKJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
 
-    //clicked questions detail  --  OTT
+    //clicked questions detail  --  OTT and OTN
     @GET("mobileapp/api/v1/data/questions/get/{path}/details")
-    Call<com.rohan.myvoice.pojo.survey_question_detail_OTT.QuestionDetail> getOTTJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+    Call<com.rohan.myvoice.pojo.survey_question_detail_OTT_OTN.QuestionDetail> getOTT_OTNJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
 
     //clicked questions detail  --  SCL
