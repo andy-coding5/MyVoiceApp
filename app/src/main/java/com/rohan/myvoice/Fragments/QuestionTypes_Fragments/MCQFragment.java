@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -169,6 +170,7 @@ public class MCQFragment extends Fragment {
                             webView.setVisibility(View.VISIBLE);
                             // Enable Javascript
                             WebSettings webSettings = webView.getSettings();
+                            webView.setWebViewClient(new WebViewClient());      //to load content inside the webview rather then open it in browser
                             webSettings.setJavaScriptEnabled(true);
                             webView.loadUrl(response.body().getData().getQuestionVideoMedia());
                         } else if (!"".equals(response.body().getData().getQuestionAudioMedia())) {
@@ -177,6 +179,7 @@ public class MCQFragment extends Fragment {
                             // Enable Javascript
                             WebSettings webSettings = webView.getSettings();
                             webSettings.setJavaScriptEnabled(true);
+                            webView.setWebViewClient(new WebViewClient());      //to load content inside the webview rather then open it in browser
                             webView.loadUrl(response.body().getData().getQuestionAudioMedia());
                         }
                     }
@@ -276,10 +279,8 @@ public class MCQFragment extends Fragment {
 
                     }
                 }
-
             }
         };
-
     }
 
     public void update_token() {

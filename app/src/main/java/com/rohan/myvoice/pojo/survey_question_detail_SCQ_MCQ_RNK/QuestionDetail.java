@@ -37,6 +37,7 @@ public class QuestionDetail {
 
     public void setData(Data data) {
         this.data = data;
+
     }
 
 }

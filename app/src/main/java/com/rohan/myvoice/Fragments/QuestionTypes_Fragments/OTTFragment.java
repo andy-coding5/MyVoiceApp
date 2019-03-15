@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -163,6 +164,7 @@ public class OTTFragment extends Fragment {
                             // Enable Javascript
                             WebSettings webSettings = webView.getSettings();
                             webSettings.setJavaScriptEnabled(true);
+                            webView.setWebViewClient(new WebViewClient());      //to load content inside the webview rather then open it in browser
                             webView.loadUrl(response.body().getData().getQuestionVideoMedia());
                         } else if (!"".equals(response.body().getData().getQuestionAudioMedia())) {
                             frameLayout.setVisibility(View.VISIBLE);
@@ -170,6 +172,7 @@ public class OTTFragment extends Fragment {
                             // Enable Javascript
                             WebSettings webSettings = webView.getSettings();
                             webSettings.setJavaScriptEnabled(true);
+                            webView.setWebViewClient(new WebViewClient());      //to load content inside the webview rather then open it in browser
                             webView.loadUrl(response.body().getData().getQuestionAudioMedia());
                         }
                     } else {

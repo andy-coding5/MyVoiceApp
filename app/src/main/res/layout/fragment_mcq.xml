@@ -54,10 +54,10 @@
                 <FrameLayout
                     android:id="@+id/frame_view"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="200dp"
 
                     android:layout_marginTop="16dp"
-                    android:maxHeight="150dp"
+                    android:maxHeight="200dp"
                     android:visibility="gone">
 
                     <ImageView
@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:adjustViewBounds="true"
-                        android:maxHeight="150dp"
+                        android:maxHeight="200dp"
                         android:scaleType="fitCenter"
                         android:src="@mipmap/ic_launcher_foreground"
                         android:visibility="gone" />
@@ -74,7 +74,7 @@
                         android:id="@+id/web_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:maxHeight="150dp"
+                        android:maxHeight="200dp"
                         android:visibility="gone" />
 
                 </FrameLayout>

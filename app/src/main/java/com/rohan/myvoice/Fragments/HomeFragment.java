@@ -148,12 +148,9 @@ public class HomeFragment extends Fragment {
                                 //survey_list.clear();
                                 //survey_list = response.body().getProjectData();
                                 if (survey_list != null) {
-
-                                    recyclerView.setAdapter(null);
-                                    recyclerView.setLayoutManager(null);
-                                    recyclerView.setAdapter(new RecyclerViewAdapterSurveyList(getActivity(), survey_list));
-                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                    recyclerViewAdapeter.notifyDataSetChanged();
+                                    survey_list = response.body().getProjectData();
+                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                                    recyclerView.setAdapter(recyclerViewAdapeter);
 
                                 } else {
                                     call_function();
@@ -167,7 +164,8 @@ public class HomeFragment extends Fragment {
                         } else {
                             //update_token();
 
-                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            mSwipeRefreshLayout.setRefreshing(false);
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 /* String status = jObjError.getString("detail");
@@ -175,13 +173,20 @@ public class HomeFragment extends Fragment {
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
                                 }
-                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                                if (response.body().getMessage().equals("Survey not found")) {
+                                    recyclerView.setVisibility(View.INVISIBLE);
+
+                                    empty_textview.setVisibility(View.VISIBLE);
+                                }
+
+                                //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                                 //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                             } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
+
                         }
                     }
 
@@ -238,12 +243,17 @@ public class HomeFragment extends Fragment {
                             update_token();
                             call_function();
                         }
+                        if (response.body().getMessage().equals("Survey not found")) {
+                            recyclerView.setVisibility(View.INVISIBLE);
+
+                            empty_textview.setVisibility(View.VISIBLE);
+                        }
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

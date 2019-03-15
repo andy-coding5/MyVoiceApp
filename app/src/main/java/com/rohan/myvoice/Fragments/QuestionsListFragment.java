@@ -137,6 +137,73 @@ public class QuestionsListFragment extends Fragment {
         question_title.setText(q_title);
         recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
 
+        call_question_fun();
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
+
+                //progressDialog.show();
+
+                call.enqueue(new Callback<QuestionList>() {
+                    @Override
+                    public void onResponse(Call<QuestionList> call, Response<QuestionList> response) {
+                        //progressDialog.dismiss();
+
+                        if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+
+                            if (response.body().getQuestionCount().toString().equals("0")) {
+                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                                empty_textview.setVisibility(View.VISIBLE);
+
+                            } else {
+                                if (question_list != null) {
+                                    question_list = response.body().getQuestionData();
+                                    recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
+                                    recyclerView.setAdapter(recyclerViewAdapeter);
+                                    //recyclerViewAdapeter.notifyDataSetChanged();
+                                } else {
+                                    call_question_fun();
+                                }
+
+                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
+
+                        } else {
+                            //update_token();
+
+                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                /* String status = jObjError.getString("detail");
+                                 */
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token();
+                                }
+                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                                //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<QuestionList> call, Throwable t) {
+                        progressDialog.dismiss();
+                        mSwipeRefreshLayout.setRefreshing(false);
+
+                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                    }
+                });
+            }
+        });
+    }
+
+    public void call_question_fun() {
         Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
@@ -186,66 +253,8 @@ public class QuestionsListFragment extends Fragment {
                 Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
-
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
-
-                //progressDialog.show();
-
-                call.enqueue(new Callback<QuestionList>() {
-                    @Override
-                    public void onResponse(Call<QuestionList> call, Response<QuestionList> response) {
-                        //progressDialog.dismiss();
-
-                        if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-
-                            if (response.body().getQuestionCount().toString().equals("0")) {
-                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
-                                empty_textview.setVisibility(View.VISIBLE);
-
-                            } else {
-                                recyclerView.setAdapter(null);
-                                recyclerView.setLayoutManager(null);
-                                recyclerView.setAdapter(new RecyclerViewAdapterQuestionList(getActivity(), question_list));
-                                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                recyclerViewAdapeter.notifyDataSetChanged();
-                            }
-                            mSwipeRefreshLayout.setRefreshing(false);
-
-                        } else {
-                            //update_token();
-
-                            Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                /* String status = jObjError.getString("detail");
-                                 */
-                                if (jObjError.getString("detail").equals("Invalid Token")) {
-                                    update_token();
-                                }
-                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                                //Build_alert_dialog(getApplicationContext(), "Error", status);
-
-                            } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<QuestionList> call, Throwable t) {
-                        progressDialog.dismiss();
-                        mSwipeRefreshLayout.setRefreshing(false);
-
-                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
-                    }
-                });
-            }
-        });
     }
+
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
