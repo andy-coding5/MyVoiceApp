@@ -1,4 +1,4 @@
-package com.rohan.myvoice.pojo.survey_question_detail_OTT_OTN;
+package com.rohan.myvoice.pojo.survey_question_detail_OTT;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
+import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
 import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -58,7 +59,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView empty_textview;
-
+    int count = 1;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -131,9 +132,7 @@ public class HomeFragment extends Fragment {
             public void onRefresh() {
                 recyclerView.setVisibility(View.VISIBLE);
                 Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
-
                 //progressDialog.show();
-
                 call.enqueue(new Callback<Survey>() {
                     @Override
                     public void onResponse(Call<Survey> call, Response<Survey> response) {
@@ -149,11 +148,13 @@ public class HomeFragment extends Fragment {
                                 //survey_list.clear();
                                 //survey_list = response.body().getProjectData();
                                 if (survey_list != null) {
-                                    recyclerViewAdapeter.clearData();
-                                    /*survey_list = response.body().getProjectData();
-                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity().getApplicationContext(), survey_list);
-                                    recyclerViewAdapeter.notifyDataSetChanged();*/
-                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+
+                                    recyclerView.setAdapter(null);
+                                    recyclerView.setLayoutManager(null);
+                                    recyclerView.setAdapter(new RecyclerViewAdapterSurveyList(getActivity(), survey_list));
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                    recyclerViewAdapeter.notifyDataSetChanged();
+
                                 } else {
                                     call_function();
                                 }
@@ -201,7 +202,7 @@ public class HomeFragment extends Fragment {
 
     private void call_function() {
         Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
-
+        Log.d("token_detail", "used for server list: " + pref.getString("token", null));
         progressDialog.show();
 
         call.enqueue(new Callback<Survey>() {
@@ -236,7 +237,6 @@ public class HomeFragment extends Fragment {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                             call_function();
-
                         }
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
@@ -270,7 +270,7 @@ public class HomeFragment extends Fragment {
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
-
+        Log.d("update_token", "login called");
         progressDialog.show();
 
         call.enqueue(new Callback<Login>() {
@@ -283,7 +283,7 @@ public class HomeFragment extends Fragment {
                     editor.putString("token", response.body().getData().getToken());
 
                     editor.commit();
-                    Log.d("token", "Token " + pref.getString("token", null));
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
 
                     Map<String, ?> allEntries = pref.getAll();
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {

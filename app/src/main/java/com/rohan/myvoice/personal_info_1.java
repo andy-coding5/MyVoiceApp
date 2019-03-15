@@ -114,7 +114,7 @@ public class personal_info_1 extends AppCompatActivity {
          * Calling JSON
          */
         //   String t = Token.token_string;
-        update_token();
+        //update_token();
         api_key = getResources().getString(R.string.APIKEY);
 
 
@@ -136,8 +136,8 @@ public class personal_info_1 extends AppCompatActivity {
             editor.commit();
         }
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Log.d("update_token", "login called");
         progressDialog.show();
 
         call.enqueue(new Callback<Login>() {
@@ -150,6 +150,7 @@ public class personal_info_1 extends AppCompatActivity {
                     editor.putString("token", response.body().getData().getToken());
 
                     editor.commit();
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
 
                     Map<String, ?> allEntries = pref.getAll();
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -181,12 +182,11 @@ public class personal_info_1 extends AppCompatActivity {
 
     }
 
-    public void country_selection(View view) {             //dialog of country selection
+    public void country_selection(final View view) {             //dialog of country selection
         //CALL
 
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
-
-
+        Log.d("token_detail", "used for country: "+ pref.getString("token", null));
         // show it
         progressDialog.show();
 
@@ -202,6 +202,8 @@ public class personal_info_1 extends AppCompatActivity {
 
                     List<CountryList> country_obj_list = response.body().getData().getCountryList();
                     //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
+
+                    Log.d("country", response.toString());
                     country_map = new HashMap<>();
 
 
@@ -224,13 +226,72 @@ public class personal_info_1 extends AppCompatActivity {
                         Log.i("TAG", country_name[i]);
                     }
 
+
+                    if (country_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+                        dialog = new Dialog(personal_info_1.this);
+                        dialog.setContentView(R.layout.list_view);
+                        dialog.setTitle("Select Country");
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+                        //prepare a list view in dialog
+                        listview_country = dialog.findViewById(R.id.dialogList);
+
+
+                        //String[] aray = {"rohn0", "fdad", "aqwe"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, country_name);
+                        listview_country.setAdapter(adapter);
+
+
+                        listview_country.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                view.setSelected(true);
+                                selected_country = parent.getItemAtPosition(position).toString();
+
+                                if (!prev_selected_country.equals(selected_country)) {
+                                    prev_selected_country = selected_country;
+                                    textview_state_info.setText("Select State");
+
+                                }
+                                textview_country_info.setText(selected_country);
+
+                                dialog.dismiss();
+
+                                //remove these if not works
+                                for (Map.Entry entry : country_map.entrySet()) {
+                                    if (selected_country.equals(entry.getValue())) {
+                                        country_code = entry.getKey().toString();
+                                        break;
+                                    }
+                                }
+
+                            }
+                        });
+
+
+                        View view1 = dialog.findViewById(R.id.cancel_btn);
+                        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                        cancel_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dialog.show();
+                    }
                     //String[] c = {"orhan", "vachhani", "sdadas", "asd"};
 
 
                 } else {
                     //first chk for TOKEN EXPIRE??
                     //calling a function
-                    update_token();
 
 
                     Toast.makeText(personal_info_1.this, "response not received", Toast.LENGTH_SHORT).show();
@@ -238,6 +299,10 @@ public class personal_info_1 extends AppCompatActivity {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            country_selection(view);
+                        }
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -260,71 +325,12 @@ public class personal_info_1 extends AppCompatActivity {
         });
 
 
-        if (country_name_list.size() != 0) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
-
-            dialog = new Dialog(personal_info_1.this);
-            dialog.setContentView(R.layout.list_view);
-            dialog.setTitle("Select Country");
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-
-            //prepare a list view in dialog
-            listview_country = dialog.findViewById(R.id.dialogList);
-
-
-            //String[] aray = {"rohn0", "fdad", "aqwe"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, country_name);
-            listview_country.setAdapter(adapter);
-
-
-            listview_country.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                    view.setSelected(true);
-                    selected_country = parent.getItemAtPosition(position).toString();
-
-                    if (!prev_selected_country.equals(selected_country)) {
-                        prev_selected_country = selected_country;
-                        textview_state_info.setText("Select State");
-
-                    }
-                    textview_country_info.setText(selected_country);
-
-                    dialog.dismiss();
-
-                    //remove these if not works
-                    for (Map.Entry entry : country_map.entrySet()) {
-                        if (selected_country.equals(entry.getValue())) {
-                            country_code = entry.getKey().toString();
-                            break;
-                        }
-                    }
-
-                }
-            });
-
-
-            View view1 = dialog.findViewById(R.id.cancel_btn);
-            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
-            cancel_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            dialog.show();
-        }
     }
 
     private void fetch_states() {
 
         Call<States> call = api.getStateJson(api_key, "Token " + pref.getString("token", null), country_code);
-
+        Log.d("token_detail", "used for state: "+pref.getString("token", null));
         // show it
         progressDialog.show();
 
@@ -337,6 +343,7 @@ public class personal_info_1 extends AppCompatActivity {
 
                     List<StateList> state_obj_list = response.body().getData().getStateList();
                     //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
+                    Log.d("state", response.body().getData().getStateList().toString());
                     state_map = new HashMap<>();
 
 
@@ -420,13 +427,17 @@ public class personal_info_1 extends AppCompatActivity {
 
                 } else {
                     //first chk for TOKEN EXPIRE??
-                    update_token();
+
                     //calling a function
 
 
                     Toast.makeText(personal_info_1.this, "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            fetch_states();
+                        }
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -514,7 +525,7 @@ public class personal_info_1 extends AppCompatActivity {
 
         if (state_name_list.size() != 0) {
             Call<Cities> call = api.getCityJson(api_key, "Token " + pref.getString("token", null), country_code, state_code);
-
+            Log.d("token_detail","used for cities: "+ pref.getString("token", null));
             progressDialog.show();
 
             call.enqueue(new Callback<Cities>() {
@@ -592,13 +603,17 @@ public class personal_info_1 extends AppCompatActivity {
 
                     } else {
                         //first chk for TOKEN EXPIRE??
-                        update_token();
+                        //update_token();
                         //calling a function
 
 
                         Toast.makeText(personal_info_1.this, "response not received", Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+                                fetch_cities();
+                            }
                             Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                             //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -671,7 +686,7 @@ public class personal_info_1 extends AppCompatActivity {
     }
 
 
-    public void next_activity(View view) {
+    public void next_activity(final View view) {
         //put validation of all fields before submitting
         //send answers in intent to second activity
         if (!selected_city.equals("not_selected")) {
@@ -682,7 +697,7 @@ public class personal_info_1 extends AppCompatActivity {
             //call API for validation
 
             Call<Zip> c = api.getZipJason(api_key, "Token " + pref.getString("token", null), country_code, state_code, selected_city, s);
-
+            Log.d("token_detail", "used for next button in pref 1: "+pref.getString("token", null));
             progressDialog.show();
 
 
@@ -725,12 +740,13 @@ public class personal_info_1 extends AppCompatActivity {
                     } else {
                         //first chk for TOKEN EXPIRE??
                         //calling a function
-                        update_token();
-
                         Toast.makeText(personal_info_1.this, "response not received", Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            String status = jObjError.getString("detail");
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+                                next_activity(view);
+                            }
 
                             Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
                             //Build_alert_dialog(getApplicationContext(), "Error", status);

@@ -30,7 +30,7 @@ import com.bumptech.glide.Glide;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.pojo.survey_question_detail_OTT_OTN.QuestionDetail;
+import com.rohan.myvoice.pojo.survey_question_detail_OTT.QuestionDetail;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class OTTFragment extends Fragment {
     private String q_id, q_text, response_text = "";
     private ProgressDialog progressDialog;
 
-    private TextView textView, response;
+    private TextView textView, response_text_view;
     private FrameLayout frameLayout;
     private ImageView imageView;
     private WebView webView;
@@ -58,6 +58,7 @@ public class OTTFragment extends Fragment {
     private ImageButton mic_image;
 
     private Button submit_button;
+    private static int MAX_SIZE = 100;
     private final static int RESULT_SPEECH = 100;
     ApiService api;
     String api_key;
@@ -100,7 +101,7 @@ public class OTTFragment extends Fragment {
         webView = v.findViewById(R.id.web_view);
         submit_button = v.findViewById(R.id.submit_btn);
 
-        response = v.findViewById(R.id.response_text);
+        response_text_view = v.findViewById(R.id.response_text);
 
         mic_image = v.findViewById(R.id.mic_img);
         //option_list_view = v.findViewById(R.id.options_list);
@@ -139,7 +140,7 @@ public class OTTFragment extends Fragment {
 
         textView.setText(q_text);       //q_text
 
-        Call<QuestionDetail> call = api.getOTT_OTNJson(api_key, "Token " + pref.getString("token", null), q_id);
+        Call<QuestionDetail> call = api.getOTTJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
 
@@ -182,14 +183,11 @@ public class OTTFragment extends Fragment {
                         constraintSet.connect(mic_image.getId(), constraintSet.TOP, textView.getId(), constraintSet.BOTTOM, 8);
 
                         constraintSet.applyTo(constraintLayout);
-
                     }
-
+                    MAX_SIZE = Integer.parseInt(response.body().getData().getQuestionOptions().getMAXLength());
+                    response_text_view.setMaxLines(MAX_SIZE);
                     //question is now load comopletely and user can now type or speak for enter his response in the edittext of response.
-
                 }
-
-
             }
 
             @Override
@@ -227,9 +225,10 @@ public class OTTFragment extends Fragment {
 
                 //submit only if response is not null
                 if (!"".equals(response_text)) {
-                    response_text = response.getText().toString();
+                    response_text = response_text_view.getText().toString();
                     Log.d("ott_response", response_text);
                     //submit logic here
+
                 } else {
                     Log.d("ott_response", "empty response");
                 }
@@ -252,7 +251,7 @@ public class OTTFragment extends Fragment {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     response_text = text.get(0);
-                    response.append(response_text);
+                    response_text_view.setText(response_text);
                     mic_image.setImageResource(R.drawable.mic);
                 }
                 break;

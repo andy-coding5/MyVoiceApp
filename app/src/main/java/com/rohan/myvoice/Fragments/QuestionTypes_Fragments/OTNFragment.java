@@ -31,7 +31,7 @@ import com.bumptech.glide.Glide;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.pojo.survey_question_detail_OTT_OTN.QuestionDetail;
+import com.rohan.myvoice.pojo.survey_question_detail_OTN.QuestionDetail;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ public class OTNFragment extends Fragment {
     private String q_id, q_text, response_text = "";
     private ProgressDialog progressDialog;
 
-    private TextView textView, response;
+    private TextView textView, response_text_view;
     private FrameLayout frameLayout;
     private ImageView imageView;
     private WebView webView;
@@ -59,6 +59,9 @@ public class OTNFragment extends Fragment {
     private ImageButton mic_image;
 
     private Button submit_button;
+
+    private static int MAX_SIZE = 100;
+    private static int MAX_VALUE, MIN_VALUE;
     private final static int RESULT_SPEECH = 100;
     ApiService api;
     String api_key;
@@ -75,7 +78,7 @@ public class OTNFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        v = inflater.inflate(R.layout.fragment_oft, container, false);
+        v = inflater.inflate(R.layout.fragment_otn, container, false);
 
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
@@ -100,7 +103,7 @@ public class OTNFragment extends Fragment {
         webView = v.findViewById(R.id.web_view);
         submit_button = v.findViewById(R.id.submit_btn);
 
-        response = v.findViewById(R.id.response_text);
+        response_text_view = v.findViewById(R.id.response_text);
 
         mic_image = v.findViewById(R.id.mic_img);
         //option_list_view = v.findViewById(R.id.options_list);
@@ -139,7 +142,7 @@ public class OTNFragment extends Fragment {
 
         textView.setText(q_text);       //q_text
 
-        Call<QuestionDetail> call = api.getOTT_OTNJson(api_key, "Token " + pref.getString("token", null), q_id);
+        Call<com.rohan.myvoice.pojo.survey_question_detail_OTN.QuestionDetail> call = api.getOTNJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
 
@@ -185,6 +188,12 @@ public class OTNFragment extends Fragment {
 
                     }
 
+                    MAX_SIZE = Integer.parseInt(response.body().getData().getQuestionOptions().getMAXLength());
+                    MAX_VALUE = Integer.parseInt(response.body().getData().getQuestionOptions().getMax());
+                    MIN_VALUE = Integer.parseInt(response.body().getData().getQuestionOptions().getMin());
+                    response_text_view.setMaxLines(MAX_SIZE);
+
+                    Log.d("otn_response","Max Value: " + MAX_VALUE + " MIn value: " + MIN_VALUE);
                     //question is now load comopletely and user can now type or speak for enter his response in the edittext of response.
 
                 }
@@ -225,15 +234,30 @@ public class OTNFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                Double final_value;
                 //submit only if response is not null
-                if (!"".equals(response_text)) {
-                    response_text = response.getText().toString();
-                    if (TextUtils.isDigitsOnly(response_text)) {
-                        Log.d("ott_response", response_text);
+                if (!"".equals(response_text_view.getText().toString())) {
+                    response_text = response_text_view.getText().toString();
+                    Log.d("otn_response", "Response_text: "+ response_text);
+
+                    //it's a Double value then
+                    if (response_text.contains(",")) {
+                        response_text = response_text.replaceAll(",", "");
                     }
-                    //submit logic here
+                    if (response_text.contains(" ")) {
+                        response_text = response_text.replaceAll(" ", "");
+                    }
+                    final_value = Double.parseDouble(response_text);
+
+
+                    if (final_value >= MIN_VALUE && final_value <= MAX_VALUE) {
+                        Log.d("otn_response", final_value.toString());
+                        //submit logic here
+
+                    }
+
                 } else {
-                    Log.d("ott_response", "empty response");
+                    Log.d("otn_response", "empty response");
                 }
 
             }
@@ -254,8 +278,8 @@ public class OTNFragment extends Fragment {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     response_text = text.get(0);
-                    if (TextUtils.isDigitsOnly(response_text)){
-                        response.append(response_text);
+                    if (TextUtils.isDigitsOnly(response_text) || response_text.contains(",") || response_text.contains(".")) {
+                        response_text_view.setText(response_text);
                     }
 
                     mic_image.setImageResource(R.drawable.mic);

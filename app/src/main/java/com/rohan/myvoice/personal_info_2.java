@@ -55,7 +55,7 @@ public class personal_info_2 extends AppCompatActivity {
     private ApiService api;
     private String api_key;
     private Map<String, String> gender_map, education_map, salary_map;
-    private ArrayList<String> gender_name_list=null, education_name_list = null, salary_name_list=null;
+    private ArrayList<String> gender_name_list = null, education_name_list = null, salary_name_list = null;
     private static String[] gender_name, education_name, salary_name;
     private Dialog dialog;
     private ListView listview_gender, listview_education, listview_salary;
@@ -94,7 +94,7 @@ public class personal_info_2 extends AppCompatActivity {
         zip_code = i.getStringExtra("zip_code");
         city_name = i.getStringExtra("city_name");
 
-        Toast.makeText(this, i.getStringExtra("country_name"), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, i.getStringExtra("country_name"), Toast.LENGTH_SHORT).show();
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
@@ -112,13 +112,67 @@ public class personal_info_2 extends AppCompatActivity {
 
 
         api = RetroClient.getApiService();
-        update_token();
+        //update_token();
         api_key = getResources().getString(R.string.APIKEY);
 
 
+    }
+
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        Log.d("update_token", "login called");
+        progressDialog.show();
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    //call_api_coutry();
+                } else {
+                    //but but i can access the error body here.,
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String status = jObjError.getString("message");
+                        String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(getApplicationContext(), status, error_msg);
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+
+    }
+
+    public void qualification_selection(final View view) {
         //FOR EDUCATION
 
         Call<Education> call2 = api.getEducationJson(api_key, "Token " + pref.getString("token", null), country_code);
+        Log.d("token_detail", "used for education: " + pref.getString("token", null));
         // show it
         progressDialog.show();
         call2.enqueue(new Callback<Education>() {
@@ -150,15 +204,79 @@ public class personal_info_2 extends AppCompatActivity {
                         Log.i("TAG", education_name[i]);
                     }
 
+                    //loading the data in a view
+                    if (education_name_list != null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+                        dialog = new Dialog(personal_info_2.this);
+                        dialog.setContentView(R.layout.list_view);
+                        dialog.setTitle("Select Highest Qualification");
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+                        //prepare a list view in dialog
+                        listview_education = dialog.findViewById(R.id.dialogList);
+
+
+                        //String[] aray = {"rohn0", "fdad", "aqwe"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, education_name);
+                        listview_education.setAdapter(adapter);
+
+
+                        listview_education.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                view.setSelected(true);
+                                selected_education = parent.getItemAtPosition(position).toString();
+
+
+                                textview_education_info.setText(selected_education);
+
+                                dialog.dismiss();
+
+                                //taking the value of education code
+                                for (Map.Entry entry : education_map.entrySet()) {
+                                    if (selected_education.equals(entry.getValue())) {
+                                        education_code = entry.getKey().toString();
+                                        break;
+                                    }
+                                }
+
+                            }
+                        });
+
+
+                        View view1 = dialog.findViewById(R.id.cancel_btn);
+                        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                        cancel_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dialog.show();
+                    }
+
 
                 } else {
                     //first chk for TOKEN EXPIRE??
                     //calling a function
-                    update_token();
+
 
                     Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            qualification_selection(view);
+
+                        }
+
                         /* String status = jObjError.getString("detail");
                          */
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
@@ -177,10 +295,12 @@ public class personal_info_2 extends AppCompatActivity {
                 Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
+    }
 
+    public void gender_selection(final View view) {
         //FOR GENDER
         Call<Gender> call = api.getGenderJson(api_key, "Token " + pref.getString("token", null));
-
+        Log.d("token_detail", "used for gender: " + pref.getString("token", null));
         progressDialog.show();
 
         call.enqueue(new Callback<Gender>() {
@@ -209,17 +329,76 @@ public class personal_info_2 extends AppCompatActivity {
                         gender_name[i] = gender_name_list.get(i);
                         Log.i("TAG", gender_name[i]);
                     }
+                    //loading the data in a view
+                    if (gender_name_list != null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
+                        dialog = new Dialog(personal_info_2.this);
+                        dialog.setContentView(R.layout.list_view);
+                        dialog.setTitle("Select Gender");
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+                        //prepare a list view in dialog
+                        listview_gender = dialog.findViewById(R.id.dialogList);
+
+
+                        //String[] aray = {"rohn0", "fdad", "aqwe"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, gender_name);
+                        listview_gender.setAdapter(adapter);
+
+
+                        listview_gender.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                view.setSelected(true);
+                                selected_gender = parent.getItemAtPosition(position).toString();
+
+
+                                textview_gender_info.setText(selected_gender);
+
+                                dialog.dismiss();
+
+                                //taking the value of gender code
+                                for (Map.Entry entry : gender_map.entrySet()) {
+                                    if (selected_gender.equals(entry.getValue())) {
+                                        gender_code = entry.getKey().toString();
+                                        break;
+                                    }
+                                }
+
+                            }
+                        });
+
+
+                        View view1 = dialog.findViewById(R.id.cancel_btn);
+                        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                        cancel_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dialog.show();
+                    }
 
                 } else {
                     //first chk for TOKEN EXPIRE??
                     //calling a function
-                    update_token();
 
 
                     Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            gender_selection(view);
+                        }
                         /* String status = jObjError.getString("detail");
                          */
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
@@ -239,239 +418,6 @@ public class personal_info_2 extends AppCompatActivity {
                 Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
             }
         });
-
-        //For INCOME
-        Call<Salary> call3 = api.getSalaryJson(api_key, "Token " + pref.getString("token", null));
-
-        progressDialog.show();
-
-        call3.enqueue(new Callback<Salary>() {
-            @Override
-            public void onResponse(Call<Salary> call, Response<Salary> response) {
-                progressDialog.dismiss();
-                if (response.isSuccessful()) {
-                    List<String> salary_obj_list = response.body().getData().getList();
-                    //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
-                    salary_map = new HashMap<>();
-
-
-                    salary_name_list = new ArrayList<>();
-
-                    for (String g : salary_obj_list) {
-
-                        //  gender_map.put(g.getCode(), g.getName());
-                        //making an array from MAP's values
-                        salary_name_list.add(g);
-                    }
-                    //printing -- LOG for testing
-
-                    salary_name = new String[salary_name_list.size()];
-
-                    for (int i = 0; i < salary_name_list.size(); i++) {
-                        salary_name[i] = salary_name_list.get(i);
-                        Log.i("TAG", salary_name[i]);
-                    }
-
-
-                } else {
-                    //first chk for TOKEN EXPIRE??
-                    //calling a function
-                    update_token();
-
-
-                    Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        /* String status = jObjError.getString("detail");
-                         */
-                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                        //Build_alert_dialog(getApplicationContext(), "Error", status);
-
-
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Salary> call, Throwable t) {
-                progressDialog.dismiss();
-                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
-            }
-        });
-
-    }
-
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
-        ApiService api = RetroClient.getApiService();
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-
-        progressDialog.show();
-
-        call.enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                progressDialog.dismiss();
-                if (response.isSuccessful()) {
-                    //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
-
-                    editor.commit();
-
-                    Map<String, ?> allEntries = pref.getAll();
-                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                    }
-
-                    //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getApplicationContext(), status, error_msg);
-
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-                progressDialog.dismiss();
-                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
-            }
-        });
-
-
-    }
-
-    public void qualification_selection(View view) {
-        //loading the data in a view
-        if (education_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
-
-            dialog = new Dialog(personal_info_2.this);
-            dialog.setContentView(R.layout.list_view);
-            dialog.setTitle("Select Highest Qualification");
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-
-            //prepare a list view in dialog
-            listview_education = dialog.findViewById(R.id.dialogList);
-
-
-            //String[] aray = {"rohn0", "fdad", "aqwe"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, education_name);
-            listview_education.setAdapter(adapter);
-
-
-            listview_education.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                    view.setSelected(true);
-                    selected_education = parent.getItemAtPosition(position).toString();
-
-
-                    textview_education_info.setText(selected_education);
-
-                    dialog.dismiss();
-
-                    //taking the value of education code
-                    for (Map.Entry entry : education_map.entrySet()) {
-                        if (selected_education.equals(entry.getValue())) {
-                            education_code = entry.getKey().toString();
-                            break;
-                        }
-                    }
-
-                }
-            });
-
-
-            View view1 = dialog.findViewById(R.id.cancel_btn);
-            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
-            cancel_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            dialog.show();
-        }
-    }
-
-    public void gender_selection(View view) {
-
-
-        //loading the data in a view
-        if (gender_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
-
-            dialog = new Dialog(personal_info_2.this);
-            dialog.setContentView(R.layout.list_view);
-            dialog.setTitle("Select Gender");
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-
-            //prepare a list view in dialog
-            listview_gender = dialog.findViewById(R.id.dialogList);
-
-
-            //String[] aray = {"rohn0", "fdad", "aqwe"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, gender_name);
-            listview_gender.setAdapter(adapter);
-
-
-            listview_gender.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                    view.setSelected(true);
-                    selected_gender = parent.getItemAtPosition(position).toString();
-
-
-                    textview_gender_info.setText(selected_gender);
-
-                    dialog.dismiss();
-
-                    //taking the value of gender code
-                    for (Map.Entry entry : gender_map.entrySet()) {
-                        if (selected_gender.equals(entry.getValue())) {
-                            gender_code = entry.getKey().toString();
-                            break;
-                        }
-                    }
-
-                }
-            });
-
-
-            View view1 = dialog.findViewById(R.id.cancel_btn);
-            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
-            cancel_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            dialog.show();
-        }
-
 
     }
 
@@ -519,57 +465,121 @@ public class personal_info_2 extends AppCompatActivity {
 
     }
 
-    public void income_selection(View view) {
+    public void income_selection(final View view) {
+        //For INCOME
+        Call<Salary> call3 = api.getSalaryJson(api_key, "Token " + pref.getString("token", null));
+        Log.d("token_detail", "used for salary: " + pref.getString("token", null));
+        progressDialog.show();
 
-        //loading the data in a view
-        if (salary_name_list!= null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
-
-            dialog = new Dialog(personal_info_2.this);
-            dialog.setContentView(R.layout.list_view);
-            dialog.setTitle("Select Annual Income");
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-
-            //prepare a list view in dialog
-            listview_salary = dialog.findViewById(R.id.dialogList);
-
-
-            //String[] aray = {"rohn0", "fdad", "aqwe"};
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, salary_name);
-            listview_salary.setAdapter(adapter);
+        call3.enqueue(new Callback<Salary>() {
+            @Override
+            public void onResponse(Call<Salary> call, Response<Salary> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    List<String> salary_obj_list = response.body().getData().getList();
+                    //Toast.makeText(personal_info_1.this, country_string, Toast.LENGTH_LONG).show();
+                    salary_map = new HashMap<>();
 
 
-            listview_salary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-                    view.setSelected(true);
-                    selected_salary = parent.getItemAtPosition(position).toString();
+                    salary_name_list = new ArrayList<>();
+
+                    for (String g : salary_obj_list) {
+
+                        //  gender_map.put(g.getCode(), g.getName());
+                        //making an array from MAP's values
+                        salary_name_list.add(g);
+                    }
+                    //printing -- LOG for testing
+
+                    salary_name = new String[salary_name_list.size()];
+
+                    for (int i = 0; i < salary_name_list.size(); i++) {
+                        salary_name[i] = salary_name_list.get(i);
+                        Log.i("TAG", salary_name[i]);
+                    }
+                    //loading the data in a view
+                    if (salary_name_list != null) {            //if not fatched any data than coutry filed should not be clicked; Otherwise it will be crashed.! __Rv__
+
+                        dialog = new Dialog(personal_info_2.this);
+                        dialog.setContentView(R.layout.list_view);
+                        dialog.setTitle("Select Annual Income");
+                        dialog.setCancelable(true);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
 
-                    textview_income_info.setText(selected_salary);
+                        //prepare a list view in dialog
+                        listview_salary = dialog.findViewById(R.id.dialogList);
 
-                    dialog.dismiss();
+
+                        //String[] aray = {"rohn0", "fdad", "aqwe"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, salary_name);
+                        listview_salary.setAdapter(adapter);
 
 
+                        listview_salary.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(personal_info_1.this, "Clicked Item: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                                view.setSelected(true);
+                                selected_salary = parent.getItemAtPosition(position).toString();
+
+
+                                textview_income_info.setText(selected_salary);
+
+                                dialog.dismiss();
+
+
+                            }
+                        });
+
+
+                        View view1 = dialog.findViewById(R.id.cancel_btn);
+                        Button cancel_btn = view1.findViewById(R.id.cancel_btn);
+                        cancel_btn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        dialog.show();
+                    }
+
+
+                } else {
+                    //first chk for TOKEN EXPIRE??
+                    //calling a function
+
+
+                    Toast.makeText(personal_info_2.this, "response not received", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            income_selection(view);
+                        }
+                        /* String status = jObjError.getString("detail");
+                         */
+                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                        //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
-            });
+            }
 
-
-            View view1 = dialog.findViewById(R.id.cancel_btn);
-            Button cancel_btn = view1.findViewById(R.id.cancel_btn);
-            cancel_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
-            dialog.show();
-        }
+            @Override
+            public void onFailure(Call<Salary> call, Throwable t) {
+                progressDialog.dismiss();
+                Build_alert_dialog(personal_info_2.this, "Connection Error", "Please Check You Internet Connection");
+            }
+        });
 
 
     }
@@ -581,8 +591,7 @@ public class personal_info_2 extends AppCompatActivity {
                 selected_salary.equals("not_selected")) {
             Build_alert_dialog(this, "Incomplete Details", "Please fill all the details");
         } else {
-            if (Integer.parseInt(isValid) >= 18) {
-
+            if (Integer.parseInt(isValid) >= 13) {
 
 
                 Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
@@ -608,14 +617,11 @@ public class personal_info_2 extends AppCompatActivity {
                 i.putExtra("fcm_token", FcmToken);
 
 
-
-
-
                 startActivity(i);
 
 
             } else {
-                Build_alert_dialog(this, "Age restriction", "you must be 18+");
+                Build_alert_dialog(this, "Age restriction", "you must be 13+");
                 selected_dob = "not_selected";
             }
 

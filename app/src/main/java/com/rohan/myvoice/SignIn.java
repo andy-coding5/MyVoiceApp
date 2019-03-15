@@ -124,7 +124,7 @@ public class SignIn extends AppCompatActivity {
             editor.commit();
         }
         String FcmToken = pref.getString("fcm_token", null);
-        Call<Login> call = api.getLoginJason(email, pass, FcmToken, "android", DEVICE_ID);
+        Call<Login> call = api.getLoginJason(email, pass, FcmToken, "Android", DEVICE_ID);
 
         progressDialog.show();
 

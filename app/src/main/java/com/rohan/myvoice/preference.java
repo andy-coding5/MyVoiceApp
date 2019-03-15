@@ -85,7 +85,7 @@ public class preference extends AppCompatActivity {
          * Calling JSON
          */
         //   String t = Token.token_string;
-        update_token();
+        //update_token();
         api_key = getResources().getString(R.string.APIKEY);
 
         Intent i = getIntent();
@@ -114,8 +114,8 @@ public class preference extends AppCompatActivity {
             editor.commit();
         }
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Log.d("update_token","login called");
         progressDialog.show();
 
         call.enqueue(new Callback<Login>() {
@@ -128,7 +128,7 @@ public class preference extends AppCompatActivity {
                     editor.putString("token", response.body().getData().getToken());
 
                     editor.commit();
-
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
                     Map<String, ?> allEntries = pref.getAll();
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
@@ -203,7 +203,7 @@ public class preference extends AppCompatActivity {
         }
     }
 
-    public void set_my_pref(View view) {
+    public void set_my_pref(final View view) {
 
 
         //call
@@ -255,6 +255,11 @@ public class preference extends AppCompatActivity {
                     //but but i can access the error body here.,
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            set_my_pref(view);
+                        }
                         String status = jObjError.getString("message");
                         String error_msg = jObjError.getJSONObject("data").getString("errors");
                         Build_alert_dialog(getApplicationContext(), status, error_msg);

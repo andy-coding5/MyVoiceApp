@@ -88,7 +88,7 @@ public class QuestionsListFragment extends Fragment {
         activity.setSupportActionBar(mToolbar);*/
 
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
+        mSwipeRefreshLayout = v.findViewById(R.id.swipeToRefresh);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
         empty_textview = v.findViewById(R.id.empty_view);
@@ -206,9 +206,11 @@ public class QuestionsListFragment extends Fragment {
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
-                                recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
+                                recyclerView.setAdapter(null);
+                                recyclerView.setLayoutManager(null);
+                                recyclerView.setAdapter(new RecyclerViewAdapterQuestionList(getActivity(), question_list));
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 recyclerViewAdapeter.notifyDataSetChanged();
-
                             }
                             mSwipeRefreshLayout.setRefreshing(false);
 
@@ -277,7 +279,6 @@ public class QuestionsListFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
-
                     //call_api_coutry();
                 } else {
                     //but but i can access the error body here.,

@@ -111,6 +111,8 @@ public class SignUp extends AppCompatActivity {
                         editor.putString("email", mail);
                         editor.putString("password", passwrd);
                         editor.putString("username", f_name);
+
+                        editor.putString("token",response.body().getData().getToken());
                         editor.putBoolean("isUserLoggedIn", true);
 
                         editor.commit();
