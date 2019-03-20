@@ -66,21 +66,69 @@
 
             </FrameLayout>
 
-            <android.support.v7.widget.AppCompatSeekBar
-                android:id="@+id/appCompatSeekBar"
+            <LinearLayout
+                android:id="@+id/linear_layout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/edit_text"
-                android:backgroundTint="@color/lighter_grey"
-                android:progressDrawable="@drawable/progress_drawable"
-                android:minHeight="10dp"
-                android:maxHeight="10dp"
-                android:layout_marginEnd="16dp"
-                android:thumbTint="@android:color/white"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:gravity="center"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/frame_view" />
+                app:layout_constraintTop_toBottomOf="@+id/frame_view">
+
+                <TextView
+                    android:id="@+id/current_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_medium"
+                    android:text="3"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="17sp" />
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_medium"
+                    android:text=" Out of "
+                    android:textColor="@color/grey"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/total_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_medium"
+                    android:text="3"
+                    android:textColor="@color/grey"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/seekbar_frame"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_layout">
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/appCompatSeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:maxHeight="5dp"
+                    android:minHeight="5dp"
+                    android:progressBackgroundTint="@color/light_gery"
+                    android:progressDrawable="@drawable/progress_drawable"
+                    android:thumb="@drawable/custom_thumb" />
+            </FrameLayout>
+
 
             <Button
                 android:id="@+id/submit_btn"
@@ -90,7 +138,7 @@
 
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_background"
                 android:fontFamily="@font/quicksand_bold"
                 android:text="Submit Response"
@@ -99,7 +147,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatSeekBar" />
+                app:layout_constraintTop_toBottomOf="@+id/seekbar_frame" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
