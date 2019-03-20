@@ -283,5 +283,14 @@ public class SCLFragment extends Fragment {
 
             }
         });
+
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ANs is -> current.getText();
+                Log.v("seekbar", "value to be submitted: " + current.getText());
+            }
+        });
+
     }
 }
