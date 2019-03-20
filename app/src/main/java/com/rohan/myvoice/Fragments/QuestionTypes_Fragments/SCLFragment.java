@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -26,14 +27,22 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.survey_question_detail_SCL.QuestionDetail;
+
+import org.json.JSONObject;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -246,6 +255,20 @@ public class SCLFragment extends Fragment {
                         seekbar.setProgress(min_int);
                     }
                 }
+                else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+                        //call update token function only when Error is "Invalid token" received form the server
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                        }
+
+                    } catch (Exception e) {
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
             }
 
             @Override
@@ -289,6 +312,63 @@ public class SCLFragment extends Fragment {
             public void onClick(View v) {
                 //ANs is -> current.getText();
                 Log.v("seekbar", "value to be submitted: " + current.getText());
+            }
+        });
+
+    }
+
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        progressDialog.show();
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    //call_api_coutry();
+                } else {
+                    //but but i can access the error body here.
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String status = jObjError.getString("message");
+                        String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(getActivity(), status, error_msg);
+
+                    } catch (Exception e) {
+                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
 
