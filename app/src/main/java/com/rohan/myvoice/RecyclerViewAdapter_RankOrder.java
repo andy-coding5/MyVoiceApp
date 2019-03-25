@@ -2,6 +2,7 @@ package com.rohan.myvoice;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,13 +79,19 @@ public class RecyclerViewAdapter_RankOrder extends RecyclerView.Adapter<Recycler
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(data, i, i + 1);
+
             }
         } else {
             for (int i = fromPosition; i > toPosition; i--) {
                 Collections.swap(data, i, i - 1);
             }
         }
+        //notifyItemMoved(fromPosition, toPosition);
+
+        Option item = data.remove(fromPosition);
+        data.add(toPosition, item);
         notifyItemMoved(fromPosition, toPosition);
+        Log.v("rnk", "final Order of data: "+data.toString());
     }
 
     @Override
@@ -98,5 +105,7 @@ public class RecyclerViewAdapter_RankOrder extends RecyclerView.Adapter<Recycler
         myViewHolder.rowView.setBackgroundColor(Color.WHITE);
 
     }
+
+
 }
 

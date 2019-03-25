@@ -28,13 +28,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
-import com.rohan.myvoice.ItemMoveCallback;
 import com.rohan.myvoice.R;
-import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
 import com.rohan.myvoice.RecyclerViewAdapter_RankOrder;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.StartDragListener;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Option;
 import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail;
@@ -76,7 +73,7 @@ public class RNKFragment extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerViewAdapter_RankOrder mAdapter;
-    ArrayList<String> stringArrayList = new ArrayList<>();
+    List<Option> stringArrayList;
     ItemTouchHelper touchHelper;
 
 
@@ -177,6 +174,8 @@ public class RNKFragment extends Fragment {
                             webSettings.setJavaScriptEnabled(true);
                             webView.setWebViewClient(new WebViewClient());      //to load content inside the webview rather then open it in browser
                             webView.loadUrl(response.body().getData().getQuestionVideoMedia());
+
+
                         } else if (!"".equals(response.body().getData().getQuestionAudioMedia())) {
                             frameLayout.setVisibility(View.VISIBLE);
                             webView.setVisibility(View.VISIBLE);
@@ -201,7 +200,7 @@ public class RNKFragment extends Fragment {
 
                     //view setup complete
                     //now, make array of option received in response to set up recyclervire adapter
-                    final List<Option> stringArrayList = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
+                    stringArrayList = response.body().getData().getQuestionOptionsSCQMCQRNK().getOptions();
 
 
                     ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
@@ -220,7 +219,7 @@ public class RNKFragment extends Fragment {
                         @Override
                         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                             return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                                    ItemTouchHelper.DOWN | ItemTouchHelper.UP );
+                                    ItemTouchHelper.DOWN | ItemTouchHelper.UP);
                         }
                     });
 
@@ -255,6 +254,18 @@ public class RNKFragment extends Fragment {
             @Override
             public void onFailure(Call<QuestionDetail> call, Throwable t) {
                 progressDialog.dismiss();
+            }
+        });
+
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ANs is -> current.getText();
+                Log.v("rnk", "Item Order When Submit");
+                for (Option op : stringArrayList)
+                    Log.v("rnk", "Option key: " + op.getKey() + " Option value: " + op.getValue() + "\n");
+                //mAdapter.
+
             }
         });
     }
