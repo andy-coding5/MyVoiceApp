@@ -9,5 +9,7 @@ public class PublicClass extends Application {
 
     public static String q_id = null, c_logo = null, q_title = null;        //for passing data from one fragment to another
 
+    public static String MainParentID = null;
+
 
 }

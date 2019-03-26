@@ -17,6 +17,7 @@ import com.rohan.myvoice.Fragments.QuestionTypes_Fragments.OTTFragment;
 import com.rohan.myvoice.Fragments.QuestionTypes_Fragments.RNKFragment;
 import com.rohan.myvoice.Fragments.QuestionTypes_Fragments.SCQFragment;
 import com.rohan.myvoice.Fragments.QuestionTypes_Fragments.SCLFragment;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionDatum;
 
 import java.util.List;
@@ -113,6 +114,10 @@ public class RecyclerViewAdapterQuestionList extends RecyclerView.Adapter<Recycl
                     b.putString("q_text", mdata.get(getPosition()).getQuestionText());
                     b.putString("q_id", mdata.get(getPosition()).getQuestionID().toString());
                     myFragment.setArguments(b);
+
+                    //save this question ID as mainParentID in global values -> useful when we ae going to submit child question answers
+                    PublicClass.MainParentID = mdata.get(getPosition()).getQuestionID().toString();
+
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).addToBackStack(null).commit();
 
                 }

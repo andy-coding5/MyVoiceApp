@@ -76,6 +76,7 @@ public class QuestionsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_questions_list, container, false);
         logo = v.findViewById(R.id.company_logo);
@@ -145,6 +146,7 @@ public class QuestionsListFragment extends Fragment {
                 Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
 
                 //progressDialog.show();
+                empty_textview.setVisibility(View.INVISIBLE);
 
                 call.enqueue(new Callback<QuestionList>() {
                     @Override
@@ -154,6 +156,7 @@ public class QuestionsListFragment extends Fragment {
                         if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
 
                             if (response.body().getQuestionCount().toString().equals("0")) {
+
                                 mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
                                 empty_textview.setVisibility(View.VISIBLE);
 
@@ -174,19 +177,25 @@ public class QuestionsListFragment extends Fragment {
                             //update_token();
 
                             Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 /* String status = jObjError.getString("detail");
                                  */
+
+                                if (jObjError.getString("message").equals("Questions not found")) {
+                                    empty_textview.setVisibility(View.VISIBLE);
+                                    mSwipeRefreshLayout.setRefreshing(false);
+                                }
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
                                 }
-                                Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                                 //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                             } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -233,12 +242,13 @@ public class QuestionsListFragment extends Fragment {
                          */
                         if (jObjError.getString("message").equals("Questions not found")) {
                             empty_textview.setVisibility(View.VISIBLE);
-                            mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                            mSwipeRefreshLayout.setRefreshing(false);
                         }
 
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                         }
+                        mSwipeRefreshLayout.setRefreshing(false);
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();

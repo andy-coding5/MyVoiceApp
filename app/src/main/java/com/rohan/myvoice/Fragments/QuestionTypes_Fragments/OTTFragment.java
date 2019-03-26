@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,10 +29,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.Response.response;
+import com.rohan.myvoice.pojo.survey_question_detail_OTT.Data;
 import com.rohan.myvoice.pojo.survey_question_detail_OTT.QuestionDetail;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -65,6 +73,8 @@ public class OTTFragment extends Fragment {
     String api_key;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+
+    private Data data;
 
 
     public OTTFragment() {
@@ -117,7 +127,7 @@ public class OTTFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         q_id = bundle.get("q_id").toString();
-        q_text = bundle.get("q_text").toString();
+//        q_text = bundle.get("q_text").toString();
 
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
@@ -139,7 +149,7 @@ public class OTTFragment extends Fragment {
 
         api = RetroClient.getApiService();
 
-        textView.setText(q_text);       //q_text
+        //textView.setText(q_text);       //q_text
 
         Call<QuestionDetail> call = api.getOTTJson(api_key, "Token " + pref.getString("token", null), q_id);
 
@@ -150,7 +160,11 @@ public class OTTFragment extends Fragment {
             public void onResponse(Call<QuestionDetail> call, Response<QuestionDetail> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Sucess")) {
-                    if (response.body().getData().getQuestionIsMedia()) {
+                    //display the question
+                    textView.setText(response.body().getData().getQuestionText());
+
+
+                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
@@ -187,6 +201,10 @@ public class OTTFragment extends Fragment {
 
                         constraintSet.applyTo(constraintLayout);
                     }
+
+                    //inti the data obj
+                    data = response.body().getData();
+
                     MAX_SIZE = Integer.parseInt(response.body().getData().getQuestionOptions().getMAXLength());
                     response_text_view.setMaxLines(MAX_SIZE);
                     //question is now load comopletely and user can now type or speak for enter his response in the edittext of response.
@@ -224,13 +242,101 @@ public class OTTFragment extends Fragment {
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
                 //submit only if response is not null
-                if (!"".equals(response_text)) {
+                if (!"".equals(response_text_view.getText().toString().trim())) {
                     response_text = response_text_view.getText().toString();
                     Log.d("ott_response", response_text);
                     //submit logic here
+
+                    JSONArray ja = new JSONArray();
+
+                    JSONObject jo = new JSONObject();
+
+
+                    try {
+                        jo.put("Key", "OTT");
+                        jo.put("Value", response_text);
+                        ja.put(jo);
+                        Log.v("final_json", ja.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (ja.length() > 0) {
+
+                        Call<response> call1 = api.getMCQResponseJson(api_key, "Token " + pref.getString("token", null),
+                                data.getAttributeID().toString(), data.getQuestionID().toString(),
+                                data.getParentID().toString(), ja,
+                                "Android", PublicClass.MainParentID.trim());
+
+                        progressDialog.show();
+
+                        call1.enqueue(new Callback<response>() {
+                            @Override
+                            public void onResponse(Call<response> call, Response<response> response) {
+                                if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                progressDialog.dismiss();
+                                    //if IsNext = No
+                                    if ("No".equals(response.body().getIsNext())) {
+                                        Log.v("test","from OTT: response.body().getIsNext()"+response.body().getIsNext() );
+                                        if (getFragmentManager().getBackStackEntryCount() != 0) {
+
+                                            getFragmentManager().popBackStack();
+                                        }
+
+                                    } else {
+                                        //if IsNext = Yes
+                                        //there are children question(s)...we got id and and question type from the response.
+                                        AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                                        Fragment myFragment = null;
+                                        String q_type = String.valueOf(response.body().getQuestionType());
+                                        Log.v("test", "from MCQ: response.body().getIsNext()-(before switch)" + String.valueOf(response.body().getQuestionType()));
+
+                                        switch (q_type) {
+                                            case "SCQ": {
+                                                myFragment = new SCQFragment();
+                                                break;
+                                            }
+                                            case "MCQ": {
+                                                myFragment = new MCQFragment();
+                                                break;
+                                            }
+                                            case "OTT": {
+                                                myFragment = new OTTFragment();
+                                                break;
+                                            }
+                                            case "SCL": {
+                                                myFragment = new SCLFragment();
+                                                break;
+                                            }
+                                            case "RNK": {
+                                                myFragment = new RNKFragment();
+                                                break;
+                                            }
+                                            case "OTN": {
+                                                myFragment = new OTNFragment();
+                                                break;
+                                            }
+                                        }
+                                        Bundle b = new Bundle();
+                                        //b.putString("q_text", mdata.get(getPosition()).getQuestionText());
+                                        b.putString("q_id", String.valueOf(response.body().getQuestionID()));
+                                        myFragment.setArguments(b);
+
+                                        Log.v("test", "from OTT: redirect to the new fragmnent :"+String.valueOf(response.body().getQuestionType()));
+                                        activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<response> call, Throwable t) {
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
 
                 } else {
                     Log.d("ott_response", "empty response");

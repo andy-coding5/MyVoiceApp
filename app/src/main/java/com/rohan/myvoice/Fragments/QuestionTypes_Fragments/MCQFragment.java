@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,17 +33,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.Response.response;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Data;
 import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Option;
 import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +83,9 @@ public class MCQFragment extends Fragment {
     private SharedPreferences.Editor editor;
     CheckBox[] cb;
 
-    private ArrayList<String> selected_options;
+    private ArrayList<String> selected_options, selected_options_keys;
+
+    private Data data;
 
 
     public MCQFragment() {
@@ -122,7 +132,7 @@ public class MCQFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         q_id = bundle.get("q_id").toString();
-        q_text = bundle.get("q_text").toString();
+        //q_text = bundle.get("q_text").toString();
 
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
@@ -145,8 +155,9 @@ public class MCQFragment extends Fragment {
 
         api = RetroClient.getApiService();
 
-        textView.setText(q_text);       //q_text
+        //textView.setText(q_text);       //q_text
         selected_options = new ArrayList<>();
+        selected_options_keys = new ArrayList<>();
 
         Call<QuestionDetail> call = api.getSCQ_MCQ_RNKJson(api_key, "Token " + pref.getString("token", null), q_id);
 
@@ -157,7 +168,10 @@ public class MCQFragment extends Fragment {
             public void onResponse(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Response<QuestionDetail> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Sucess")) {
-                    if (response.body().getData().getQuestionIsMedia()) {
+                    //display the question
+                    textView.setText(response.body().getData().getQuestionText());
+
+                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
@@ -184,6 +198,10 @@ public class MCQFragment extends Fragment {
                         }
                     }
 
+                    //inti the data obj
+
+                    data = response.body().getData();
+
                     //loading the options
 
                     //design dynamic buttons and add them into the constrain view resides inside the scroll view
@@ -197,8 +215,6 @@ public class MCQFragment extends Fragment {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
                     //implementation of check box here
                     cb = new CheckBox[op.size()];
-                    CheckBox checkBox;
-
 
                     for (int i = 0; i < cb.length; i++) {
 
@@ -248,9 +264,109 @@ public class MCQFragment extends Fragment {
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
                 Log.d("check_box", selected_options.toString());
+
+                //first make a map of key value pair
+                /*Map<String, String> final_map = new HashMap<>();
+                for (int i = 0; i < selected_options.size(); i++) {
+                    final_map.put(selected_options_keys.get(i), selected_options.get(i));
+                }*/
+                JSONArray ja = new JSONArray();      //main parent
+
+
+                for (int i = 0; i < selected_options.size(); i++) {
+                    JSONObject jo = new JSONObject();
+
+                    try {
+                        jo.put("Key", selected_options_keys.get(i));
+                        jo.put("Value", selected_options.get(i));
+                        ja.put(jo);
+                        Log.v("final_json", ja.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                if (ja.length() > 0) {
+
+                    Call<response> call1 = api.getMCQResponseJson(api_key, "Token " + pref.getString("token", null),
+                            data.getAttributeID().toString(), data.getQuestionID().toString(),
+                            data.getParentID().toString(), ja,
+                            "Android", PublicClass.MainParentID.trim());
+
+                    progressDialog.show();
+
+                    call1.enqueue(new Callback<response>() {
+                        @Override
+                        public void onResponse(Call<response> call, Response<response> response) {
+
+                            if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                progressDialog.dismiss();
+                                //if IsNext = No
+                                if ("No".equals(response.body().getIsNext())) {
+
+                                    Log.v("test", "from MCQ: response.body().getIsNext()" + response.body().getIsNext());
+                                    if (getFragmentManager().getBackStackEntryCount() != 0) {
+                                        getFragmentManager().popBackStack();
+                                    }
+
+                                } else {
+                                    //if IsNext = Yes
+                                    //there are children question(s)...we got id and and question type from the response.
+                                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                                    Fragment myFragment = null;
+                                    String q_type = String.valueOf(response.body().getQuestionType());
+                                    Log.v("test", "from MCQ: response.body().getIsNext()-(before switch)" + String.valueOf(response.body().getQuestionType()));
+
+
+                                    switch (q_type) {
+                                        case "SCQ": {
+                                            myFragment = new SCQFragment();
+                                            break;
+                                        }
+                                        case "MCQ": {
+                                            myFragment = new MCQFragment();
+                                            break;
+                                        }
+                                        case "OTT": {
+                                            myFragment = new OTTFragment();
+                                            break;
+                                        }
+                                        case "SCL": {
+                                            myFragment = new SCLFragment();
+                                            break;
+                                        }
+                                        case "RNK": {
+                                            myFragment = new RNKFragment();
+                                            break;
+                                        }
+                                        case "OTN": {
+                                            myFragment = new OTNFragment();
+                                            break;
+                                        }
+                                    }
+                                    Bundle b = new Bundle();
+                                    //b.putString("q_text", mdata.get(getPosition()).getQuestionText());
+                                    b.putString("q_id", String.valueOf(response.body().getQuestionID()));
+                                    myFragment.setArguments(b);
+
+                                    Log.v("test", "from MCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
+                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<response> call, Throwable t) {
+                            progressDialog.dismiss();
+                        }
+                    });
+                }
+
+
             }
         });
     }
@@ -267,11 +383,13 @@ public class MCQFragment extends Fragment {
 
                 //first clear all the options
                 selected_options.clear();
+                selected_options_keys.clear();
 
                 for (int i = 0; i < cb.length; i++) {
 
                     if (cb[i].isChecked()) {
-                        selected_options.add(cb[i].getTag().toString());
+                        selected_options_keys.add(cb[i].getTag().toString().trim());        //getTag -> keys
+                        selected_options.add(cb[i].getText().toString().trim());           //getText -> value
                     } else {
                         //add the selected options here
                         Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");

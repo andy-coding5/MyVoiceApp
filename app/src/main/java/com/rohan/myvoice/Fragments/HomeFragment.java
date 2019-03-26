@@ -68,12 +68,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (v != null) {
-            if (v.getParent() != null) {
-                ((ViewGroup) v.getParent()).removeView(v);
-            }
-            return v;
-        }
+        
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_home, container, false);

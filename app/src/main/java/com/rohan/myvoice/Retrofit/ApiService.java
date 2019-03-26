@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Retrofit;
 
 import com.rohan.myvoice.pojo.Register.Register;
+import com.rohan.myvoice.pojo.Response.response;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
@@ -13,7 +14,11 @@ import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -116,4 +121,13 @@ public interface ApiService {
     //clicked questions detail  --  SCL
     @GET("mobileapp/api/v1/data/questions/get/{path}/details")
     Call<com.rohan.myvoice.pojo.survey_question_detail_SCL.QuestionDetail> getSCLJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
+
+    //for mcq submit
+    @POST("mobileapp/api/v1/data/questions/response/submit/")
+    @FormUrlEncoded
+    Call<response> getMCQResponseJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                      @Field("AttributeID") String AttributeID, @Field("QuestionID") String QuestionID,
+                                      @Field("ParentID") String ParentID, @Field("Response") JSONArray Response,
+                                      @Field("Source") String Source, @Field("MainParentID") String MainParentID);
+
 }

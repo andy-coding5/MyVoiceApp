@@ -11,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,9 +40,13 @@ import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.Response.response;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Data;
 import com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.Option;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -75,6 +81,7 @@ public class SCQFragment extends Fragment {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private String selected_radio_button;
+    private Data data;
 
     public SCQFragment() {
         // Required empty public constructor
@@ -121,7 +128,7 @@ public class SCQFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         q_id = bundle.get("q_id").toString();
-        q_text = bundle.get("q_text").toString();
+        //q_text = bundle.get("q_text").toString();
 
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
@@ -145,7 +152,7 @@ public class SCQFragment extends Fragment {
         api = RetroClient.getApiService();
 
 
-        textView.setText(q_text);       //q_text
+        //textView.setText(q_text);       //q_text
         Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call = api.getSCQ_MCQ_RNKJson(api_key, "Token " + pref.getString("token", null), q_id);
 
         progressDialog.show();
@@ -155,7 +162,11 @@ public class SCQFragment extends Fragment {
             public void onResponse(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Response<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Sucess")) {
-                    if (response.body().getData().getQuestionIsMedia()) {
+
+                    //display the question
+                    textView.setText(response.body().getData().getQuestionText());
+
+                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
@@ -181,6 +192,10 @@ public class SCQFragment extends Fragment {
                             webView.loadUrl(response.body().getData().getQuestionAudioMedia());
                         }
                     }
+
+
+                    //first initialize the data object
+                    data = response.body().getData();
 
                     //loading the options
 
@@ -211,8 +226,7 @@ public class SCQFragment extends Fragment {
                                 if (rb[i] != rb_selected) {
                                     Typeface fonts = Typeface.createFromAsset(getActivity().getAssets(), "quicksand_regular.ttf");
                                     rb[i].setTypeface(fonts);
-                                }
-                                else{
+                                } else {
                                     selected_radio_button = rb[i].getTag().toString();
 
                                 }
@@ -261,6 +275,7 @@ public class SCQFragment extends Fragment {
                 }
             }
 
+
             @Override
             public void onFailure(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Throwable t) {
                 progressDialog.dismiss();
@@ -270,9 +285,108 @@ public class SCQFragment extends Fragment {
 
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
                 Log.d("radio_btn", selected_radio_button);
+
+                JSONObject jo = new JSONObject();
+                JSONArray ja = new JSONArray();
+
+                try {
+                    jo.put("Key", "SCQ");
+                    jo.put("Value", selected_radio_button.trim());
+
+                    ja.put(jo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.v("final_json", ja.toString());
+
+                Log.v("seekbar", "JSOn response: " + ja.toString());
+
+                Log.v("data", "attribute id: " + data.getAttributeID().toString());
+                Log.v("data", "que ID: " + data.getQuestionID().toString());
+                Log.v("data", "parent id: " + data.getParentID().toString());
+                Log.v("data", "main parent id: " + PublicClass.MainParentID.trim());
+
+                if (ja.length() > 0) {
+
+                    Call<response> call1 = api.getMCQResponseJson(api_key, "Token " + pref.getString("token", null),
+                            data.getAttributeID().toString(), data.getQuestionID().toString(),
+                            data.getParentID().toString(), ja,
+                            "Android", PublicClass.MainParentID.trim());
+
+                    progressDialog.show();
+
+                    call1.enqueue(new Callback<response>() {
+                        @Override
+                        public void onResponse(Call<response> call, Response<response> response) {
+                            if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                progressDialog.dismiss();
+                                //if IsNext = No
+                                if ("No".equals(response.body().getIsNext())) {
+                                    Log.v("test", "from SCQ: response.body().getIsNext()" + response.body().getIsNext());
+                                    if (getFragmentManager().getBackStackEntryCount() != 0) {
+                                        getFragmentManager().popBackStack();
+                                    }
+
+                                } else {
+                                    //if IsNext = Yes
+                                    //there are children question(s)...we got id and and question type from the response.
+                                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                                    Fragment myFragment = null;
+                                    String q_type = String.valueOf(response.body().getQuestionType());
+                                    Log.v("test", "from MCQ: response.body().getIsNext()-(before switch)" + String.valueOf(response.body().getQuestionType()));
+
+                                    switch (q_type) {
+                                        case "SCQ": {
+                                            myFragment = new SCQFragment();
+                                            break;
+                                        }
+                                        case "MCQ": {
+                                            myFragment = new MCQFragment();
+                                            break;
+                                        }
+                                        case "OTT": {
+                                            myFragment = new OTTFragment();
+                                            break;
+                                        }
+                                        case "SCL": {
+                                            myFragment = new SCLFragment();
+                                            break;
+                                        }
+                                        case "RNK": {
+                                            myFragment = new RNKFragment();
+                                            break;
+                                        }
+                                        case "OTN": {
+                                            myFragment = new OTNFragment();
+                                            break;
+                                        }
+                                    }
+                                    Bundle b = new Bundle();
+                                    //b.putString("q_text", mdata.get(getPosition()).getQuestionText());
+                                    b.putString("q_id", String.valueOf(response.body().getQuestionID()));
+                                    myFragment.setArguments(b);
+
+                                    Log.v("test", "from SCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
+
+                                      /*  final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        ft.replace(R.id.framelayout_container, new NewFragmentToReplace(), "NewFragmentTag");
+                                        ft.commit();*/
+                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<response> call, Throwable t) {
+                            progressDialog.dismiss();
+                        }
+                    });
+                }
+
+
             }
         });
     }
