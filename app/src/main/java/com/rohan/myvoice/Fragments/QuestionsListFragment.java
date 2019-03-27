@@ -9,8 +9,6 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,17 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.rohan.myvoice.Dashboard;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
-import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -57,7 +52,6 @@ public class QuestionsListFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView recyclerView;
     private RecyclerViewAdapterQuestionList recyclerViewAdapeter;
-    private String q_id, c_logo, q_title;
 
     ApiService api;
     String api_key;
@@ -82,22 +76,11 @@ public class QuestionsListFragment extends Fragment {
         logo = v.findViewById(R.id.company_logo);
         question_title = v.findViewById(R.id.question_text);
 
-
-       /* Toolbar mToolbar = (Toolbar) v.findViewById(R.id.toolbar);
-
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(mToolbar);*/
-
-
         mSwipeRefreshLayout = v.findViewById(R.id.swipeToRefresh);
 
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
         empty_textview = v.findViewById(R.id.empty_view);
 
-        Bundle bundle = this.getArguments();
-        q_id = bundle.get("q_id").toString();
-        c_logo = bundle.get("logo").toString();
-        q_title = bundle.get("q_title").toString();
 
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
@@ -111,6 +94,9 @@ public class QuestionsListFragment extends Fragment {
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //set the value of CURRENT_FRAG to 1
+        PublicClass.CURRENT_FRAG = 1;
+
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
         TextView t = toolbar.findViewById(R.id.title_text);
@@ -121,9 +107,7 @@ public class QuestionsListFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getFragmentManager().getBackStackEntryCount() != 0) {
-                    getFragmentManager().popBackStack();
-                }
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new HomeFragment()).commit();
             }
         });
 
@@ -134,8 +118,8 @@ public class QuestionsListFragment extends Fragment {
 
         api = RetroClient.getApiService();
 
-        Glide.with(getActivity()).load(c_logo).into(logo);
-        question_title.setText(q_title);
+        Glide.with(getActivity()).load(PublicClass.survey_logo).into(logo);
+        question_title.setText(PublicClass.survey_text);
         recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
 
         call_question_fun();
@@ -143,7 +127,7 @@ public class QuestionsListFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
+                Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), PublicClass.survey_id);
 
                 //progressDialog.show();
                 empty_textview.setVisibility(View.INVISIBLE);
@@ -157,7 +141,7 @@ public class QuestionsListFragment extends Fragment {
 
                             if (response.body().getQuestionCount().toString().equals("0")) {
 
-                                mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                                recyclerView.setVisibility(View.INVISIBLE);
                                 empty_textview.setVisibility(View.VISIBLE);
 
                             } else {
@@ -169,7 +153,6 @@ public class QuestionsListFragment extends Fragment {
                                 } else {
                                     call_question_fun();
                                 }
-
                             }
                             mSwipeRefreshLayout.setRefreshing(false);
 
@@ -177,23 +160,20 @@ public class QuestionsListFragment extends Fragment {
                             //update_token();
 
                             Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
-
+                            mSwipeRefreshLayout.setRefreshing(false);
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
                                 /* String status = jObjError.getString("detail");
                                  */
-
                                 if (jObjError.getString("message").equals("Questions not found")) {
                                     empty_textview.setVisibility(View.VISIBLE);
-                                    mSwipeRefreshLayout.setRefreshing(false);
+
+                                    recyclerView.setVisibility(View.INVISIBLE);
                                 }
+
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
                                 }
-                                //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                                //Build_alert_dialog(getApplicationContext(), "Error", status);
-
                             } catch (Exception e) {
                                 //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -204,8 +184,6 @@ public class QuestionsListFragment extends Fragment {
                     public void onFailure(Call<QuestionList> call, Throwable t) {
                         progressDialog.dismiss();
                         mSwipeRefreshLayout.setRefreshing(false);
-
-                        //  Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
             }
@@ -213,7 +191,7 @@ public class QuestionsListFragment extends Fragment {
     }
 
     public void call_question_fun() {
-        Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), q_id);
+        Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), PublicClass.survey_id);
 
         progressDialog.show();
 
@@ -234,8 +212,6 @@ public class QuestionsListFragment extends Fragment {
                         recyclerView.setAdapter(recyclerViewAdapeter);
                     }
                 } else {
-                    //update_token();
-                    //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
@@ -243,6 +219,7 @@ public class QuestionsListFragment extends Fragment {
                         if (jObjError.getString("message").equals("Questions not found")) {
                             empty_textview.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setRefreshing(false);
+                            recyclerView.setVisibility(View.INVISIBLE);
                         }
 
                         if (jObjError.getString("detail").equals("Invalid Token")) {
@@ -251,7 +228,6 @@ public class QuestionsListFragment extends Fragment {
                         mSwipeRefreshLayout.setRefreshing(false);
 
                     } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -264,7 +240,6 @@ public class QuestionsListFragment extends Fragment {
             }
         });
     }
-
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

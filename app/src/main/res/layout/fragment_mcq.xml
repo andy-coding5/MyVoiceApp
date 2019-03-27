@@ -22,7 +22,7 @@
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:fontFamily="@font/quicksand_medium"
-            android:text="Question detail here"
+
             android:textAllCaps="false"
             android:textColor="@color/grey"
             android:textSize="20sp"

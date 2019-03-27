@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
@@ -100,9 +101,7 @@ public class OTTFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getFragmentManager().getBackStackEntryCount() != 0) {
-                    getFragmentManager().popBackStack();
-                }
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
             }
         });
 
@@ -142,6 +141,10 @@ public class OTTFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        //when ever the question detail frag is there i increses the value more then 1
+        PublicClass.CURRENT_FRAG = 2;
+
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 
@@ -281,10 +284,7 @@ public class OTTFragment extends Fragment {
                                     //if IsNext = No
                                     if ("No".equals(response.body().getIsNext())) {
                                         Log.v("test","from OTT: response.body().getIsNext()"+response.body().getIsNext() );
-                                        if (getFragmentManager().getBackStackEntryCount() != 0) {
-
-                                            getFragmentManager().popBackStack();
-                                        }
+                                        getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                                     } else {
                                         //if IsNext = Yes
@@ -326,6 +326,7 @@ public class OTTFragment extends Fragment {
                                         myFragment.setArguments(b);
 
                                         Log.v("test", "from OTT: redirect to the new fragmnent :"+String.valueOf(response.body().getQuestionType()));
+
                                         activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
                                     }
                                 }

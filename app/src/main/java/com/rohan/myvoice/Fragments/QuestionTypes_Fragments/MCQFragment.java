@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,19 +21,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
@@ -50,7 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,9 +103,7 @@ public class MCQFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getFragmentManager().getBackStackEntryCount() != 0) {
-                    getFragmentManager().popBackStack();
-                }
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
             }
         });
 
@@ -147,6 +137,8 @@ public class MCQFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //when ever the question detail frag is there i increses the value more then 1
+        PublicClass.CURRENT_FRAG = 2;
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
@@ -309,9 +301,7 @@ public class MCQFragment extends Fragment {
                                 if ("No".equals(response.body().getIsNext())) {
 
                                     Log.v("test", "from MCQ: response.body().getIsNext()" + response.body().getIsNext());
-                                    if (getFragmentManager().getBackStackEntryCount() != 0) {
-                                        getFragmentManager().popBackStack();
-                                    }
+                                    getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                                 } else {
                                     //if IsNext = Yes
@@ -354,7 +344,9 @@ public class MCQFragment extends Fragment {
                                     myFragment.setArguments(b);
 
                                     Log.v("test", "from MCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
+
                                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+                                    //replace = remove and then add
                                 }
                             }
                         }

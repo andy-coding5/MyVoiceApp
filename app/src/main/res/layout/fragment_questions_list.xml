@@ -27,7 +27,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/quicksand_bold"
-            android:text="question Text here"
+
             android:textAllCaps="false"
             android:textColor="@color/grey"
             android:textSize="18sp"

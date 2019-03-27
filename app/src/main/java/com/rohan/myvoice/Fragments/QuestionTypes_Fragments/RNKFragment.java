@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.JsonObject;
+import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapter_RankOrder;
@@ -44,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -107,9 +106,7 @@ public class RNKFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getFragmentManager().getBackStackEntryCount() != 0) {
-                    getFragmentManager().popBackStack();
-                }
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
             }
         });
 
@@ -147,7 +144,9 @@ public class RNKFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        super.onActivityCreated(savedInstanceState);
+        //when ever the question detail frag is there i increses the value more then 1
+        PublicClass.CURRENT_FRAG = 2;
+
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 
@@ -315,9 +314,7 @@ public class RNKFragment extends Fragment {
                                 //if IsNext = No
                                 if ("No".equals(response.body().getIsNext())) {
                                     Log.v("test", "form RNK: response.body().getIsNext()" + response.body().getIsNext());
-                                    if (getFragmentManager().getBackStackEntryCount() != 0) {
-                                        getFragmentManager().popBackStack();
-                                    }
+                                    getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                                 } else {
                                     //if IsNext = Yes

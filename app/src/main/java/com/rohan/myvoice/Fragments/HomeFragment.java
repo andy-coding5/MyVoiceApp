@@ -9,7 +9,6 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,11 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
-import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
 import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -34,7 +31,6 @@ import com.rohan.myvoice.pojo.survey_details.Survey;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +64,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        
+
 
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_home, container, false);

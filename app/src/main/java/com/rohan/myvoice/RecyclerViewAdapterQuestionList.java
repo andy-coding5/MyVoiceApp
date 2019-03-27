@@ -79,10 +79,8 @@ public class RecyclerViewAdapterQuestionList extends RecyclerView.Adapter<Recycl
 
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
 
-
                     Fragment myFragment = null;
                     String q_type = String.valueOf(mdata.get(getPosition()).getQuestionType());
-
 
                     switch (q_type) {
                         case "SCQ": {
@@ -110,6 +108,7 @@ public class RecyclerViewAdapterQuestionList extends RecyclerView.Adapter<Recycl
                             break;
                         }
                     }
+
                     Bundle b = new Bundle();
                     b.putString("q_text", mdata.get(getPosition()).getQuestionText());
                     b.putString("q_id", mdata.get(getPosition()).getQuestionID().toString());
@@ -122,10 +121,7 @@ public class RecyclerViewAdapterQuestionList extends RecyclerView.Adapter<Recycl
 
                 }
             });
-
         }
-
-
     }
 }
 

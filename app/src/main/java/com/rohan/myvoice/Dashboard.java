@@ -14,7 +14,9 @@ import android.widget.FrameLayout;
 import com.rohan.myvoice.Fragments.ActivityFragment;
 import com.rohan.myvoice.Fragments.HomeFragment;
 import com.rohan.myvoice.Fragments.InvitationsFragment;
+import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.Fragments.SettingsFragment;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 
 public class Dashboard extends AppCompatActivity {
 
@@ -92,15 +94,20 @@ public class Dashboard extends AppCompatActivity {
 
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
-        if (count == 0) {
+        if (PublicClass.CURRENT_FRAG == 0) {
             super.onBackPressed();
             finishAffinity();       //to completely close the entire application
-            //additional code
+
         } else {
-            getSupportFragmentManager().popBackStack();
+            // it means that either we have pressed the back button from Questionlist or any of the question fragment
+            if (PublicClass.CURRENT_FRAG == 1) {      //we have pressed back button from questionlist
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new HomeFragment()).commit();
+
+            } else {
+                //we have presses back button from any of the question fragment
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
+            }
         }
 
-
-        //ViewPager source with Tab activity view; like YouTube Application ..._RV
     }
 }

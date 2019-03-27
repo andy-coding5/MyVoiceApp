@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.rohan.myvoice.Fragments.QuestionsListFragment;
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.survey_details.ProjectDatum;
 
 import java.util.List;
@@ -89,11 +90,12 @@ public class RecyclerViewAdapterSurveyList extends RecyclerView.Adapter<Recycler
 
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     Fragment myFragment = new QuestionsListFragment();
-                    Bundle b = new Bundle();
-                    b.putString("logo", mdata.get(getPosition()).getLogo());
-                    b.putString("q_title", mdata.get(getPosition()).getTitle());
-                    b.putString("q_id", String.valueOf(mdata.get(getPosition()).getId()));
-                    myFragment.setArguments(b);
+
+
+                    PublicClass.survey_id = String.valueOf(mdata.get(getPosition()).getId());
+                    PublicClass.survey_text = mdata.get(getPosition()).getTitle();
+                    PublicClass.survey_logo = mdata.get(getPosition()).getLogo();
+
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).addToBackStack(null).commit();
 
                 }
