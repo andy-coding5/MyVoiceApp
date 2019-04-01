@@ -13,10 +13,10 @@
         android:icon="@drawable/icon_activity"
         android:title="Activity" />
     <item
-        android:id="@+id/invitations"
+        android:id="@+id/notifications"
         android:enabled="true"
-        android:icon="@drawable/icon_invitations"
-        android:title="invitations" />
+        android:icon="@drawable/notification"
+        android:title="Notifications" />
     <item
         android:id="@+id/settings"
         android:enabled="true"

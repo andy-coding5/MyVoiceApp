@@ -18,6 +18,7 @@ public class ActivityListAdapter extends BaseAdapter implements StickyListHeader
 
     private Activity_tab_obj[] answer_objects;
 
+
     //private String[] que_ary;
     private LayoutInflater inflater;
     private static int k = 0;
@@ -59,6 +60,7 @@ public class ActivityListAdapter extends BaseAdapter implements StickyListHeader
         holder.text.setText(answer_objects[position].question);
         holder.ans.setText(answer_objects[position].ans);
 
+
         return convertView;
     }
 
@@ -69,6 +71,7 @@ public class ActivityListAdapter extends BaseAdapter implements StickyListHeader
             holder = new HeaderViewHolder();
             convertView = inflater.inflate(R.layout.activity_tab_header_item_layout, parent, false);
             holder.text = convertView.findViewById(R.id.text);
+            holder.company_text = convertView.findViewById(R.id.company_name_text);
             convertView.setTag(holder);
         } else {
             holder = (HeaderViewHolder) convertView.getTag();
@@ -77,23 +80,25 @@ public class ActivityListAdapter extends BaseAdapter implements StickyListHeader
         //set activity_header_item_layout text as first char in name
         String headerText = answer_objects[position].survey_title;//"" + countries[position].subSequence(0, 1).charAt(0);
 
+
         holder.text.setText(headerText);
+        holder.company_text.setText(answer_objects[position].company);
         return convertView;
     }
 
     @Override
     public long getHeaderId(int position) {
         //return the first character of the country as ID because this is what headers are based upon
-        String header = answer_objects[position].survey_title.toString().toLowerCase().trim().replace(" ", "");
-        String header_2 = header.substring(0, 4);
+        String header = answer_objects[position].logical_survey_title.toString().toLowerCase().trim().replace(" ", "");
+        String header_2 = header.substring(0, 4);       //substring of first 5 chars co that long value should not give NumberFormatexcepetion
         long r = Long.parseLong(header_2, 36);
         Log.v("header ID", "" + r);
-        return r;                           //countries[position].subSequence(0, 1).charAt(0);
+        return r;                                       //countries[position].subSequence(0, 1).charAt(0);
 
     }
 
     class HeaderViewHolder {
-        TextView text;
+        TextView text, company_text;
     }
 
     class ViewHolder {

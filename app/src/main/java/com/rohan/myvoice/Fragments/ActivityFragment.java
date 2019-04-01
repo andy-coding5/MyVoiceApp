@@ -132,6 +132,9 @@ public class ActivityFragment extends Fragment {
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
                                     call_activity_list();
+                                } else {
+                                    progressDialog.dismiss();
+                                    mSwipeRefreshLayout.setRefreshing(false);
                                 }
 
                                 //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
@@ -228,25 +231,32 @@ public class ActivityFragment extends Fragment {
                     String ans_count = response.body().getAnswerCount().toString();
                     no_ans.setText("You have answered " + ans_count + " questions");        //You have answered 7 questions
 
-                    int size = response.body().getAnswerData().size();
+                    int size = response.body().getAnswerData().size();      //no. of surveys
+
+                    //survey title array for heading grouping logic,,,send it to adapter class
+                    String[] survey_titles = new String[size];
+
                     List<AnswerDatum> answer_data = response.body().getAnswerData();
 
                     Activity_tab_obj[] ob_ary = new Activity_tab_obj[response.body().getAnswerCount()];
 
-                    String title, que_text, ans;
+                    String title, company;
                     int k = 0;
                     for (int i = 0; i < size; i++) {
 
                         title = answer_data.get(i).getTitle();
+                        company = answer_data.get(i).getCompany();
                         for (int j = 0; j < answer_data.get(i).getQuestions().size(); j++) {
                             ob_ary[k] = new Activity_tab_obj();
                             ob_ary[k].setSurvey_title(title);
+                            ob_ary[k].setCompany(company);
                             ob_ary[k].setQuestion(answer_data.get(i).getQuestions().get(j).getData().get(0).getQuestionText());
                             ob_ary[k].setAns(answer_data.get(i).getQuestions().get(j).getData().get(0).getAnswerString());
+                            ob_ary[k].setLogical_survey_title(String.valueOf(i) + title);   //for ex, is two survey has name google google then from here titles would be 1google 2google
                             k++;
-
                         }
                     }
+
 
                     ActivityListAdapter adapter = new ActivityListAdapter(getActivity(), ob_ary);
                     stickyList.setAdapter(adapter);
@@ -263,6 +273,8 @@ public class ActivityFragment extends Fragment {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                             call_activity_list();
+                        } else {
+                            progressDialog.dismiss();
                         }
 
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();

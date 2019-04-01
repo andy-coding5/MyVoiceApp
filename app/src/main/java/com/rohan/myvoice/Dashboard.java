@@ -5,15 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.rohan.myvoice.Fragments.ActivityFragment;
 import com.rohan.myvoice.Fragments.HomeFragment;
-import com.rohan.myvoice.Fragments.InvitationsFragment;
+import com.rohan.myvoice.Fragments.NotificationFragment;
 import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.Fragments.SettingsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -39,7 +37,7 @@ public class Dashboard extends AppCompatActivity {
        /* viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragments(new HomeFragment());
         viewPagerAdapter.addFragments(new ActivityFragment());
-        viewPagerAdapter.addFragments(new InvitationsFragment());
+        viewPagerAdapter.addFragments(new NotificationFragment());
         viewPagerAdapter.addFragments(new SettingsFragment());
 
         viewPager.setAdapter(viewPagerAdapter);*/
@@ -57,8 +55,8 @@ public class Dashboard extends AppCompatActivity {
                             case R.id.activity:
                                 selectedFragment = new ActivityFragment();
                                 break;
-                            case R.id.invitations:
-                                selectedFragment = new InvitationsFragment();
+                            case R.id.notifications:
+                                selectedFragment = new NotificationFragment();
                                 break;
                             case R.id.settings:
                                 selectedFragment = new SettingsFragment();
