@@ -77,7 +77,6 @@ public class HomeFragment extends Fragment {
 */
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
-
         mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
         empty_textview = v.findViewById(R.id.empty_view);
         // Set up progress before call
@@ -91,7 +90,7 @@ public class HomeFragment extends Fragment {
         editor = pref.edit();
 
         api = RetroClient.getApiService();
-//        update_token();
+        //update_token();
         return v;
     }
 
@@ -185,7 +184,7 @@ public class HomeFragment extends Fragment {
                     public void onFailure(Call<Survey> call, Throwable t) {
                         progressDialog.dismiss();
                         mSwipeRefreshLayout.setRefreshing(false);
-                        Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                        //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
                     }
                 });
             }
@@ -252,7 +251,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(Call<Survey> call, Throwable t) {
                 progressDialog.dismiss();
-                Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
 

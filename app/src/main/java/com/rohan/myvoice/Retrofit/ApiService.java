@@ -3,6 +3,7 @@ package com.rohan.myvoice.Retrofit;
 import com.rohan.myvoice.pojo.Register.Register;
 import com.rohan.myvoice.pojo.Response.response;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.activity_details.Activities;
 import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.education_details.Education;
@@ -129,5 +130,10 @@ public interface ApiService {
                                       @Field("AttributeID") String AttributeID, @Field("QuestionID") String QuestionID,
                                       @Field("ParentID") String ParentID, @Field("Response") JSONArray Response,
                                       @Field("Source") String Source, @Field("MainParentID") String MainParentID);
+
+
+    //Activity tab
+    @GET("mobileapp/api/v1/data/questions/get/activities/")
+    Call<Activities> getActivityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
 }

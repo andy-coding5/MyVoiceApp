@@ -377,8 +377,6 @@ public class SCQFragment extends Fragment {
                         }
                     });
                 }
-
-
             }
         });
     }
