@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="95dp"
+    android:layout_height="65dp"
     android:paddingBottom="5dp">
 
     <ImageView
@@ -20,6 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="E2Exel"
@@ -27,6 +28,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toTopOf="@+id/image" />
 
@@ -46,35 +48,4 @@
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/title_text" />
 
-    <Button
-        android:id="@+id/accept_btn"
-        android:layout_width="101dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-
-        android:background="@drawable/button_background_accept_invitations"
-        android:fontFamily="@font/quicksand_medium"
-        android:text="Accept"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="#fff"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/date_text"
-        app:layout_constraintTop_toBottomOf="@+id/date_text" />
-
-    <Button
-        android:id="@+id/ignore_btn"
-        android:layout_width="101dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="@font/quicksand_medium"
-        android:text="Ignore"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/grey"
-        android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@+id/accept_btn"
-        app:layout_constraintTop_toBottomOf="@+id/date_text" />
 </android.support.constraint.ConstraintLayout>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.NotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,9 +14,98 @@
         <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="185dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:dividerHeight="1dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ListView>
 
-            ></ListView>
+        <TextView
+            android:id="@+id/see_all_invitations"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:fontFamily="@font/quicksand_medium"
+            android:text="See All Invitations"
+            android:textAlignment="center"
+            android:textColor="@color/dark_blue"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/listview" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@color/lighter_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/see_all_invitations" />
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view">
+
+            <ListView
+                android:id="@+id/notification_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:divider="@null"
+                android:scrollbars="none"></ListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <TextView
+            android:id="@+id/noInvitations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="No pending invitations"
+            android:textAlignment="center"
+            android:textColor="@color/light_gery"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/listview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/listview" />
+
+
+        <TextView
+            android:id="@+id/noNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/quicksand_regular"
+            android:text="No notifications"
+            android:textAlignment="center"
+            android:textColor="@color/light_gery"
+            android:visibility="invisible"
+
+            app:layout_constraintBottom_toBottomOf="@+id/swipeToRefresh"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/swipeToRefresh" />
     </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>

@@ -42,6 +42,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
+    implementation 'com.github.ceryle:RadioRealButton:v2.1.1'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -1,5 +1,7 @@
 package com.rohan.myvoice.Retrofit;
 
+import com.rohan.myvoice.pojo.invitation_accepted_list.InvitationList_accept_list;
+import com.rohan.myvoice.pojo.Notification_details.Notifications;
 import com.rohan.myvoice.pojo.Register.Register;
 import com.rohan.myvoice.pojo.Response.response;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -8,6 +10,7 @@ import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
+import com.rohan.myvoice.pojo.invitation_details.Invite;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
@@ -16,10 +19,8 @@ import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -135,5 +136,34 @@ public interface ApiService {
     //Activity tab
     @GET("mobileapp/api/v1/data/questions/get/activities/")
     Call<Activities> getActivityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //notification tab
+    @GET("mobileapp/api/v1/notification/list/")
+    Call<Notifications> getnotificationssJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //accept the invitation
+    @GET("mobileapp/api/v1/invitation/Accept/")
+    Call<Notifications> getAcceptInvitationJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //ignore the invitation
+    @GET("mobileapp/api/v1/invitation/Ignore/")
+    Call<Notifications> getIgnoreInvitationJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+
+    //for Invite
+    @POST("mobileapp/api/v1/invite/")
+    @FormUrlEncoded
+    Call<Invite> getInviteJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                               @Field("id") String id, @Field("action") String action, @Field("Source") String Source);
+
+    //acceped invitaion list
+    @GET("mobileapp/api/v1/invitation/Accept")
+    Call<InvitationList_accept_list> getInvitaionList_accept_Json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //Pending invitaion list
+    @GET("mobileapp/api/v1/invitation/Pending")
+    Call<InvitationList_accept_list> getInvitaionList_pending_Json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+
 
 }
