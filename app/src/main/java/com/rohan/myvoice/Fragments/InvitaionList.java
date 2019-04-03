@@ -150,12 +150,9 @@ public class InvitaionList extends Fragment {
                 pending_button.setTextColor(getResources().getColor(R.color.dark_blue));
 
 
-
-
                 //call for getting the list of accepted invitations
 
                 get_accept_list_call();
-
 
 
             }
@@ -177,6 +174,9 @@ public class InvitaionList extends Fragment {
     }
 
     private void get_accept_list_call() {
+        invitation_list_view.setAdapter(null);
+
+
         Call<InvitationList_accept_list> call = api.getInvitaionList_accept_Json(api_key, "Token " + pref.getString("token", null));
 
         progressDialog.show();
@@ -189,9 +189,12 @@ public class InvitaionList extends Fragment {
 
                     invitation_list = response.body().getData();
                     //if(invitation_list!=null || invitation_list.size() == 0){
-                        ListViewAdapter_of_accepted_invitations adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
-                        invitation_list_view.setAdapter(adapter);
-                   // }
+                    ListViewAdapter_of_accepted_invitations adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
+                    //invitation_list_view.setAdapter(null);
+                   //adapter.notifyDataSetChanged();
+                    invitation_list_view.setAdapter(adapter);
+
+                    // }
 
                 } else {
                     progressDialog.dismiss();
@@ -219,6 +222,8 @@ public class InvitaionList extends Fragment {
     }
 
     private void get_pending_list_call() {
+        invitation_list_view.setAdapter(null);
+
         Call<InvitationList_accept_list> call = api.getInvitaionList_pending_Json(api_key, "Token " + pref.getString("token", null));
 
         progressDialog.show();
@@ -232,8 +237,10 @@ public class InvitaionList extends Fragment {
                     invitation_list = response.body().getData();
 
                     //if(invitation_list!=null || invitation_list.size() == 0){
-                        ListViewAdapter_of_pending_invitations adapter = new ListViewAdapter_of_pending_invitations(getActivity(), invitation_list);
-                        invitation_list_view.setAdapter(adapter);
+
+                    ListViewAdapter_of_pending_invitations adapter = new ListViewAdapter_of_pending_invitations(getActivity(), invitation_list);
+
+                    invitation_list_view.setAdapter(adapter);
                     //}
 
                 } else {
