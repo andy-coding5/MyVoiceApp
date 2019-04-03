@@ -4,7 +4,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.rohan.myvoice.pojo.user_profile.Profile;
 
-public class Data extends Error {
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class Data {
+
     @SerializedName("token")
     @Expose
     private String token;
@@ -14,24 +19,12 @@ public class Data extends Error {
     @SerializedName("last_name")
     @Expose
     private String lastName;
-
     @SerializedName("profile")
     @Expose
     private Profile profile;
-
-    //try to handle dynamiccaly when error
-    /*@SerializedName("errors")
+    @SerializedName("AskPermission")
     @Expose
-    private String errors;
-
-    public String getErrors() {
-        return errors;
-    }
-
-    public void setErrors(String  errors) {
-        this.errors = errors;
-    }
-    */
+    private String askPermission;
 
     public String getToken() {
         return token;
@@ -64,4 +57,13 @@ public class Data extends Error {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+
+    public String getAskPermission() {
+        return askPermission;
+    }
+
+    public void setAskPermission(String askPermission) {
+        this.askPermission = askPermission;
+    }
+
 }

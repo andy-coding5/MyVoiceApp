@@ -39,6 +39,4 @@ public class Login {
         this.data = data;
     }
 
-
-
 }

@@ -32,6 +32,7 @@ public class Dashboard extends AppCompatActivity {
 
         //  viewPager = findViewById(R.id.pager);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         frameLayout = findViewById(R.id.framelayout_container);
 
        /* viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -70,6 +71,7 @@ public class Dashboard extends AppCompatActivity {
                     }
                 });
 
+        //bottomNavigationView.setItemIconTintList(null);
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.framelayout_container, new HomeFragment());
@@ -82,9 +84,7 @@ public class Dashboard extends AppCompatActivity {
             return true;
         }*/
 
-
     }
-
 
     @Override
     public void onBackPressed() {

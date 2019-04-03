@@ -25,7 +25,7 @@
         android:fontFamily="@font/quicksand_medium"
         android:text="E2Exel"
         android:textColor="@color/grey"
-        android:textSize="14sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,7 +43,7 @@
         android:fontFamily="@font/quicksand_medium"
         android:text="15 apr, 2019"
         android:textColor="@color/light_gery"
-        android:textSize="13sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/title_text" />
