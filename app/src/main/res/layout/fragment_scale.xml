@@ -124,7 +124,7 @@
                     android:layout_height="50dp"
                     android:maxHeight="5dp"
                     android:minHeight="5dp"
-                    android:progressBackgroundTint="@color/light_gery"
+                    android:progressBackgroundTint="@color/light_grey"
                     android:progressDrawable="@drawable/progress_drawable"
                     android:thumb="@drawable/custom_thumb" />
             </FrameLayout>

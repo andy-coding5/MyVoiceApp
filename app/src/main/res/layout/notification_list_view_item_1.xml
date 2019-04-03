@@ -40,7 +40,7 @@
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="15 apr, 2019"
-        android:textColor="@color/light_gery"
+        android:textColor="@color/light_grey"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image"

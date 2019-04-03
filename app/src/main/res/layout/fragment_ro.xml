@@ -76,7 +76,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:gravity="center"
                 android:text="Drag from most preffered to least preffered"
-                android:textColor="@color/light_gery"
+                android:textColor="@color/light_grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/frame_view" />

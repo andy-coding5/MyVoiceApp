@@ -95,7 +95,7 @@
                 android:inputType="text|textMultiLine"
                 android:padding="10dp"
                 android:singleLine="false"
-                android:textColor="@color/light_gery"
+                android:textColor="@color/light_grey"
                 android:textSize="18sp"
                 android:scrollHorizontally="false"
 

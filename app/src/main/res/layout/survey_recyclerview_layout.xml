@@ -58,7 +58,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/quicksand_medium"
         android:text="Fabruary 15, 2019"
-        android:textColor="@color/light_gery"
+        android:textColor="@color/light_grey"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/survey_company"

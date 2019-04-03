@@ -90,7 +90,7 @@
             android:fontFamily="@font/quicksand_regular"
             android:gravity="center"
             android:text="Sorry, There are no Surveys available!"
-            android:textColor="@color/light_gery"
+            android:textColor="@color/light_grey"
             android:textSize="16sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/swipeToRefresh"

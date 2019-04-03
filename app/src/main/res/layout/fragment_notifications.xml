@@ -80,7 +80,7 @@
             android:fontFamily="@font/quicksand_regular"
             android:text="No pending invitations"
             android:textAlignment="center"
-            android:textColor="@color/light_gery"
+            android:textColor="@color/light_grey"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/listview"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,7 +98,7 @@
             android:fontFamily="@font/quicksand_regular"
             android:text="No notifications"
             android:textAlignment="center"
-            android:textColor="@color/light_gery"
+            android:textColor="@color/light_grey"
             android:visibility="invisible"
 
             app:layout_constraintBottom_toBottomOf="@+id/swipeToRefresh"

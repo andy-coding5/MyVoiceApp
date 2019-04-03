@@ -52,7 +52,7 @@
         android:text="Allow Microphone"
         android:onClick="allow_record_audio"
         android:textAllCaps="false"
-        android:textColor="@color/light_gery"
+        android:textColor="@color/light_grey"
         android:textSize="20sp" />
 
 

@@ -1,14 +1,584 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.EditProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:scrollbars="none">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/first_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="First Name"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/first_name"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="88dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/first_name_text"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/first_name" />
+
+            <TextView
+                android:id="@+id/last_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Last Name"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line1" />
+
+            <EditText
+                android:id="@+id/last_name"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="89dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/last_name_text"
+                app:layout_constraintTop_toTopOf="@id/line1" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/last_name" />
+
+            <TextView
+                android:id="@+id/country_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Country"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line2" />
+
+            <EditText
+                android:id="@+id/country"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="113dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/country_text"
+                app:layout_constraintTop_toTopOf="@id/line2" />
+
+            <ImageView
+                android:id="@+id/profile_arrow"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/country"
+                app:layout_constraintTop_toTopOf="@+id/country" />
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/country" />
+
+            <TextView
+                android:id="@+id/state_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="State"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line3" />
+
+            <EditText
+                android:id="@+id/state"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="136dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/state_text"
+                app:layout_constraintTop_toTopOf="@id/line3" />
+
+            <ImageView
+                android:id="@+id/profile_arrow1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/state"
+                app:layout_constraintTop_toTopOf="@+id/state" />
+
+            <View
+                android:id="@+id/line4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/state" />
+
+            <TextView
+                android:id="@+id/city_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="City"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line4" />
+
+            <EditText
+                android:id="@+id/city"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="147dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/city_text"
+                app:layout_constraintTop_toTopOf="@id/line4" />
+
+            <ImageView
+                android:id="@+id/profile_arrow2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/city"
+                app:layout_constraintTop_toTopOf="@+id/city" />
+
+            <View
+                android:id="@+id/line5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/city" />
+
+            <TextView
+                android:id="@+id/zip_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Zip Code"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line5" />
+
+            <EditText
+                android:id="@+id/zip"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="105dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/zip_text"
+                app:layout_constraintTop_toTopOf="@id/line5" />
+
+            <View
+                android:id="@+id/line6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/zip" />
+
+            <TextView
+                android:id="@+id/education_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Highest Qualification"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/education"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line6" />
+
+            <EditText
+                android:id="@+id/education"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/education_text"
+                app:layout_constraintTop_toTopOf="@id/line6" />
+
+            <ImageView
+                android:id="@+id/profile_arrow3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/education"
+                app:layout_constraintTop_toTopOf="@+id/education" />
+
+
+            <View
+                android:id="@+id/line7"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/education" />
+
+            <TextView
+                android:id="@+id/gender_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Gender"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/gender"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line7" />
+
+            <EditText
+                android:id="@+id/gender"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="115dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/gender_text"
+                app:layout_constraintTop_toTopOf="@id/line7" />
+
+            <ImageView
+                android:id="@+id/profile_arrow4"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/gender"
+                app:layout_constraintTop_toTopOf="@+id/gender" />
+
+            <View
+                android:id="@+id/line8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gender" />
+
+            <TextView
+                android:id="@+id/dob_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Date of Birth"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/dob"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line8" />
+
+            <EditText
+                android:id="@+id/dob"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="75dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/dob_text"
+                app:layout_constraintTop_toTopOf="@id/line8" />
+
+            <ImageView
+                android:id="@+id/profile_arrow5"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/dob"
+                app:layout_constraintTop_toTopOf="@+id/dob" />
+
+            <View
+                android:id="@+id/line9"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dob" />
+
+            <TextView
+                android:id="@+id/income_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Income"
+                android:textColor="@color/light_grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/income"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/line9" />
+
+            <EditText
+                android:id="@+id/income"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="115dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edit_text_profile_edit"
+                android:clickable="true"
+                android:editable="false"
+                android:ellipsize="end"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:singleLine="true"
+                android:textColor="@color/grey"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/income_text"
+                app:layout_constraintTop_toTopOf="@id/line9" />
+
+            <ImageView
+                android:id="@+id/profile_arrow6"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/income"
+                app:layout_constraintTop_toTopOf="@+id/income" />
+
+            <Button
+                android:id="@+id/save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="48dp"
+                android:background="@drawable/button_background"
+                android:fontFamily="@font/quicksand_medium"
+                android:paddingStart="100dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="100dp"
+                android:paddingBottom="20dp"
+                android:text="SAVE"
+                android:textColor="#fff"
+                android:textSize="21sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/income" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
 
 </FrameLayout>
