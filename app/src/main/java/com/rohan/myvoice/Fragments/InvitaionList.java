@@ -99,6 +99,9 @@ public class InvitaionList extends Fragment {
             }
         });
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
         api_key = getResources().getString(R.string.APIKEY);
 
         invitation_list = new ArrayList<>();

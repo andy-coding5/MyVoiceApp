@@ -97,6 +97,9 @@ public class ActivityFragment extends Fragment {
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.INVISIBLE);
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
         username = v.findViewById(R.id.user_name);
         no_ans = v.findViewById(R.id.no_of_answers);
         stickyList = v.findViewById(R.id.list);
@@ -257,11 +260,14 @@ public class ActivityFragment extends Fragment {
                         }
                     }
 
+                    Context context = getActivity();
 
-                    ActivityListAdapter adapter = new ActivityListAdapter(getActivity(), ob_ary);
-                    stickyList.setAdapter(adapter);
+                    if (( ob_ary != null || ob_ary.length != 0 ) && context!=null ) {
+                        ActivityListAdapter adapter = new ActivityListAdapter(context, ob_ary);
+                        stickyList.setAdapter(adapter);
 
-                    stickyList.setDivider(null);
+                        stickyList.setDivider(null);
+                    }
 
 
                 } else {

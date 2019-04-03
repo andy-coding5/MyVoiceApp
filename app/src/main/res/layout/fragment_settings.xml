@@ -1,9 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.SettingsFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/title1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/lighter_grey"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:text="GENERAL"
+                android:textAllCaps="true"
+                android:textColor="@color/light_gery"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Profile"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title1" />
+
+            <ImageView
+                android:id="@+id/profile_arrow"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/profile"
+                app:layout_constraintTop_toTopOf="@+id/profile" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile" />
+
+
+            <TextView
+                android:id="@+id/allow_notification_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Allow Push Notifications"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile" />
+
+            <TextView
+                android:id="@+id/allow_notification_ans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/quicksand_bold"
+                android:text="YES"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/profile_arrow2"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <ImageView
+                android:id="@+id/profile_arrow2"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/allow_notification_text"
+                app:layout_constraintTop_toTopOf="@+id/allow_notification_text" />
+
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/allow_notification_text" />
+
+            <TextView
+                android:id="@+id/password_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Password"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/allow_notification_text" />
+
+
+            <TextView
+                android:id="@+id/password_reset_ans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/quicksand_bold"
+                android:text="RESET"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/profile_arrow3"
+                app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+            <ImageView
+                android:id="@+id/profile_arrow3"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/password_text"
+                app:layout_constraintTop_toTopOf="@+id/password_text" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password_text" />
+
+            <TextView
+                android:id="@+id/account_verification_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Account Verification"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password_text" />
+
+            <TextView
+                android:id="@+id/account_verification_ans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/quicksand_bold"
+
+                android:text="Verified"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/account_verification_text" />
+
+            <TextView
+                android:id="@+id/delete_account_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Delete Account"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/account_verification_text" />
+
+            <ImageView
+                android:id="@+id/profile_arrow4"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/delete_account_text"
+                app:layout_constraintTop_toTopOf="@+id/delete_account_text" />
+
+            <TextView
+                android:id="@+id/title2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/lighter_grey"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:text="CONNECT"
+                android:textAllCaps="true"
+                android:textColor="@color/light_gery"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/delete_account_text" />
+
+            <TextView
+                android:id="@+id/about_us_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="About Us"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title2" />
+
+            <ImageView
+                android:id="@+id/profile_arrow5"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/about_us_text"
+                app:layout_constraintTop_toTopOf="@+id/about_us_text" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/lighter_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_us_text" />
+
+
+            <TextView
+                android:id="@+id/contact_us_text"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:gravity="center_vertical"
+                android:text="Contact Us"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/about_us_text" />
+
+            <ImageView
+                android:id="@+id/profile_arrow6"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/spinner_dropdown"
+                app:layout_constraintEnd_toEndOf="@+id/contact_us_text"
+                app:layout_constraintTop_toTopOf="@+id/contact_us_text" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="MyVoice"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contact_us_text" />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:text="Version (1.0)"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
 </FrameLayout>

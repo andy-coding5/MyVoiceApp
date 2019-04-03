@@ -107,6 +107,9 @@ public class OTNFragment extends Fragment {
             }
         });
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
         textView = v.findViewById(R.id.full_que);
         frameLayout = v.findViewById(R.id.frame_view);
         imageView = v.findViewById(R.id.image_view);

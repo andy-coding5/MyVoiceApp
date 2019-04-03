@@ -113,6 +113,9 @@ public class SCLFragment extends Fragment {
             }
         });
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
         que = v.findViewById(R.id.full_que);
         frameLayout = v.findViewById(R.id.frame_view);
         imageView = v.findViewById(R.id.image_view);

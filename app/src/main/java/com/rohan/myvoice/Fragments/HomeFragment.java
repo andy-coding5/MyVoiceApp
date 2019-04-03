@@ -31,6 +31,7 @@ import com.rohan.myvoice.pojo.survey_details.Survey;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +113,10 @@ public class HomeFragment extends Fragment {
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.INVISIBLE);
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
+        survey_list = new ArrayList<>();
         recyclerView = v.findViewById(R.id.recyclerView);
 
         api_key = getResources().getString(R.string.APIKEY);
@@ -212,13 +217,16 @@ public class HomeFragment extends Fragment {
                     } else {
                         empty_textview.setVisibility(View.INVISIBLE);
                         survey_list = response.body().getProjectData();
+                        Context context = getActivity();
 
-                        recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        if ((survey_list != null || survey_list.size() != 0) && context != null) {
+                            recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-                        recyclerView.setAdapter(recyclerViewAdapeter);
-                        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                                DividerItemDecoration.VERTICAL));
+                            recyclerView.setAdapter(recyclerViewAdapeter);
+                            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                    DividerItemDecoration.VERTICAL));
+                        }
                     }
 
                 } else {

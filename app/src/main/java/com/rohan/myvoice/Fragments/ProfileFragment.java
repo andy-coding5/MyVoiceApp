@@ -23,7 +23,7 @@ import com.rohan.myvoice.Retrofit.RetroClient;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
     View v;
     ApiService api;
@@ -32,9 +32,9 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private TextView profile_tv;
+    private TextView Edit_tv;
 
-    public SettingsFragment() {
+    public ProfileFragment() {
         // Required empty public constructor
     }
 
@@ -43,8 +43,7 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        v = inflater.inflate(R.layout.fragment_profile, container, false);
         // Set up progress before call
         progressDialog = new ProgressDialog(this.getActivity());
         progressDialog.setMax(100);
@@ -62,39 +61,38 @@ public class SettingsFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         TextView tt = toolbar.findViewById(R.id.title_text);
-        tt.setText("Settings");
+        tt.setText("Profile");
 
         ImageView back = toolbar.findViewById(R.id.back_image);
-        back.setVisibility(View.INVISIBLE);
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new SettingsFragment()).commit();
+            }
+        });
 
-        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
-        logout_btn.setText("Logout");
-        logout_btn.setVisibility(View.VISIBLE);
+        TextView edit_btn = toolbar.findViewById(R.id.logout_textview);
+        edit_btn.setText("Edit");
+        edit_btn.setPadding(0, 5,0,0);
+        edit_btn.setVisibility(View.VISIBLE);
 
-        logout_btn.setOnClickListener(new View.OnClickListener() {
+        edit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //when pressed the logout button
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new EditProfileFragment()).commit();
 
-                editor.clear();
-                editor.commit();
-                startActivity(new Intent(getActivity(), MainActivity.class));
             }
         });
 
-        profile_tv = v.findViewById(R.id.profile);
-        profile_tv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
-            }
-        });
+
     }
+
 }

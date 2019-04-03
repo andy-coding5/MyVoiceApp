@@ -111,6 +111,10 @@ public class QuestionsListFragment extends Fragment {
             }
         });
 
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
+
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 

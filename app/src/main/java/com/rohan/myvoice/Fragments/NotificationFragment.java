@@ -104,6 +104,10 @@ public class NotificationFragment extends Fragment {
 
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.INVISIBLE);
+
+        TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
+        logout_btn.setVisibility(View.INVISIBLE);
+
         invitation_list_view = v.findViewById(R.id.listview);
         notification_list_view = v.findViewById(R.id.notification_list);
         mSwipeRefreshLayout = v.findViewById(R.id.swipeToRefresh);
