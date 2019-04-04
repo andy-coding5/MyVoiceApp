@@ -915,7 +915,6 @@ public class EditProfileFragment extends Fragment {
         datePickerDialog.show();
 
 
-
     }
 
     private String age_validation(int dayOfMonth, int mon, int year) {
@@ -1074,12 +1073,14 @@ public class EditProfileFragment extends Fragment {
             } else {
                 String FcmToken = pref.getString("fcm_token", null);
                 String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+                int isPushNotification = PublicClass.isNotificationAllowed ? 1 : 0;
                 //ALL OK , SUBMIT THE DETAILS
                 Call<UpdateProfile> call = api.getUpdateProfileJson(api_key, "Token " + pref.getString("token", null),
+                        first_name_tv.getText().toString().trim(), last_name_tv.getText().toString().trim(),
                         selected_zip, country_code, state_code, selected_city,
                         education_code, gender_code, selected_dob,
                         "3", selected_salary, FcmToken, "Android",
-                        device_id, PublicClass.isNotificationAllowed.toString(), "true");
+                        device_id, isPushNotification, "true");
 
                 progressDialog.show();
 

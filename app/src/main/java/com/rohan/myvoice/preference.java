@@ -207,11 +207,12 @@ public class preference extends AppCompatActivity {
 
 
         //call
-        Call<UpdateProfile> call = api.getUpdateProfileJson(api_key, "Token " + pref.getString("token", null),
+        Call<UpdateProfile> call = api.setMyPrefJSON(api_key, "Token " + pref.getString("token", null),
+                pref.getString("username", " "), pref.getString("lastname", " "),
                 i_zip_code, i_country_code, i_state_code, i_city_name,
                 i_education_code, i_gender_code, i_dob,
                 "3", i_income, fcm_token, "Android",
-                devide_id, is_notification_allowed, "true");
+                devide_id, 0, "1", "Yes");
 
         progressDialog.show();
 
@@ -249,7 +250,7 @@ public class preference extends AppCompatActivity {
                         editor.commit();
 
                         //redirect user to dash board
-                        startActivity(new Intent(preference.this, Dashboard.class));
+                        startActivity(new Intent(preference.this, Verification.class));
                     }
                 } else {
                     //but but i can access the error body here.,

@@ -3,12 +3,14 @@ package com.rohan.myvoice.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 import com.rohan.myvoice.pojo.user_profile_settings_page.UserProfile;
 
 import org.json.JSONObject;
@@ -74,6 +77,7 @@ public class SettingsFragment extends Fragment {
         editor = pref.edit();
 
         api = RetroClient.getApiService();
+        api_key = getResources().getString(R.string.APIKEY);
 
         return v;
     }
@@ -117,6 +121,88 @@ public class SettingsFragment extends Fragment {
 
         call_user_profile();
 
+
+        allow_notification_ans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String FcmToken = pref.getString("fcm_token", null);
+                final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Allow Push Notifications?");
+                builder.setCancelable(true);
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+
+                        if (!allow_notification_ans.getText().toString().toLowerCase().equals("yes")) {
+                            Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
+                                    FcmToken, device_id, "Android", 1);
+                            progressDialog.show();
+                            call.enqueue(new Callback<UpdateProfile>() {
+                                @Override
+                                public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
+                                    if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                        progressDialog.dismiss();
+                                        dialog.cancel();
+                                        allow_notification_ans.setText("Yes");
+                                    } else {
+                                        progressDialog.dismiss();
+                                        dialog.dismiss();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<UpdateProfile> call, Throwable t) {
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        if (!allow_notification_ans.getText().toString().toLowerCase().equals("no")) {
+                            Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
+                                    FcmToken, device_id, "Android", 0);
+                            progressDialog.show();
+                            call.enqueue(new Callback<UpdateProfile>() {
+                                @Override
+                                public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
+                                    if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                        progressDialog.dismiss();
+                                        dialog.cancel();
+                                        allow_notification_ans.setText("No");
+                                    } else {
+                                        progressDialog.dismiss();
+                                        dialog.dismiss();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<UpdateProfile> call, Throwable t) {
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // Create the Alert dialog
+                AlertDialog alertDialog = builder.create();
+
+                // Show the Alert Dialog box
+                alertDialog.show();
+            }
+        });
     }
 
     private void call_user_profile() {
@@ -132,7 +218,8 @@ public class SettingsFragment extends Fragment {
 
                     PublicClass.isNotificationAllowed = response.body().getData().getProfile().getIsPushnotification();
 
-                    allow_notification_ans.setText(Boolean.toString(response.body().getData().getProfile().getIsPushnotification()).trim());
+                    String isPushNotification = response.body().getData().getProfile().getIsPushnotification() ? "Yes" : "No";
+                    allow_notification_ans.setText(isPushNotification);
                     account_verification_ans.setText(Boolean.toString(response.body().getData().getProfile().getIsVerified()).trim());
 
                 } else {

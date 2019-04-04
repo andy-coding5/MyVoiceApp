@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         //all the detils already then from getStarted,send him to the main Dashboard activity
         //Boolean temp = pref.getBoolean("isUserLoggedIn", false);
         String IsComplete = pref.getString("IsComplete", "false");
+        String IsVerified = pref.getString("isVerified", "false");
 
         if (pref.getBoolean("isUserLoggedIn", false)) {
 
@@ -46,7 +47,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, GetStarted.class));      //for filling the details
 
             } else {
-                startActivity(new Intent(this, Dashboard.class));       //redirecting to main dashboard
+                if (IsVerified.equals("true")) {
+                    startActivity(new Intent(this, Dashboard.class));       //redirecting to main dashboard
+                } else {
+                    startActivity(new Intent(this, Verification.class));       //redirecting to Verification
+                }
+
             }
         }
 

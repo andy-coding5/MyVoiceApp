@@ -140,6 +140,7 @@ public class SignIn extends AppCompatActivity {
                     Data data = response.body().getData();
                     String country_details = data.getProfile().getCountry();
                     String uname = data.getFirstName();
+                    String lastname = data.getLastName();
                     String token_response = response.body().getData().getToken();
 
                     //PUT LOGGED IN ENTRY INTO SHARED PREFERENCES
@@ -151,6 +152,8 @@ public class SignIn extends AppCompatActivity {
                     //If user(after fresh install of apk), sign in directly rather signup then signIn , Then for that scenario i have to store email and pass.!
                     editor.putString("email", email);
                     editor.putString("password", pass);
+                    editor.putString("isVerified", response.body().getData().getProfile().getIsVerified().toString());
+                    editor.putString("IsComplete", response.body().getData().getProfile().getIsComplete().toString());
 
                     editor.commit();
 
@@ -171,11 +174,16 @@ public class SignIn extends AppCompatActivity {
 
                     } else {
                         //REDIRECT USER TO THE MAIN DASHBOARD
-                        Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
-                        editor.putString("IsComplete", "true");
-                        editor.commit();
-                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
 
+                        Boolean isVerified = response.body().getData().getProfile().getIsVerified();
+                        if (isVerified) {
+                            Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
+                            editor.putString("IsComplete", "true");
+                            editor.commit();
+                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                        } else {
+                            startActivity(new Intent(getApplicationContext(), Verification.class));
+                        }
 
 
                     }

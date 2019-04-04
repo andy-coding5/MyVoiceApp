@@ -111,9 +111,12 @@ public class SignUp extends AppCompatActivity {
                         editor.putString("email", mail);
                         editor.putString("password", passwrd);
                         editor.putString("username", f_name);
+                        editor.putString("lastname", l_name);
 
                         editor.putString("token",response.body().getData().getToken());
                         editor.putBoolean("isUserLoggedIn", true);
+                        editor.putString("isVerified", "false");
+                        editor.putString("IsComplete", "false");
 
                         editor.commit();
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();

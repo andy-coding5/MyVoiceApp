@@ -11,6 +11,7 @@ import com.rohan.myvoice.pojo.country_details.Country;
 import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.invitation_details.Invite;
+import com.rohan.myvoice.pojo.resent_otp.Data;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
@@ -88,20 +89,37 @@ public interface ApiService {
     @POST("mobileapp/api/v1/user/profile/update/")
     @FormUrlEncoded
     Call<UpdateProfile> getUpdateProfileJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                             @Field("first_name") String first_name, @Field("last_name") String last_name,
                                              @Field("zipcode") String zipcode, @Field("country") String country,
                                              @Field("state") String state, @Field("city") String city,
                                              @Field("education") String education, @Field("gender") String gender,
                                              @Field("dob") String dob, @Field("nosurveysperday") String nosurveysperday,
                                              @Field("income") String income,
                                              @Field("DeviceToken") String DeviceToken, @Field("Source") String Source,
-                                             @Field("device_id") String device_id, @Field("is_pushnotification") String is_pushnotification,
+                                             @Field("device_id") String device_id, @Field("is_pushnotification") int is_pushnotification,
                                              @Field("is_complete") String is_complete);
 
+
+    //only in preference screen
+    @POST("mobileapp/api/v1/user/profile/update/")
+    @FormUrlEncoded
+    Call<UpdateProfile> setMyPrefJSON(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                      @Field("first_name") String first_name, @Field("last_name") String last_name,
+                                      @Field("zipcode") String zipcode, @Field("country") String country,
+                                      @Field("state") String state, @Field("city") String city,
+                                      @Field("education") String education, @Field("gender") String gender,
+                                      @Field("dob") String dob, @Field("nosurveysperday") String nosurveysperday,
+                                      @Field("income") String income,
+                                      @Field("DeviceToken") String DeviceToken, @Field("Source") String Source,
+                                      @Field("device_id") String device_id, @Field("is_pushnotification") int is_pushnotification,
+                                      @Field("is_complete") String is_complete, @Field("firstTimeRegister") String firstTimeRegister);
+
+    //for push notification update in settings fragment
     @POST("mobileapp/api/v1/user/profile/update/")
     @FormUrlEncoded
     Call<UpdateProfile> getPushUpdateJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                                           @Field("DeviceToken") String DeviceToken, @Field("device_id") String device_id,
-                                          @Field("is_pushnotification") String is_pushnotification );
+                                          @Field("Source") String Source, @Field("is_pushnotification") int is_pushnotification);
 
 
     //survey
@@ -174,6 +192,18 @@ public interface ApiService {
     //user profile get request used in settings fragment
     @GET("mobileapp/api/v1/user/profile/get/")
     Call<UserProfile> getUserProfile_json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //resend otp
+    @POST("mobileapp/api/v1/user/account/confirm/")
+    @FormUrlEncoded
+    Call<Data> getSubmit_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                     @Field("otp") String otp, @Field("Source") String Source);  // otp , sopurce
+
+    //resend otp
+    @POST("mobileapp/api/v1/user/account/confirm/request/")
+    @FormUrlEncoded
+    Call<Data> getresend_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                     @Field("otp") String otp, @Field("Source") String Source);  // otp , sopurce
 
 
 }

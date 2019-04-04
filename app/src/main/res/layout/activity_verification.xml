@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Verification">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/quicksand_bold"
+                android:gravity="center_horizontal"
+                android:text="Email Verification"
+                android:textColor="@android:color/black"
+                android:textSize="19sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/title"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/quicksand_medium"
+
+        android:text="we have just send code to theasdasdasdasd "
+        android:textAlignment="center"
+        android:textColor="@color/grey"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.17000002" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
+        <EditText
+            android:id="@+id/e1"
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+
+        <EditText
+            android:id="@+id/e2"
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+
+        <EditText
+            android:id="@+id/e3"
+
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+
+        <EditText
+            android:id="@+id/e4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+
+        <EditText
+            android:id="@+id/e5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+
+        <EditText
+            android:id="@+id/e6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/edit_text_otp"
+            android:cursorVisible="false"
+            android:digits="123456789"
+            android:fontFamily="@font/quicksand_medium"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:singleLine="true"
+
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:onClick="reset_password_request"
+        android:fontFamily="@font/quicksand_medium"
+        android:gravity="center"
+        android:text="Resend Code"
+        android:textAllCaps="false"
+        android:textColor="@color/dark_blue"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/quicksand_bold"
+        android:onClick="submit_otp_request"
+        android:paddingStart="100dp"
+        android:paddingEnd="100dp"
+        android:text="Submit"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/quicksand_regular"
+        android:text="Account verification is for the security of your identity or we detect a problem with your account."
+        android:textAlignment="center"
+        android:textColor="@color/light_grey"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
