@@ -18,5 +18,7 @@ public class PublicClass extends Application {
     public static String survey_text = null;
     public static String survey_logo = null;
 
+    public static Boolean isNotificationAllowed = false;
+
 
 }

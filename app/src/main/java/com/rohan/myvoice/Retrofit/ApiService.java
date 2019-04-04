@@ -16,6 +16,7 @@ import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
 import com.rohan.myvoice.pojo.survey_questions_list.QuestionList;
 import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
+import com.rohan.myvoice.pojo.user_profile_settings_page.UserProfile;
 import com.rohan.myvoice.pojo.zip_details.Zip;
 
 import org.json.JSONArray;
@@ -96,6 +97,12 @@ public interface ApiService {
                                              @Field("device_id") String device_id, @Field("is_pushnotification") String is_pushnotification,
                                              @Field("is_complete") String is_complete);
 
+    @POST("mobileapp/api/v1/user/profile/update/")
+    @FormUrlEncoded
+    Call<UpdateProfile> getPushUpdateJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                          @Field("DeviceToken") String DeviceToken, @Field("device_id") String device_id,
+                                          @Field("is_pushnotification") String is_pushnotification );
+
 
     //survey
     @GET("mobileapp/api/v1/data/project/get/list/")
@@ -164,6 +171,9 @@ public interface ApiService {
     @GET("mobileapp/api/v1/invitation/Pending")
     Call<InvitationList_accept_list> getInvitaionList_pending_Json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
+    //user profile get request used in settings fragment
+    @GET("mobileapp/api/v1/user/profile/get/")
+    Call<UserProfile> getUserProfile_json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
 
 }

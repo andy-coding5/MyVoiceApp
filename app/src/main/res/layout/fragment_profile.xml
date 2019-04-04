@@ -68,7 +68,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="First Name"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -78,13 +78,13 @@
                 android:id="@+id/last_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="95dp"
+                android:layout_marginStart="110dp"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Last Name"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/first_name"
@@ -124,7 +124,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="asdhjg@gmail.com"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -164,7 +164,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="United States"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -204,7 +204,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Boston"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -244,7 +244,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="ASOIHio"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -284,7 +284,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="0211 11"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -324,7 +324,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Technical School"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -364,7 +364,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Male"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -404,7 +404,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="12-24-1993"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -445,7 +445,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="Less Then $20,000"
+
                 android:textColor="@color/grey"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
