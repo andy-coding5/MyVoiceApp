@@ -131,6 +131,8 @@ public class EditProfileFragment extends Fragment {
         TextView tt = toolbar.findViewById(R.id.title_text);
         tt.setText("Edit Profile");
 
+        PublicClass.CURRENT_FRAG = 222;
+
         ImageView back = toolbar.findViewById(R.id.back_image);
         back.setVisibility(View.VISIBLE);
         back.setOnClickListener(new View.OnClickListener() {
@@ -1071,7 +1073,7 @@ public class EditProfileFragment extends Fragment {
             if (selected_gender.equals("not_selected") || selected_education.equals("not_selected") || selected_dob.equals("not_selected") || selected_salary.equals("not_selected")) {
                 Build_alert_dialog(getActivity(), "Incomplete Details", "Please fill all the details");
             } else {
-                String FcmToken = pref.getString("fcm_token", null);
+                String FcmToken = PublicClass.FCM_TOKEN;
                 String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
                 int isPushNotification = PublicClass.isNotificationAllowed ? 1 : 0;
                 //ALL OK , SUBMIT THE DETAILS

@@ -189,15 +189,26 @@ public class Verification extends AppCompatActivity {
 
                 } else {
                     try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            submit_otp_request(view);
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.v("otp", jObjError.toString(4));
+
+
+                        Log.v("otp", "'if contain detail' : " + jObjError.has("detail"));
+
+
+                        if(jObjError.has("detail")) {
+                            if (jObjError.getJSONObject("detail").equals("Invalid Token")) {
+                                update_token();
+                                submit_otp_request(view);
+                            }
+                        }else {
+                            String status = jObjError.getString("message");
+
+                            Log.v("otp", "'submit_otp' message: " + status);
+                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
+                            Build_alert_dialog(Verification.this, status);
                         }
-                        String status = jObjError.getString("message");
-                        //String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(Verification.this, status, status);
 
                     } catch (Exception e) {
                         //Toast.makeText(Verification.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -217,30 +228,40 @@ public class Verification extends AppCompatActivity {
 
     public void resend_otp_request(final View view) {
         clear_all();
+        hide_keyboard();
 
-        String FcmToken = pref.getString("fcm_token", null);
+        String FcmToken = PublicClass.FCM_TOKEN;
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Call<Data> call = api.getresend_otp_request(api_key, "Token " + pref.getString("token", null), FcmToken, device_id, "Android");
+        Call<Data> call = api.getresend_otp_request(api_key, "Token ll" + pref.getString("token", null), FcmToken, device_id, "Android");
         progressDialog.show();
         call.enqueue(new Callback<Data>() {
             @Override
             public void onResponse(Call<Data> call, Response<Data> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                    Log.v("otp", "resend request message: "+ response.body().getMessage());
                     Toast.makeText(Verification.this, response.body().getMessage().toString(), Toast.LENGTH_SHORT).show();
 
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.v("otp", jObjError.toString(4));
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            resend_otp_request(view);
+                        Log.v("otp", "resent otp; has details: "+jObjError.has("detail"));
+
+                        if(jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+                                submit_otp_request(view);
+                            }
                         }
-                        String status = jObjError.getString("message");
-                        //String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(Verification.this, status, status);
+                       else {
+                            String status = jObjError.getString("message");
 
+                            Log.v("otp", "'resend_otp' message: " + status);
+                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
+                            Build_alert_dialog(Verification.this, status);
+                        }
                     } catch (Exception e) {
                         Toast.makeText(Verification.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }

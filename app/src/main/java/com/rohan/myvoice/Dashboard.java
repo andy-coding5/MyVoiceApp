@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import com.rohan.myvoice.Fragments.ActivityFragment;
 import com.rohan.myvoice.Fragments.HomeFragment;
 import com.rohan.myvoice.Fragments.NotificationFragment;
+import com.rohan.myvoice.Fragments.ProfileFragment;
 import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.Fragments.SettingsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -101,7 +102,23 @@ public class Dashboard extends AppCompatActivity {
             if (PublicClass.CURRENT_FRAG == 1) {      //we have pressed back button from questionlist
                 getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new HomeFragment()).commit();
 
-            } else {
+            } else if (PublicClass.CURRENT_FRAG == 22) {
+                super.onBackPressed();
+                finishAffinity();
+            }
+
+            else if (PublicClass.CURRENT_FRAG == 221) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new SettingsFragment()).commit();
+
+            }
+
+            else if (PublicClass.CURRENT_FRAG == 222) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
+
+            }
+
+
+            else {
                 //we have presses back button from any of the question fragment
                 getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
             }

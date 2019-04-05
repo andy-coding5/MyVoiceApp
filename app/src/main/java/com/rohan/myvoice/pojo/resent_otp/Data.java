@@ -11,8 +11,7 @@ public class Data {
     @Expose
     private String message;
     @SerializedName("data")
-    @Expose
-    private com.rohan.myvoice.pojo.SignIn.Data data;
+    private String data;
 
     public String getStatus() {
         return status;
@@ -30,11 +29,11 @@ public class Data {
         this.message = message;
     }
 
-    public com.rohan.myvoice.pojo.SignIn.Data getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(com.rohan.myvoice.pojo.SignIn.Data data) {
+    public void setData(String data) {
         this.data = data;
     }
 }

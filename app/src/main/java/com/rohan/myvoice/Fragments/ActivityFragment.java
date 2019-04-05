@@ -24,13 +24,16 @@ import com.rohan.myvoice.R;
 import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.Verification;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.activity_details.Activities;
 import com.rohan.myvoice.pojo.activity_details.AnswerDatum;
 import com.rohan.myvoice.pojo.survey_details.Survey;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +55,7 @@ public class ActivityFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private TextView username, no_ans;
+    private TextView username, no_ans, not_answers_tv;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private StickyListHeadersListView stickyList;
@@ -103,6 +106,9 @@ public class ActivityFragment extends Fragment {
         username = v.findViewById(R.id.user_name);
         no_ans = v.findViewById(R.id.no_of_answers);
         stickyList = v.findViewById(R.id.list);
+
+        not_answers_tv = v.findViewById(R.id.no_ansers_textview);
+        not_answers_tv.setVisibility(View.INVISIBLE);
 
         api_key = getResources().getString(R.string.APIKEY);
 
@@ -269,27 +275,56 @@ public class ActivityFragment extends Fragment {
                         stickyList.setDivider(null);
                     }
 
+                    if(response.body().getAnswerCount() == 0){
+                        not_answers_tv.setVisibility(View.VISIBLE);
+                    }
+
 
                 } else {
                     Log.v("test", "in else");
                     try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        JSONObject jObjError = null;
+                        try {
+                            jObjError = new JSONObject(response.errorBody().string());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
+
+                        /*if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                             call_activity_list();
                         } else {
                             progressDialog.dismiss();
-                        }
+                        }*/
 
-                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                        if(jObjError.has("detail")) {
+
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token();
+                                    call_activity_list();
+                                }
+
+                        }
+                        else {
+                            String status = null;
+
+                            status = jObjError.getString("message");
+
+                            not_answers_tv.setVisibility(View.VISIBLE);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
-                    } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
                 }
             }
 

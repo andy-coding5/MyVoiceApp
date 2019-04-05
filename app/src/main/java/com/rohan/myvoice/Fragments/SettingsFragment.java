@@ -101,12 +101,40 @@ public class SettingsFragment extends Fragment {
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //when pressed the logout button
-                editor.clear();
-                editor.commit();
-                startActivity(new Intent(getActivity(), MainActivity.class));
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Do you want to logout?");
+                builder.setCancelable(true);
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        //when pressed the logout button
+                        dialog.dismiss();
+                        editor.clear();
+                        editor.commit();
+                        startActivity(new Intent(getActivity(), MainActivity.class));
+
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                // Create the Alert dialog
+                AlertDialog alertDialog = builder.create();
+
+                // Show the Alert Dialog box
+                alertDialog.show();
             }
         });
+
 
         profile_tv = v.findViewById(R.id.profile);
         profile_tv.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +143,8 @@ public class SettingsFragment extends Fragment {
                 getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
             }
         });
+
+        PublicClass.CURRENT_FRAG = 22;
 
         allow_notification_ans = v.findViewById(R.id.allow_notification_ans);
         account_verification_ans = v.findViewById(R.id.account_verification_ans);
@@ -126,7 +156,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final String FcmToken = pref.getString("fcm_token", null);
+                final String FcmToken = PublicClass.FCM_TOKEN;
                 final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

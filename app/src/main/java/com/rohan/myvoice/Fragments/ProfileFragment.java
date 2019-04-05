@@ -79,6 +79,9 @@ public class ProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+        PublicClass.CURRENT_FRAG = 221;
+
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         TextView tt = toolbar.findViewById(R.id.title_text);
         tt.setText("Profile");
@@ -142,7 +145,7 @@ public class ProfileFragment extends Fragment {
             editor.commit();
         }
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), PublicClass.FCM_TOKEN,
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();

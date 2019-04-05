@@ -129,6 +129,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //without the title
+    public static void Build_alert_dialog(final Context context, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+        alertDialog.setCancelable(true);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
