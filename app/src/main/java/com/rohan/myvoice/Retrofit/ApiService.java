@@ -194,16 +194,16 @@ public interface ApiService {
     Call<UserProfile> getUserProfile_json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
     //resend otp
-    @POST("mobileapp/api/v1/user/account/confirm/")
+    @POST("accounts/api/v1/user/account/confirm/")
     @FormUrlEncoded
     Call<Data> getSubmit_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                                      @Field("otp") String otp, @Field("Source") String Source);  // otp , sopurce
 
     //resend otp
-    @POST("mobileapp/api/v1/user/account/confirm/request/")
+    @POST("accounts/api/v1/user/account/confirm/request/")
     @FormUrlEncoded
     Call<Data> getresend_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
-                                     @Field("otp") String otp, @Field("Source") String Source);  // otp , sopurce
-
+                                     @Field("DeviceToken") String DeviceToken, @Field("device_id") String device_id,
+                                     @Field("Source") String Source);
 
 }

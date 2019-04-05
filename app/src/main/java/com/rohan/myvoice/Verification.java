@@ -3,19 +3,36 @@ package com.rohan.myvoice;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.SignIn.Login;
+import com.rohan.myvoice.pojo.resent_otp.Data;
+
+import org.json.JSONObject;
+
+import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class Verification extends AppCompatActivity {
 
@@ -71,7 +88,7 @@ public class Verification extends AppCompatActivity {
                 // with KeyEvent.KEYCODE_
                 if (keyCode == KeyEvent.KEYCODE_DEL) {
                     // this is for backspace
-                   clear_all();
+                    clear_all();
                 }
                 return false;
             }
@@ -149,12 +166,150 @@ public class Verification extends AppCompatActivity {
 
     }
 
-    public void submit_otp_request(View view) {
+    public void submit_otp_request(final View view) {
+        String otp = e1.getText().toString().trim() +
+                e2.getText().toString().trim() +
+                e3.getText().toString().trim() +
+                e4.getText().toString().trim() +
+                e5.getText().toString().trim() +
+                e6.getText().toString().trim();
+
+
+        Call<Data> call = api.getSubmit_otp_request(api_key, "Token " + pref.getString("token", null), otp, "Android");
+        progressDialog.show();
+        call.enqueue(new Callback<Data>() {
+            @Override
+            public void onResponse(Call<Data> call, Response<Data> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+
+                    editor.putString("isVerified", "true");
+                    editor.commit();
+                    startActivity(new Intent(Verification.this, Dashboard.class));
+
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            submit_otp_request(view);
+                        }
+                        String status = jObjError.getString("message");
+                        //String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(Verification.this, status, status);
+
+                    } catch (Exception e) {
+                        //Toast.makeText(Verification.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Data> call, Throwable t) {
+
+                progressDialog.dismiss();
+            }
+        });
+
+
     }
 
-    public void reset_password_request(View view) {
+    public void resend_otp_request(final View view) {
+        clear_all();
+
+        String FcmToken = pref.getString("fcm_token", null);
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Call<Data> call = api.getresend_otp_request(api_key, "Token " + pref.getString("token", null), FcmToken, device_id, "Android");
+        progressDialog.show();
+        call.enqueue(new Callback<Data>() {
+            @Override
+            public void onResponse(Call<Data> call, Response<Data> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                    Toast.makeText(Verification.this, response.body().getMessage().toString(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                        if (jObjError.getString("detail").equals("Invalid Token")) {
+                            update_token();
+                            resend_otp_request(view);
+                        }
+                        String status = jObjError.getString("message");
+                        //String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(Verification.this, status, status);
+
+                    } catch (Exception e) {
+                        Toast.makeText(Verification.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Data> call, Throwable t) {
+
+                progressDialog.dismiss();
+            }
+        });
     }
 
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        progressDialog.show();
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    //call_api_coutry();
+                } else {
+                    //but but i can access the error body here.,
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        String status = jObjError.getString("message");
+                        String error_msg = jObjError.getJSONObject("data").getString("errors");
+                        Build_alert_dialog(Verification.this, status, error_msg);
+
+                    } catch (Exception e) {
+                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+    }
 
     class GenericTextWatcher implements TextWatcher {
         private View view;
@@ -220,10 +375,9 @@ public class Verification extends AppCompatActivity {
         }
 
 
-
     }
 
-    public void clear_all(){
+    public void clear_all() {
         //backspace pressed
         e1.getText().clear();
         e2.getText().clear();
