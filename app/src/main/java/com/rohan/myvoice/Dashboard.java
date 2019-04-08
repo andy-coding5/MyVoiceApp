@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import com.rohan.myvoice.Fragments.ActivityFragment;
 import com.rohan.myvoice.Fragments.HomeFragment;
 import com.rohan.myvoice.Fragments.NotificationFragment;
-import com.rohan.myvoice.Fragments.ProfileFragment;
+import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
 import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.Fragments.SettingsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -52,15 +52,19 @@ public class Dashboard extends AppCompatActivity {
                         Fragment selectedFragment = null;
                         switch (item.getItemId()) {
                             case R.id.home_menu_item:
+                                item.setChecked(true);
                                 selectedFragment = new HomeFragment();
                                 break;
                             case R.id.activity_menu_item:
+                                item.setChecked(true);
                                 selectedFragment = new ActivityFragment();
                                 break;
                             case R.id.notifications_menu_item:
+                                item.setChecked(true);
                                 selectedFragment = new NotificationFragment();
                                 break;
                             case R.id.settings_menu_item:
+                                item.setChecked(true);
                                 selectedFragment = new SettingsFragment();
                                 break;
                         }
@@ -105,20 +109,13 @@ public class Dashboard extends AppCompatActivity {
             } else if (PublicClass.CURRENT_FRAG == 22) {
                 super.onBackPressed();
                 finishAffinity();
-            }
-
-            else if (PublicClass.CURRENT_FRAG == 221) {
+            } else if (PublicClass.CURRENT_FRAG == 221) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new SettingsFragment()).commit();
 
-            }
-
-            else if (PublicClass.CURRENT_FRAG == 222) {
+            } else if (PublicClass.CURRENT_FRAG == 222) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
 
-            }
-
-
-            else {
+            } else {
                 //we have presses back button from any of the question fragment
                 getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
             }

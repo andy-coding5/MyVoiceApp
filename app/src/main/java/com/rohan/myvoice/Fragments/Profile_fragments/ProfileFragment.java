@@ -1,9 +1,9 @@
-package com.rohan.myvoice.Fragments;
+package com.rohan.myvoice.Fragments.Profile_fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -17,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.Fragments.SettingsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
-import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -148,7 +148,11 @@ public class ProfileFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), PublicClass.FCM_TOKEN,
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -183,17 +187,6 @@ public class ProfileFragment extends Fragment {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-
-                    } catch (Exception e) {
-                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
                 }
             }
 

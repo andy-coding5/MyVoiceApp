@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments.QuestionTypes_Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -154,10 +155,244 @@ public class MCQFragment extends Fragment {
         selected_options = new ArrayList<>();
         selected_options_keys = new ArrayList<>();
 
+        load_question();
+
+        submit_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+
+                submit_call();
+
+
+            }
+        });
+    }
+
+    private void submit_call() {
+        Log.d("check_box", selected_options.toString());
+
+        //first make a map of key value pair
+                /*Map<String, String> final_map = new HashMap<>();
+                for (int i = 0; i < selected_options.size(); i++) {
+                    final_map.put(selected_options_keys.get(i), selected_options.get(i));
+                }*/
+        JSONArray ja = new JSONArray();      //main parent
+
+
+        for (int i = 0; i < selected_options.size(); i++) {
+            JSONObject jo = new JSONObject();
+
+            try {
+                jo.put("Key", selected_options_keys.get(i));
+                jo.put("Value", selected_options.get(i));
+                ja.put(jo);
+                Log.v("final_json", ja.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        if (ja.length() > 0) {
+
+            Call<response> call1 = api.getMCQResponseJson(api_key, "Token " + pref.getString("token", null),
+                    data.getAttributeID().toString(), data.getQuestionID().toString(),
+                    data.getParentID().toString(), ja,
+                    "Android", PublicClass.MainParentID.trim());
+
+            if(!((Activity) getActivity()).isFinishing())
+            {
+                //show dialog
+                progressDialog.show();
+            }
+
+            call1.enqueue(new Callback<response>() {
+                @Override
+                public void onResponse(Call<response> call, Response<response> response) {
+
+                    if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                        progressDialog.dismiss();
+                        //if IsNext = No
+
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                            if (jObjError.has("detail")) {
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token_submit();
+
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+                        if ("No".equals(response.body().getIsNext())) {
+
+                            Log.v("test", "from MCQ: response.body().getIsNext()" + response.body().getIsNext());
+                            getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
+
+                        } else {
+                            //if IsNext = Yes
+                            //there are children question(s)...we got id and and question type from the response.
+                            AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                            Fragment myFragment = null;
+                            String q_type = String.valueOf(response.body().getQuestionType());
+                            Log.v("test", "from MCQ: response.body().getIsNext()-(before switch)" + String.valueOf(response.body().getQuestionType()));
+
+
+                            switch (q_type) {
+                                case "SCQ": {
+                                    myFragment = new SCQFragment();
+                                    break;
+                                }
+                                case "MCQ": {
+                                    myFragment = new MCQFragment();
+                                    break;
+                                }
+                                case "OTT": {
+                                    myFragment = new OTTFragment();
+                                    break;
+                                }
+                                case "SCL": {
+                                    myFragment = new SCLFragment();
+                                    break;
+                                }
+                                case "RNK": {
+                                    myFragment = new RNKFragment();
+                                    break;
+                                }
+                                case "OTN": {
+                                    myFragment = new OTNFragment();
+                                    break;
+                                }
+                            }
+                            Bundle b = new Bundle();
+                            //b.putString("q_text", mdata.get(getPosition()).getQuestionText());
+                            b.putString("q_id", String.valueOf(response.body().getQuestionID()));
+                            myFragment.setArguments(b);
+
+                            Log.v("test", "from MCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
+
+                            activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+                            //replace = remove and then add
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<response> call, Throwable t) {
+                    progressDialog.dismiss();
+                }
+            });
+        }
+    }
+
+    private void update_token_submit() {
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    submit_call();
+                    //call_api_coutry();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+    }
+
+    private void update_token_que() {
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+
+                    load_question();
+                    //call_api_coutry();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+    }
+
+    private void load_question() {
         Call<QuestionDetail> call = api.getSCQ_MCQ_RNKJson(api_key, "Token " + pref.getString("token", null), q_id);
 
-        progressDialog.show();
-
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
         call.enqueue(new Callback<QuestionDetail>() {
             @Override
             public void onResponse(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Response<QuestionDetail> response) {
@@ -240,8 +475,11 @@ public class MCQFragment extends Fragment {
                         /* String status = jObjError.getString("detail");
                          */
                         //call update token function only when Error is "Invalid token" received form the server
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_que();
+
+                            }
                         }
 
                     } catch (Exception e) {
@@ -250,118 +488,9 @@ public class MCQFragment extends Fragment {
                 }
             }
 
-
             @Override
             public void onFailure(Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call, Throwable t) {
                 progressDialog.dismiss();
-            }
-        });
-
-        submit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-
-                Log.d("check_box", selected_options.toString());
-
-                //first make a map of key value pair
-                /*Map<String, String> final_map = new HashMap<>();
-                for (int i = 0; i < selected_options.size(); i++) {
-                    final_map.put(selected_options_keys.get(i), selected_options.get(i));
-                }*/
-                JSONArray ja = new JSONArray();      //main parent
-
-
-                for (int i = 0; i < selected_options.size(); i++) {
-                    JSONObject jo = new JSONObject();
-
-                    try {
-                        jo.put("Key", selected_options_keys.get(i));
-                        jo.put("Value", selected_options.get(i));
-                        ja.put(jo);
-                        Log.v("final_json", ja.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                if (ja.length() > 0) {
-
-                    Call<response> call1 = api.getMCQResponseJson(api_key, "Token " + pref.getString("token", null),
-                            data.getAttributeID().toString(), data.getQuestionID().toString(),
-                            data.getParentID().toString(), ja,
-                            "Android", PublicClass.MainParentID.trim());
-
-                    progressDialog.show();
-
-                    call1.enqueue(new Callback<response>() {
-                        @Override
-                        public void onResponse(Call<response> call, Response<response> response) {
-
-                            if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
-                                progressDialog.dismiss();
-                                //if IsNext = No
-                                if ("No".equals(response.body().getIsNext())) {
-
-                                    Log.v("test", "from MCQ: response.body().getIsNext()" + response.body().getIsNext());
-                                    getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
-
-                                } else {
-                                    //if IsNext = Yes
-                                    //there are children question(s)...we got id and and question type from the response.
-                                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                                    Fragment myFragment = null;
-                                    String q_type = String.valueOf(response.body().getQuestionType());
-                                    Log.v("test", "from MCQ: response.body().getIsNext()-(before switch)" + String.valueOf(response.body().getQuestionType()));
-
-
-                                    switch (q_type) {
-                                        case "SCQ": {
-                                            myFragment = new SCQFragment();
-                                            break;
-                                        }
-                                        case "MCQ": {
-                                            myFragment = new MCQFragment();
-                                            break;
-                                        }
-                                        case "OTT": {
-                                            myFragment = new OTTFragment();
-                                            break;
-                                        }
-                                        case "SCL": {
-                                            myFragment = new SCLFragment();
-                                            break;
-                                        }
-                                        case "RNK": {
-                                            myFragment = new RNKFragment();
-                                            break;
-                                        }
-                                        case "OTN": {
-                                            myFragment = new OTNFragment();
-                                            break;
-                                        }
-                                    }
-                                    Bundle b = new Bundle();
-                                    //b.putString("q_text", mdata.get(getPosition()).getQuestionText());
-                                    b.putString("q_id", String.valueOf(response.body().getQuestionID()));
-                                    myFragment.setArguments(b);
-
-                                    Log.v("test", "from MCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
-
-                                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
-                                    //replace = remove and then add
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<response> call, Throwable t) {
-                            progressDialog.dismiss();
-                        }
-                    });
-                }
-
-
             }
         });
     }
@@ -396,60 +525,4 @@ public class MCQFragment extends Fragment {
         };
     }
 
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
-        ApiService api = RetroClient.getApiService();
-
-        //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
-            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
-            editor.commit();
-        }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
-                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
-
-        progressDialog.show();
-
-        call.enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                progressDialog.dismiss();
-
-                if (response.isSuccessful()) {
-                    //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
-
-                    editor.commit();
-                    Log.d("token", "Token " + pref.getString("token", null));
-
-                    Map<String, ?> allEntries = pref.getAll();
-                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                    }
-
-                    //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-
-                    } catch (Exception e) {
-                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-                progressDialog.dismiss();
-                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
-            }
-        });
-
-    }
 }

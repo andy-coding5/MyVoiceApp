@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
@@ -100,14 +102,16 @@ public class SettingsFragment extends Fragment {
         logout_btn.setVisibility(View.VISIBLE);
 
         //select the home button (so color is now blue) and the
-        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        /*BottomNavigationView bv = getActivity().findViewById(R.id.bottom_navigation);
         //bv.getMenu().getItem(0).setChecked(true);
-        bv.setSelectedItemId(R.id.settings_menu_item);
+        bv.setSelectedItemId(R.id.settings_menu_item);*/
+
+        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.getMenu().findItem(R.id.settings_menu_item).setChecked(true);
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("Do you want to logout?");
@@ -137,7 +141,10 @@ public class SettingsFragment extends Fragment {
                 AlertDialog alertDialog = builder.create();
 
                 // Show the Alert Dialog box
-                alertDialog.show();
+                if (!((Activity) getActivity()).isFinishing()) {
+                    //show dialog
+                    alertDialog.show();
+                }
             }
         });
 
@@ -177,7 +184,10 @@ public class SettingsFragment extends Fragment {
                         if (!allow_notification_ans.getText().toString().toLowerCase().equals("yes")) {
                             Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
                                     FcmToken, device_id, "Android", 1);
-                            progressDialog.show();
+                            if (!((Activity) getActivity()).isFinishing()) {
+                                //show dialog
+                                progressDialog.show();
+                            }
                             call.enqueue(new Callback<UpdateProfile>() {
                                 @Override
                                 public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
@@ -208,7 +218,10 @@ public class SettingsFragment extends Fragment {
                         if (!allow_notification_ans.getText().toString().toLowerCase().equals("no")) {
                             Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
                                     FcmToken, device_id, "Android", 0);
-                            progressDialog.show();
+                            if (!((Activity) getActivity()).isFinishing()) {
+                                //show dialog
+                                progressDialog.show();
+                            }
                             call.enqueue(new Callback<UpdateProfile>() {
                                 @Override
                                 public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
@@ -236,7 +249,10 @@ public class SettingsFragment extends Fragment {
                 AlertDialog alertDialog = builder.create();
 
                 // Show the Alert Dialog box
-                alertDialog.show();
+                if (!((Activity) getActivity()).isFinishing()) {
+                    //show dialog
+                    alertDialog.show();
+                }
             }
         });
     }
@@ -244,7 +260,10 @@ public class SettingsFragment extends Fragment {
     private void call_user_profile() {
 
         Call<UserProfile> call = api.getUserProfile_json(api_key, "Token " + pref.getString("token", null));
-        progressDialog.show();
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<UserProfile>() {
             @Override
@@ -256,7 +275,8 @@ public class SettingsFragment extends Fragment {
 
                     String isPushNotification = response.body().getData().getProfile().getIsPushnotification() ? "Yes" : "No";
                     allow_notification_ans.setText(isPushNotification);
-                    account_verification_ans.setText(Boolean.toString(response.body().getData().getProfile().getIsVerified()).trim());
+                    String acc_verificaiton_status = response.body().getData().getProfile().getIsVerified() ? "Yes" : "No";
+                    account_verification_ans.setText(acc_verificaiton_status);
 
                 } else {
                     try {
@@ -265,9 +285,11 @@ public class SettingsFragment extends Fragment {
                          */
 
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            call_user_profile();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+
+                            }
                         }
 
                     } catch (Exception e) {
@@ -296,7 +318,10 @@ public class SettingsFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        progressDialog.show();
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -314,18 +339,8 @@ public class SettingsFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
+                    call_user_profile();
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-
-                    } catch (Exception e) {
-                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
                 }
             }
 

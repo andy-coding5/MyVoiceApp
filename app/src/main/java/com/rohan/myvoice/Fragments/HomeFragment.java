@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -118,9 +119,11 @@ public class HomeFragment extends Fragment {
         logout_btn.setVisibility(View.INVISIBLE);
 
         //select the home button (so color is now blue) and the
-        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        /*BottomNavigationView bv = getActivity().findViewById(R.id.bottom_navigation);
         //bv.getMenu().getItem(0).setChecked(true);
-        bv.setSelectedItemId(R.id.home_menu_item);
+        bv.setSelectedItemId(R.id.home_menu_item);*/
+        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.getMenu().findItem(R.id.home_menu_item).setChecked(true);
 
         survey_list = new ArrayList<>();
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -207,11 +210,16 @@ public class HomeFragment extends Fragment {
     private void call_function() {
         Call<Survey> call = api.getSurveyJson(api_key, "Token " + pref.getString("token", null));
         Log.d("token_detail", "used for server list: " + pref.getString("token", null));
-        progressDialog.show();
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
+
 
         call.enqueue(new Callback<Survey>() {
             @Override
             public void onResponse(Call<Survey> call, Response<Survey> response) {
+
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
                     if (response.body().getProjectData().size() == 0) {
@@ -241,11 +249,12 @@ public class HomeFragment extends Fragment {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            call_function();
-                        }
-                        if (response.body().getMessage().equals("Survey not found")) {
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+
+                            }
+                        } else if (response.body().getMessage().equals("Survey not found")) {
                             recyclerView.setVisibility(View.INVISIBLE);
 
                             empty_textview.setVisibility(View.VISIBLE);
@@ -302,16 +311,10 @@ public class HomeFragment extends Fragment {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-                    } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+
+                    call_function();
+
+
                 }
             }
 

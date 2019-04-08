@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -180,8 +181,11 @@ public class QuestionsListFragment extends Fragment {
                                     recyclerView.setVisibility(View.INVISIBLE);
                                 }
 
-                                if (jObjError.getString("detail").equals("Invalid Token")) {
-                                    update_token();
+                                if (jObjError.has("detail")) {
+                                    if (jObjError.getString("detail").equals("Invalid Token")) {
+                                        update_token();
+
+                                    }
                                 }
                             } catch (Exception e) {
                                 //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -202,7 +206,11 @@ public class QuestionsListFragment extends Fragment {
     public void call_question_fun() {
         Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), PublicClass.survey_id);
 
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<QuestionList>() {
             @Override
@@ -228,14 +236,17 @@ public class QuestionsListFragment extends Fragment {
                         /* String status = jObjError.getString("detail");
                          */
                         if (jObjError.getString("message").equals("Questions not found")) {
-                           // empty_textview.setVisibility(View.VISIBLE);
+                            // empty_textview.setVisibility(View.VISIBLE);
                             no_survey_imageview.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setRefreshing(false);
                             recyclerView.setVisibility(View.INVISIBLE);
                         }
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+
+                            }
                         }
                         mSwipeRefreshLayout.setRefreshing(false);
 
@@ -248,7 +259,7 @@ public class QuestionsListFragment extends Fragment {
             public void onFailure(Call<QuestionList> call, Throwable t) {
                 progressDialog.dismiss();
                 mSwipeRefreshLayout.setRefreshing(false);
-                Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
     }
@@ -267,7 +278,11 @@ public class QuestionsListFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -278,6 +293,7 @@ public class QuestionsListFragment extends Fragment {
                     //editor = pref.edit();
                     editor.putString("token", response.body().getData().getToken());
 
+
                     editor.commit();
                     Log.d("token", "Token " + pref.getString("token", null));
 
@@ -286,18 +302,9 @@ public class QuestionsListFragment extends Fragment {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-
-                    } catch (Exception e) {
-                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                    call_question_fun();
                 }
+
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -57,7 +58,7 @@ public class InvitaionList extends Fragment {
     private List<com.rohan.myvoice.pojo.invitation_accepted_list.Datum> invitation_list;
     private ListView invitation_list_view;
     Button pending_button, accepted_button;
-    Button test_b;
+    TextView no_pending_tv, no_accepted_tv;
 
     public InvitaionList() {
         // Required empty public constructor
@@ -113,6 +114,11 @@ public class InvitaionList extends Fragment {
 
         pending_button = v.findViewById(R.id.p_b);
         accepted_button = v.findViewById(R.id.a_b);
+
+        no_pending_tv = v.findViewById(R.id.no_pending_textview);
+        no_pending_tv.setVisibility(View.INVISIBLE);
+        no_accepted_tv = v.findViewById(R.id.no_accepted_textview);
+        no_accepted_tv.setVisibility(View.INVISIBLE);
 
         // test_b = v.findViewById(R.id.test);
 
@@ -178,12 +184,19 @@ public class InvitaionList extends Fragment {
     }
 
     private void get_accept_list_call() {
+
+        no_pending_tv.setVisibility(View.INVISIBLE);
+        no_accepted_tv.setVisibility(View.INVISIBLE);
+
         invitation_list_view.setAdapter(null);
 
 
         Call<InvitationList_accept_list> call = api.getInvitaionList_accept_Json(api_key, "Token " + pref.getString("token", null));
 
-        progressDialog.show();
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<InvitationList_accept_list>() {
             @Override
@@ -193,9 +206,10 @@ public class InvitaionList extends Fragment {
 
                     invitation_list = response.body().getData();
                     //if(invitation_list!=null || invitation_list.size() == 0){
+
                     ListViewAdapter_of_accepted_invitations adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
                     //invitation_list_view.setAdapter(null);
-                   //adapter.notifyDataSetChanged();
+                    //adapter.notifyDataSetChanged();
                     invitation_list_view.setAdapter(adapter);
 
                     invitation_list_view.setOnTouchListener(new View.OnTouchListener() {
@@ -204,6 +218,7 @@ public class InvitaionList extends Fragment {
                             return false;
                         }
                     });
+
 
                     // }
 
@@ -214,10 +229,17 @@ public class InvitaionList extends Fragment {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            get_accept_list_call();
+
+
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_accept();
+
+                            }
                         }
+
+                            no_accepted_tv.setVisibility(View.VISIBLE);
+
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -233,11 +255,17 @@ public class InvitaionList extends Fragment {
     }
 
     private void get_pending_list_call() {
+        no_pending_tv.setVisibility(View.INVISIBLE);
+        no_accepted_tv.setVisibility(View.INVISIBLE);
+
         invitation_list_view.setAdapter(null);
 
         Call<InvitationList_accept_list> call = api.getInvitaionList_pending_Json(api_key, "Token " + pref.getString("token", null));
 
-        progressDialog.show();
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<InvitationList_accept_list>() {
             @Override
@@ -247,24 +275,33 @@ public class InvitaionList extends Fragment {
 
                     invitation_list = response.body().getData();
 
-                    //if(invitation_list!=null || invitation_list.size() == 0){
-
                     ListViewAdapter_of_pending_invitations adapter = new ListViewAdapter_of_pending_invitations(getActivity(), invitation_list);
 
                     invitation_list_view.setAdapter(adapter);
+
                     //}
 
                 } else {
                     progressDialog.dismiss();
 
                     try {
+
+
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            get_accept_list_call();
+
+
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_pending();
+
+                            }
                         }
+
+
+                            no_pending_tv.setVisibility(View.VISIBLE);
+
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -275,6 +312,104 @@ public class InvitaionList extends Fragment {
             @Override
             public void onFailure(Call<InvitationList_accept_list> call, Throwable t) {
                 progressDialog.dismiss();
+            }
+        });
+    }
+
+    private void update_token_pending() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+        Log.d("update_token", "login called");
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    //call_api_coutry();
+                    get_pending_list_call();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+    }
+
+    private void update_token_accept() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+        Log.d("update_token", "login called");
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    //call_api_coutry();
+                    get_accept_list_call();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
     }
@@ -347,7 +482,10 @@ public class InvitaionList extends Fragment {
         private void invitation_operation(final String idOfInvitaiton, final String operation) {
             Call<Invite> call = api.getInviteJson(api_key, "Token " + pref.getString("token", null),
                     idOfInvitaiton, operation, "Android");
-            progressDialog.show();
+            if (!((Activity) getActivity()).isFinishing()) {
+                //show dialog
+                progressDialog.show();
+            }
             call.enqueue(new Callback<Invite>() {
                 @Override
                 public void onResponse(Call<Invite> call, Response<Invite> response) {
@@ -369,9 +507,11 @@ public class InvitaionList extends Fragment {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
                             /* String status = jObjError.getString("detail");
                              */
-                            if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token();
-                                invitation_operation(idOfInvitaiton, operation);
+                            if (jObjError.has("detail")) {
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token_invitation_operation(idOfInvitaiton, operation);
+
+                                }
                             }
                         } catch (Exception e) {
                             //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -386,6 +526,54 @@ public class InvitaionList extends Fragment {
                 }
             });
 
+        }
+
+        private void update_token_invitation_operation(final String idOfInvitaiton, final String operation) {
+
+            ApiService api = RetroClient.getApiService();
+
+            //if fcm token is null then do not write in shared pref!
+            if (PublicClass.FCM_TOKEN != null) {
+                editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+                editor.commit();
+            }
+
+            Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                    "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+            if (!((Activity) getActivity()).isFinishing()) {
+                //show dialog
+                progressDialog.show();
+            }
+
+            call.enqueue(new Callback<Login>() {
+                @Override
+                public void onResponse(Call<Login> call, Response<Login> response) {
+                    progressDialog.dismiss();
+
+                    if (response.isSuccessful()) {
+                        //editor = pref.edit();
+                        editor.putString("token", response.body().getData().getToken());
+
+                        editor.commit();
+                        Log.d("token", "Token " + pref.getString("token", null));
+
+                        Map<String, ?> allEntries = pref.getAll();
+                        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                        }
+
+                        invitation_operation(idOfInvitaiton, operation);
+                        //call_api_coutry();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Login> call, Throwable t) {
+                    progressDialog.dismiss();
+                    //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                }
+            });
         }
     }
 
@@ -429,64 +617,7 @@ public class InvitaionList extends Fragment {
         }
 
 
-
-
     }
 
 
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
-        ApiService api = RetroClient.getApiService();
-
-        //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
-            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
-            editor.commit();
-        }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
-                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
-        Log.d("update_token", "login called");
-        progressDialog.show();
-
-        call.enqueue(new Callback<Login>() {
-            @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
-                progressDialog.dismiss();
-
-                if (response.isSuccessful()) {
-                    //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
-
-                    editor.commit();
-                    Log.d("update_token", "update token response success : " + response.body().getData().getToken());
-
-                    Map<String, ?> allEntries = pref.getAll();
-                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
-                    }
-                    //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-                    } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Login> call, Throwable t) {
-                progressDialog.dismiss();
-                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
-            }
-        });
-
-
-    }
 }

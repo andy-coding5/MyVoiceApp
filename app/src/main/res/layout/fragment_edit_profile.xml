@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.EditProfileFragment">
+    tools:context=".Fragments.Profile_fragments.EditProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"

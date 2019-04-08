@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -110,9 +111,12 @@ public class NotificationFragment extends Fragment {
         logout_btn.setVisibility(View.INVISIBLE);
 
         //select the home button (so color is now blue) and the
-        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+       /* BottomNavigationView bv = getActivity().findViewById(R.id.bottom_navigation);
         //bv.getMenu().getItem(0).setChecked(true);
-        bv.setSelectedItemId(R.id.notifications_menu_item);
+        bv.setSelectedItemId(R.id.notifications_menu_item);*/
+
+        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.getMenu().findItem(R.id.notifications_menu_item).setChecked(true);
 
         invitation_list_view = v.findViewById(R.id.listview);
         notification_list_view = v.findViewById(R.id.notification_list);
@@ -140,9 +144,9 @@ public class NotificationFragment extends Fragment {
 
                 //Bundle b = new Bundle();
 
-                    // b.putSerializable("invitation_list", (Serializable) invitations_list);
-                    // f.setArguments(b);
-                    getFragmentManager().beginTransaction().replace(R.id.framelayout_container, f).commit();
+                // b.putSerializable("invitation_list", (Serializable) invitations_list);
+                // f.setArguments(b);
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, f).commit();
 
             }
         });
@@ -161,7 +165,11 @@ public class NotificationFragment extends Fragment {
     private void load_data() {
         Call<Notifications> call = api.getnotificationssJson(api_key, "Token " + pref.getString("token", null));
 
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Notifications>() {
             @Override
@@ -196,8 +204,8 @@ public class NotificationFragment extends Fragment {
                         /* String status = jObjError.getString("detail");
                          */
                         if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            load_data();
+                            update_token_load_data();
+
                         } else {
                             noInvitation.setVisibility(View.VISIBLE);
                             noNotification.setVisibility(View.VISIBLE);
@@ -218,9 +226,7 @@ public class NotificationFragment extends Fragment {
         });
     }
 
-    public void update_token() {
-        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+    private void update_token_load_data() {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
@@ -232,7 +238,11 @@ public class NotificationFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -250,18 +260,12 @@ public class NotificationFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
+                    load_data();
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getActivity(), status, error_msg);
-                    } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
                 }
+
+
+
             }
 
             @Override
@@ -271,8 +275,8 @@ public class NotificationFragment extends Fragment {
             }
         });
 
-
     }
+
 
     class ListViewAdapter extends BaseAdapter {
 
@@ -342,7 +346,11 @@ public class NotificationFragment extends Fragment {
         private void invitation_operation(final String idOfInvitaiton, final String operation) {
             Call<Invite> call = api.getInviteJson(api_key, "Token " + pref.getString("token", null),
                     idOfInvitaiton, operation, "Android");
-            progressDialog.show();
+            if(!((Activity) getActivity()).isFinishing())
+            {
+                //show dialog
+                progressDialog.show();
+            }
             call.enqueue(new Callback<Invite>() {
                 @Override
                 public void onResponse(Call<Invite> call, Response<Invite> response) {
@@ -365,8 +373,7 @@ public class NotificationFragment extends Fragment {
                             /* String status = jObjError.getString("detail");
                              */
                             if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token();
-                                invitation_operation(idOfInvitaiton, operation);
+                                update_token_invitation_operation(idOfInvitaiton, operation);
                             } else {
                                 noInvitation.setVisibility(View.VISIBLE);
                                 noNotification.setVisibility(View.VISIBLE);
@@ -384,6 +391,55 @@ public class NotificationFragment extends Fragment {
                 }
             });
 
+        }
+
+        private void update_token_invitation_operation(final String idOfInvitaiton, final String operation) {
+
+            ApiService api = RetroClient.getApiService();
+
+            //if fcm token is null then do not write in shared pref!
+            if (PublicClass.FCM_TOKEN != null) {
+                editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+                editor.commit();
+            }
+
+            Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                    "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+            if(!((Activity) getActivity()).isFinishing())
+            {
+                //show dialog
+                progressDialog.show();
+            }
+
+            call.enqueue(new Callback<Login>() {
+                @Override
+                public void onResponse(Call<Login> call, Response<Login> response) {
+                    progressDialog.dismiss();
+
+                    if (response.isSuccessful()) {
+                        //editor = pref.edit();
+                        editor.putString("token", response.body().getData().getToken());
+
+                        editor.commit();
+                        Log.d("token", "Token " + pref.getString("token", null));
+
+                        Map<String, ?> allEntries = pref.getAll();
+                        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                        }
+
+                        invitation_operation(idOfInvitaiton, operation);
+                        //call_api_coutry();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Login> call, Throwable t) {
+                    progressDialog.dismiss();
+                    //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+                }
+            });
         }
 
     }

@@ -36,9 +36,9 @@
                 android:layout_weight="1"
                 android:background="@drawable/pending_button_style_not_active"
                 android:clickable="true"
-                android:text="Pending"
-
                 android:fontFamily="@font/quicksand_medium"
+
+                android:text="Pending"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/dark_blue"
@@ -60,6 +60,44 @@
                 android:textSize="17sp" />
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/no_pending_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/quicksand_light"
+            android:text="no pending invitations"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/invitation_list" />
+
+        <TextView
+            android:id="@+id/no_accepted_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/quicksand_light"
+            android:text="no accepted invitations"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="14sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/invitation_list" />
 
         <ListView
             android:id="@+id/invitation_list"

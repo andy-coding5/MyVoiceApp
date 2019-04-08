@@ -103,7 +103,7 @@ public class preference extends AppCompatActivity {
 
     }
 
-    public void update_token() {
+    public void update_token(final View view) {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
@@ -115,7 +115,7 @@ public class preference extends AppCompatActivity {
         }
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-        Log.d("update_token","login called");
+        Log.d("update_token", "login called");
         progressDialog.show();
 
         call.enqueue(new Callback<Login>() {
@@ -134,6 +134,7 @@ public class preference extends AppCompatActivity {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
 
+                    set_my_pref(view);
                     //call_api_coutry();
                 } else {
                     //but but i can access the error body here.,
@@ -258,8 +259,8 @@ public class preference extends AppCompatActivity {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
                         if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token();
-                            set_my_pref(view);
+                            update_token(view);
+
                         }
                         String status = jObjError.getString("message");
                         String error_msg = jObjError.getJSONObject("data").getString("errors");

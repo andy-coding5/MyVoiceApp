@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Fragments;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -105,9 +106,12 @@ public class ActivityFragment extends Fragment {
         logout_btn.setVisibility(View.INVISIBLE);
 
         //select the home button (so color is now blue) and the
-        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+       /* BottomNavigationView bv = getActivity().findViewById(R.id.bottom_navigation);
         //bv.getMenu().getItem(0).setChecked(true);
-        bv.setSelectedItemId(R.id.activity_menu_item);
+        bv.setSelectedItemId(R.id.activity_menu_item);*/
+
+        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.getMenu().findItem(R.id.activity_menu_item).setChecked(true);
 
         username = v.findViewById(R.id.user_name);
         no_ans = v.findViewById(R.id.no_of_answers);
@@ -146,7 +150,7 @@ public class ActivityFragment extends Fragment {
                                  */
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
-                                    call_activity_list();
+
                                 } else {
                                     progressDialog.dismiss();
                                     mSwipeRefreshLayout.setRefreshing(false);
@@ -191,7 +195,11 @@ public class ActivityFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Login>() {
             @Override
@@ -209,17 +217,8 @@ public class ActivityFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
+                    call_activity_list();
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        //Build_alert_dialog(getActivity(), status, error_msg);
-                    } catch (Exception e) {
-                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
                 }
             }
 
@@ -236,7 +235,11 @@ public class ActivityFragment extends Fragment {
     public void call_activity_list() {
         Call<Activities> call = api.getActivityJson(api_key, "Token " + pref.getString("token", null));
 
-        progressDialog.show();
+        if(!((Activity) getActivity()).isFinishing())
+        {
+            //show dialog
+            progressDialog.show();
+        }
 
         call.enqueue(new Callback<Activities>() {
             @Override
@@ -312,7 +315,7 @@ public class ActivityFragment extends Fragment {
 
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
-                                call_activity_list();
+
                             }
                         } else {
                             String status = null;

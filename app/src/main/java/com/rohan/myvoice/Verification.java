@@ -197,12 +197,12 @@ public class Verification extends AppCompatActivity {
                         Log.v("otp", "'if contain detail' : " + jObjError.has("detail"));
 
 
-                        if(jObjError.has("detail")) {
+                        if (jObjError.has("detail")) {
                             if (jObjError.getJSONObject("detail").equals("Invalid Token")) {
-                                update_token();
-                                submit_otp_request(view);
+                                update_token_submit_otp(view);
+
                             }
-                        }else {
+                        } else {
                             String status = jObjError.getString("message");
 
                             Log.v("otp", "'submit_otp' message: " + status);
@@ -239,7 +239,7 @@ public class Verification extends AppCompatActivity {
             public void onResponse(Call<Data> call, Response<Data> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
-                    Log.v("otp", "resend request message: "+ response.body().getMessage());
+                    Log.v("otp", "resend request message: " + response.body().getMessage());
                     Toast.makeText(Verification.this, response.body().getMessage().toString(), Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -247,15 +247,14 @@ public class Verification extends AppCompatActivity {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         Log.v("otp", jObjError.toString(4));
 
-                        Log.v("otp", "resent otp; has details: "+jObjError.has("detail"));
+                        Log.v("otp", "resent otp; has details: " + jObjError.has("detail"));
 
-                        if(jObjError.has("detail")) {
+                        if (jObjError.has("detail")) {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token();
-                                submit_otp_request(view);
+                                update_token_reset_otp(view);
+
                             }
-                        }
-                       else {
+                        } else {
                             String status = jObjError.getString("message");
 
                             Log.v("otp", "'resend_otp' message: " + status);
@@ -276,7 +275,7 @@ public class Verification extends AppCompatActivity {
         });
     }
 
-    public void update_token() {
+    private void update_token_submit_otp(final View view) {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
@@ -309,17 +308,7 @@ public class Verification extends AppCompatActivity {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
                     //call_api_coutry();
-                } else {
-                    //but but i can access the error body here.,
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(Verification.this, status, error_msg);
-
-                    } catch (Exception e) {
-                        // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                    submit_otp_request(view);
                 }
             }
 
@@ -329,7 +318,51 @@ public class Verification extends AppCompatActivity {
                 //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
+    }
 
+    private void update_token_reset_otp(final View view) {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        progressDialog.show();
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    //call_api_coutry();
+                    submit_otp_request(view);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Login> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
     }
 
     class GenericTextWatcher implements TextWatcher {

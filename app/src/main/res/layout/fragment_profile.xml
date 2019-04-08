@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.ProfileFragment">
+    tools:context=".Fragments.Profile_fragments.ProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/quicksand_bold"
-                android:text="Hi adsa, "
+
                 android:textColor="@color/dark_blue"
                 android:textSize="26sp"
                 app:layout_constraintEnd_toEndOf="parent"
