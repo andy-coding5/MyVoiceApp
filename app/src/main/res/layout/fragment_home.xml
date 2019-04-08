@@ -39,7 +39,7 @@
 
                 android:layout_width="70dp"
                 android:layout_height="80dp"
-                android:padding="5dp"
+                android:padding="2dp"
                 android:src="@mipmap/ic_launcher_foreground" />
         </LinearLayout>
 
@@ -78,6 +78,8 @@
 
             </android.support.v7.widget.RecyclerView>
         </android.support.v4.widget.SwipeRefreshLayout>
+
+
 
         <TextView
             android:id="@+id/empty_view"

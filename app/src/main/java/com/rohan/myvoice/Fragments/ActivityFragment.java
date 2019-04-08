@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
@@ -102,6 +103,11 @@ public class ActivityFragment extends Fragment {
 
         TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
         logout_btn.setVisibility(View.INVISIBLE);
+
+        //select the home button (so color is now blue) and the
+        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        //bv.getMenu().getItem(0).setChecked(true);
+        bv.setSelectedItemId(R.id.activity_menu_item);
 
         username = v.findViewById(R.id.user_name);
         no_ans = v.findViewById(R.id.no_of_answers);
@@ -268,14 +274,14 @@ public class ActivityFragment extends Fragment {
 
                     Context context = getActivity();
 
-                    if (( ob_ary != null || ob_ary.length != 0 ) && context!=null ) {
+                    if ((ob_ary != null || ob_ary.length != 0) && context != null) {
                         ActivityListAdapter adapter = new ActivityListAdapter(context, ob_ary);
                         stickyList.setAdapter(adapter);
 
                         stickyList.setDivider(null);
                     }
 
-                    if(response.body().getAnswerCount() == 0){
+                    if (response.body().getAnswerCount() == 0) {
                         not_answers_tv.setVisibility(View.VISIBLE);
                     }
 
@@ -302,15 +308,13 @@ public class ActivityFragment extends Fragment {
                         }*/
 
 
-                        if(jObjError.has("detail")) {
+                        if (jObjError.has("detail")) {
 
-                                if (jObjError.getString("detail").equals("Invalid Token")) {
-                                    update_token();
-                                    call_activity_list();
-                                }
-
-                        }
-                        else {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+                                call_activity_list();
+                            }
+                        } else {
                             String status = null;
 
                             status = jObjError.getString("message");
@@ -323,7 +327,7 @@ public class ActivityFragment extends Fragment {
 
                     //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
-                        //Build_alert_dialog(getApplicationContext(), "Error", status);
+                    //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                 }
             }

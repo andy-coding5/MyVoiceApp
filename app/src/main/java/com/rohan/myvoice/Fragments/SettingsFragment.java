@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -97,6 +98,11 @@ public class SettingsFragment extends Fragment {
         TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
         logout_btn.setText("Logout");
         logout_btn.setVisibility(View.VISIBLE);
+
+        //select the home button (so color is now blue) and the
+        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        //bv.getMenu().getItem(0).setChecked(true);
+        bv.setSelectedItemId(R.id.settings_menu_item);
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override

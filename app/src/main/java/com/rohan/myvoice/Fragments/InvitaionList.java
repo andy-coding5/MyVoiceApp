@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -196,6 +197,13 @@ public class InvitaionList extends Fragment {
                     //invitation_list_view.setAdapter(null);
                    //adapter.notifyDataSetChanged();
                     invitation_list_view.setAdapter(adapter);
+
+                    invitation_list_view.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return false;
+                        }
+                    });
 
                     // }
 
@@ -419,6 +427,8 @@ public class InvitaionList extends Fragment {
             Glide.with(getActivity()).load(list.get(position).getLogo()).into(iv);
             return view;
         }
+
+
 
 
     }

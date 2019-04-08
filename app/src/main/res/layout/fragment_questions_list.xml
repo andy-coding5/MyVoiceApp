@@ -61,21 +61,18 @@
             </android.support.v7.widget.RecyclerView>
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="wrap_content"
-            android:layout_height="49dp"
-            android:fontFamily="@font/quicksand_regular"
-            android:gravity="center"
-            android:text="Sorry, There are no Questions available!"
-            android:textColor="@color/light_grey"
-            android:textSize="16sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/swipeToRefresh"
+
+        <ImageView
+            android:id="@+id/no_survey_img"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/thankyou"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.445" />
+            app:layout_constraintTop_toBottomOf="@+id/question_text" />
 
     </android.support.constraint.ConstraintLayout>
 

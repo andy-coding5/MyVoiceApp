@@ -170,7 +170,7 @@ public class OTTFragment extends Fragment {
                     textView.setText(response.body().getData().getQuestionText());
 
 
-                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
+                    if ("true".equals(response.body().getData().getQuestionIsMedia().toString())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video

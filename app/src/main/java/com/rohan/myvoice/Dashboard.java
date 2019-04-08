@@ -51,16 +51,16 @@ public class Dashboard extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         Fragment selectedFragment = null;
                         switch (item.getItemId()) {
-                            case R.id.home:
+                            case R.id.home_menu_item:
                                 selectedFragment = new HomeFragment();
                                 break;
-                            case R.id.activity:
+                            case R.id.activity_menu_item:
                                 selectedFragment = new ActivityFragment();
                                 break;
-                            case R.id.notifications:
+                            case R.id.notifications_menu_item:
                                 selectedFragment = new NotificationFragment();
                                 break;
-                            case R.id.settings:
+                            case R.id.settings_menu_item:
                                 selectedFragment = new SettingsFragment();
                                 break;
                         }

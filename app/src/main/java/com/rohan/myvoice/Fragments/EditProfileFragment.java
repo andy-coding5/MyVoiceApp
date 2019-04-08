@@ -363,13 +363,13 @@ public class EditProfileFragment extends Fragment {
                             update_token();
                             country_selection();
                         }
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
 
 
@@ -496,13 +496,13 @@ public class EditProfileFragment extends Fragment {
                             update_token();
                             state_selection();
                         }
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
 
 
@@ -610,13 +610,13 @@ public class EditProfileFragment extends Fragment {
                                 update_token();
                                 city_selection();
                             }
-                            Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                           // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                             //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         }
 
 
@@ -743,12 +743,12 @@ public class EditProfileFragment extends Fragment {
 
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -865,13 +865,13 @@ public class EditProfileFragment extends Fragment {
                         }
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -923,7 +923,7 @@ public class EditProfileFragment extends Fragment {
         Calendar today = Calendar.getInstance();
         Calendar dob = Calendar.getInstance();
         dob.set(year, mon - 1, dayOfMonth);
-        Toast.makeText(getActivity(), "today's date : " + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getActivity(), "today's date : " + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
         if ((today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) ||
@@ -1036,13 +1036,13 @@ public class EditProfileFragment extends Fragment {
                         }
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -1096,6 +1096,7 @@ public class EditProfileFragment extends Fragment {
 
 
                             //writing in database (shared pref)
+                            editor.putString("username", first_name_tv.getText().toString().trim());
                             editor.putString("country_code", country_code);
                             editor.putString("state_code", state_code);
                             editor.putString("city_name", selected_city);
@@ -1123,7 +1124,7 @@ public class EditProfileFragment extends Fragment {
                                 Build_alert_dialog(getActivity(), status, error_msg);
 
                             } catch (Exception e) {
-                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     }

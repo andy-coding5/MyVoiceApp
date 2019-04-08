@@ -173,7 +173,7 @@ public class OTNFragment extends Fragment {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
-                        if (!"".equals(response.body().getData().getQuestionMedia())) {
+                        if (!"".equals(response.body().getData().getQuestionMedia().toString())) {
                             frameLayout.setVisibility(View.VISIBLE);
                             imageView.setVisibility(View.VISIBLE);
                             Glide.with(v).load(response.body().getData().getQuestionMedia()).into(imageView);

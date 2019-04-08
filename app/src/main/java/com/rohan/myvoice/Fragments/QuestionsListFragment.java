@@ -60,6 +60,8 @@ public class QuestionsListFragment extends Fragment {
     private ProgressDialog progressDialog;
     private RecyclerView mRecyclerView;
 
+    private ImageView no_survey_imageview;
+
     private List<QuestionDatum> question_list;
 
     public QuestionsListFragment() {
@@ -113,7 +115,7 @@ public class QuestionsListFragment extends Fragment {
 
         TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
         logout_btn.setVisibility(View.INVISIBLE);
-
+        no_survey_imageview = v.findViewById(R.id.no_survey_img);
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
@@ -134,7 +136,8 @@ public class QuestionsListFragment extends Fragment {
                 Call<QuestionList> call = api.getSurveyQuestionsListJson(api_key, "Token " + pref.getString("token", null), PublicClass.survey_id);
 
                 //progressDialog.show();
-                empty_textview.setVisibility(View.INVISIBLE);
+                //empty_textview.setVisibility(View.INVISIBLE);
+                no_survey_imageview.setVisibility(View.INVISIBLE);
 
                 call.enqueue(new Callback<QuestionList>() {
                     @Override
@@ -146,7 +149,8 @@ public class QuestionsListFragment extends Fragment {
                             if (response.body().getQuestionCount().toString().equals("0")) {
 
                                 recyclerView.setVisibility(View.INVISIBLE);
-                                empty_textview.setVisibility(View.VISIBLE);
+                                //empty_textview.setVisibility(View.VISIBLE);
+                                no_survey_imageview.setVisibility(View.VISIBLE);
 
                             } else {
                                 if (question_list != null) {
@@ -170,7 +174,8 @@ public class QuestionsListFragment extends Fragment {
                                 /* String status = jObjError.getString("detail");
                                  */
                                 if (jObjError.getString("message").equals("Questions not found")) {
-                                    empty_textview.setVisibility(View.VISIBLE);
+                                    //empty_textview.setVisibility(View.VISIBLE);
+                                    no_survey_imageview.setVisibility(View.VISIBLE);
 
                                     recyclerView.setVisibility(View.INVISIBLE);
                                 }
@@ -206,9 +211,11 @@ public class QuestionsListFragment extends Fragment {
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
                     if (response.body().getQuestionCount().equals("0")) {
                         mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
-                        empty_textview.setVisibility(View.VISIBLE);
+                        //empty_textview.setVisibility(View.VISIBLE);
+                        no_survey_imageview.setVisibility(View.VISIBLE);
                     } else {
-                        empty_textview.setVisibility(View.INVISIBLE);
+                        //empty_textview.setVisibility(View.INVISIBLE);
+                        no_survey_imageview.setVisibility(View.INVISIBLE);
                         question_list = response.body().getQuestionData();
                         recyclerView = v.findViewById(R.id.recyclerView);
                         recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
@@ -221,7 +228,8 @@ public class QuestionsListFragment extends Fragment {
                         /* String status = jObjError.getString("detail");
                          */
                         if (jObjError.getString("message").equals("Questions not found")) {
-                            empty_textview.setVisibility(View.VISIBLE);
+                           // empty_textview.setVisibility(View.VISIBLE);
+                            no_survey_imageview.setVisibility(View.VISIBLE);
                             mSwipeRefreshLayout.setRefreshing(false);
                             recyclerView.setVisibility(View.INVISIBLE);
                         }

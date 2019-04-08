@@ -166,7 +166,7 @@ public class MCQFragment extends Fragment {
                     //display the question
                     textView.setText(response.body().getData().getQuestionText());
 
-                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
+                    if ("true".equals(response.body().getData().getQuestionIsMedia().toString())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video

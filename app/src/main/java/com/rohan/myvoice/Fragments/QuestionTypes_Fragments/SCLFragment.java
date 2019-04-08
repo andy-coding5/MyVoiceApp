@@ -178,11 +178,12 @@ public class SCLFragment extends Fragment {
                     //display the question
                     que.setText(response.body().getData().getQuestionText());
 
-                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
+                    if ("true".equals(response.body().getData().getQuestionIsMedia().toString())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
-                        if (!"".equals(response.body().getData().getQuestionMedia())) {
+                        if (!"".equals(response.body().getData().getQuestionMedia()
+                        )) {
                             frameLayout.setVisibility(View.VISIBLE);
                             imageView.setVisibility(View.VISIBLE);
                             Glide.with(v).load(response.body().getData().getQuestionMedia()).into(imageView);

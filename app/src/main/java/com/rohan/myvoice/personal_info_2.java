@@ -120,7 +120,7 @@ public class personal_info_2 extends AppCompatActivity {
 
     public void update_token() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
@@ -153,7 +153,7 @@ public class personal_info_2 extends AppCompatActivity {
                         Build_alert_dialog(getApplicationContext(), status, error_msg);
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -279,12 +279,12 @@ public class personal_info_2 extends AppCompatActivity {
 
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -401,13 +401,13 @@ public class personal_info_2 extends AppCompatActivity {
                         }
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -450,7 +450,7 @@ public class personal_info_2 extends AppCompatActivity {
         Calendar today = Calendar.getInstance();
         Calendar dob = Calendar.getInstance();
         dob.set(year, mon - 1, dayOfMonth);
-        Toast.makeText(this, "today's date : " + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "today's date : " + today.get(Calendar.YEAR) + "-" + today.get(Calendar.MONTH) + "-" + today.get(Calendar.DAY_OF_YEAR), Toast.LENGTH_SHORT).show();
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
         if ((today.get(Calendar.MONTH) < dob.get(Calendar.MONTH)) ||
@@ -563,13 +563,13 @@ public class personal_info_2 extends AppCompatActivity {
                         }
                         /* String status = jObjError.getString("detail");
                          */
-                        Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
 
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -594,8 +594,8 @@ public class personal_info_2 extends AppCompatActivity {
             if (Integer.parseInt(isValid) >= 13) {
 
 
-                Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
-                        + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
+                       // + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
 
                 //if all ok then redirect to thenext activity
                 //but first store all the gethered info. of 8 items into shared pref.

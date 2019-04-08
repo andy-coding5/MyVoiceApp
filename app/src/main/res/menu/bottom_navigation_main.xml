@@ -2,24 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/home"
+        android:id="@+id/home_menu_item"
         android:enabled="true"
         android:icon="@drawable/icon_home"
-        android:title="Home"
-        />
+        android:orderInCategory="0"
+        android:title="Home" />
     <item
-        android:id="@+id/activity"
+        android:id="@+id/activity_menu_item"
         android:enabled="true"
         android:icon="@drawable/icon_activity"
+        android:orderInCategory="1"
         android:title="Activity" />
     <item
-        android:id="@+id/notifications"
+        android:id="@+id/notifications_menu_item"
         android:enabled="true"
         android:icon="@drawable/notification"
+        android:orderInCategory="2"
         android:title="Notifications" />
     <item
-        android:id="@+id/settings"
+        android:id="@+id/settings_menu_item"
         android:enabled="true"
         android:icon="@drawable/icon_settings"
+        android:orderInCategory="4"
         android:title="Settings" />
 </menu>

@@ -162,7 +162,7 @@ public class SCQFragment extends Fragment {
                     //display the question
                     textView.setText(response.body().getData().getQuestionText());
 
-                    if ("true".equals(response.body().getData().getQuestionIsMedia())) {
+                    if ("true".equals(response.body().getData().getQuestionIsMedia().toString())) {
 
                         MEDIA = "true";
                         //checking and loading for image audio or video
@@ -235,7 +235,7 @@ public class SCQFragment extends Fragment {
                         rb[i].setTag(op.get(i).getKey());       //for getting key later when radio button is selected
 
                         rb[i].setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
-                        params.setMargins(2, 10, 2, 10);
+                        params.setMargins(2, 50, 2, 10);
                         rb[i].setLayoutParams(params);
                         rb[i].setBackground(getActivity().getDrawable(R.drawable.option_items_scq_mcq));
 

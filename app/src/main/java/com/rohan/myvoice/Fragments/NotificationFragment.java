@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -107,6 +108,11 @@ public class NotificationFragment extends Fragment {
 
         TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
         logout_btn.setVisibility(View.INVISIBLE);
+
+        //select the home button (so color is now blue) and the
+        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        //bv.getMenu().getItem(0).setChecked(true);
+        bv.setSelectedItemId(R.id.notifications_menu_item);
 
         invitation_list_view = v.findViewById(R.id.listview);
         notification_list_view = v.findViewById(R.id.notification_list);

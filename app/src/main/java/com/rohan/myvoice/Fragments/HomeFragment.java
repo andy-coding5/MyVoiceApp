@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -116,6 +117,11 @@ public class HomeFragment extends Fragment {
         TextView logout_btn = toolbar.findViewById(R.id.logout_textview);
         logout_btn.setVisibility(View.INVISIBLE);
 
+        //select the home button (so color is now blue) and the
+        BottomNavigationView bv = v.findViewById(R.id.bottom_navigation);
+        //bv.getMenu().getItem(0).setChecked(true);
+        bv.setSelectedItemId(R.id.home_menu_item);
+
         survey_list = new ArrayList<>();
         recyclerView = v.findViewById(R.id.recyclerView);
 
@@ -144,8 +150,11 @@ public class HomeFragment extends Fragment {
                                 //survey_list = response.body().getProjectData();
                                 if (survey_list != null) {
                                     survey_list = response.body().getProjectData();
-                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
-                                    recyclerView.setAdapter(recyclerViewAdapeter);
+                                    recyclerViewAdapeter.notifyDataSetChanged();
+                                    // recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                                    // recyclerView.setAdapter(recyclerViewAdapeter);
+
+                                    // recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
 
                                 } else {
                                     call_function();
@@ -174,14 +183,9 @@ public class HomeFragment extends Fragment {
                                     empty_textview.setVisibility(View.VISIBLE);
                                 }
 
-                                //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
-                                //Build_alert_dialog(getApplicationContext(), "Error", status);
-
                             } catch (Exception e) {
                                 //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
-
                         }
                     }
 
