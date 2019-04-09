@@ -186,7 +186,7 @@ public class personal_info_1 extends AppCompatActivity {
         //CALL
 
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
-        Log.d("token_detail", "used for country: "+ pref.getString("token", null));
+        Log.d("token_detail", "used for country: " + pref.getString("token", null));
         // show it
         progressDialog.show();
 
@@ -330,7 +330,7 @@ public class personal_info_1 extends AppCompatActivity {
     private void fetch_states() {
 
         Call<States> call = api.getStateJson(api_key, "Token " + pref.getString("token", null), country_code);
-        Log.d("token_detail", "used for state: "+pref.getString("token", null));
+        Log.d("token_detail", "used for state: " + pref.getString("token", null));
         // show it
         progressDialog.show();
 
@@ -375,7 +375,6 @@ public class personal_info_1 extends AppCompatActivity {
                         dialog.setCanceledOnTouchOutside(true);
                         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-
                         //prepare a list view in dialog
                         listview_state = dialog.findViewById(R.id.dialogList);
                         TextView t = dialog.findViewById(R.id.title_textView);
@@ -394,7 +393,6 @@ public class personal_info_1 extends AppCompatActivity {
                                     prev_selected_state = selected_state;
 
                                     textview_city_info.setText("Select City");
-
                                 }
                                 textview_state_info.setText(selected_state);
 
@@ -408,7 +406,6 @@ public class personal_info_1 extends AppCompatActivity {
                                     }
                                 }
                                 //  fetch_cities();
-
                             }
                         });
                         View view1 = dialog.findViewById(R.id.cancel_btn);
@@ -439,15 +436,10 @@ public class personal_info_1 extends AppCompatActivity {
                             fetch_states();
                         }
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
-
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
-
-
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
-
-
                 }
             }
 
@@ -525,7 +517,7 @@ public class personal_info_1 extends AppCompatActivity {
 
         if (state_name_list.size() != 0) {
             Call<Cities> call = api.getCityJson(api_key, "Token " + pref.getString("token", null), country_code, state_code);
-            Log.d("token_detail","used for cities: "+ pref.getString("token", null));
+            Log.d("token_detail", "used for cities: " + pref.getString("token", null));
             progressDialog.show();
 
             call.enqueue(new Callback<Cities>() {
@@ -697,7 +689,7 @@ public class personal_info_1 extends AppCompatActivity {
             //call API for validation
 
             Call<Zip> c = api.getZipJason(api_key, "Token " + pref.getString("token", null), country_code, state_code, selected_city, s);
-            Log.d("token_detail", "used for next button in pref 1: "+pref.getString("token", null));
+            Log.d("token_detail", "used for next button in pref 1: " + pref.getString("token", null));
             progressDialog.show();
 
 

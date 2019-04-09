@@ -2,11 +2,14 @@ package com.rohan.myvoice.Fragments;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -19,11 +22,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
+import com.rohan.myvoice.LogoutDialogFragment;
 import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
@@ -106,22 +111,30 @@ public class SettingsFragment extends Fragment {
         //bv.getMenu().getItem(0).setChecked(true);
         bv.setSelectedItemId(R.id.settings_menu_item);*/
 
-        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        BottomNavigationView mBottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         mBottomNavigationView.getMenu().findItem(R.id.settings_menu_item).setChecked(true);
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Do you want to logout?");
-                builder.setCancelable(true);
-
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
+                // custom dialog
+              /*  final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.logout_custom_dialog);
+                Button dialogButton_no = (Button) dialog.findViewById(R.id.no_btn);
+                Button dialogButton_yes = (Button) dialog.findViewById(R.id.yes_btn);
+                // if button is clicked, close the custom dialog
+                dialogButton_no.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(final DialogInterface dialog, int which) {
-                        //when pressed the logout button
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialogButton_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         dialog.dismiss();
                         editor.clear();
                         editor.commit();
@@ -130,21 +143,19 @@ public class SettingsFragment extends Fragment {
                     }
                 });
 
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                // Create the Alert dialog
-                AlertDialog alertDialog = builder.create();
-
                 // Show the Alert Dialog box
                 if (!((Activity) getActivity()).isFinishing()) {
                     //show dialog
-                    alertDialog.show();
+                    dialog.show();
                 }
+*/
+
+                LogoutDialogFragment logoutDialogFragment = new LogoutDialogFragment();
+
+                logoutDialogFragment.show(getFragmentManager(), "logoutDialog");
+
+
+
             }
         });
 

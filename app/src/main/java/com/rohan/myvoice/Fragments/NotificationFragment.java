@@ -115,7 +115,7 @@ public class NotificationFragment extends Fragment {
         //bv.getMenu().getItem(0).setChecked(true);
         bv.setSelectedItemId(R.id.notifications_menu_item);*/
 
-        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        BottomNavigationView mBottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         mBottomNavigationView.getMenu().findItem(R.id.notifications_menu_item).setChecked(true);
 
         invitation_list_view = v.findViewById(R.id.listview);
@@ -163,10 +163,10 @@ public class NotificationFragment extends Fragment {
     }
 
     private void load_data() {
+        noInvitation.setVisibility(View.INVISIBLE);
         Call<Notifications> call = api.getnotificationssJson(api_key, "Token " + pref.getString("token", null));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -238,8 +238,7 @@ public class NotificationFragment extends Fragment {
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -263,7 +262,6 @@ public class NotificationFragment extends Fragment {
                     load_data();
                     //call_api_coutry();
                 }
-
 
 
             }
@@ -346,8 +344,7 @@ public class NotificationFragment extends Fragment {
         private void invitation_operation(final String idOfInvitaiton, final String operation) {
             Call<Invite> call = api.getInviteJson(api_key, "Token " + pref.getString("token", null),
                     idOfInvitaiton, operation, "Android");
-            if(!((Activity) getActivity()).isFinishing())
-            {
+            if (!((Activity) getActivity()).isFinishing()) {
                 //show dialog
                 progressDialog.show();
             }
@@ -406,8 +403,7 @@ public class NotificationFragment extends Fragment {
             Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
                     "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-            if(!((Activity) getActivity()).isFinishing())
-            {
+            if (!((Activity) getActivity()).isFinishing()) {
                 //show dialog
                 progressDialog.show();
             }

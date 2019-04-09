@@ -6,10 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +23,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.bumptech.glide.Glide;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
+import com.rohan.myvoice.pojo.Invitation_delete.InviteDelete;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.invitation_accepted_list.Datum;
 import com.rohan.myvoice.pojo.invitation_accepted_list.InvitationList_accept_list;
@@ -56,9 +64,16 @@ public class InvitaionList extends Fragment {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
     private List<com.rohan.myvoice.pojo.invitation_accepted_list.Datum> invitation_list;
+
     private ListView invitation_list_view;
+    private SwipeMenuListView swipeMenuListView;
+
+    private SwipeRefreshLayout swipeRefreshLayout_pending, swipeRefreshLayout_accepted;
+
     Button pending_button, accepted_button;
     TextView no_pending_tv, no_accepted_tv;
+    ListViewAdapter_of_accepted_invitations adapter;
+    ListViewAdapter_of_pending_invitations adapter1;
 
     public InvitaionList() {
         // Required empty public constructor
@@ -109,10 +124,13 @@ public class InvitaionList extends Fragment {
         invitation_list = new ArrayList<>();
 
         invitation_list_view = v.findViewById(R.id.invitation_list);
-        ListViewAdapter_of_pending_invitations listViewAdapter = new ListViewAdapter_of_pending_invitations(getActivity(), invitation_list);
-        invitation_list_view.setAdapter(listViewAdapter);
+        invitation_list_view.setVisibility(View.INVISIBLE);
+        swipeMenuListView = v.findViewById(R.id.invitation_list_accepted);
+        swipeMenuListView.setVisibility(View.INVISIBLE);
+
 
         pending_button = v.findViewById(R.id.p_b);
+
         accepted_button = v.findViewById(R.id.a_b);
 
         no_pending_tv = v.findViewById(R.id.no_pending_textview);
@@ -120,7 +138,229 @@ public class InvitaionList extends Fragment {
         no_accepted_tv = v.findViewById(R.id.no_accepted_textview);
         no_accepted_tv.setVisibility(View.INVISIBLE);
 
-        // test_b = v.findViewById(R.id.test);
+        swipeRefreshLayout_pending = v.findViewById(R.id.invitation_list_refreshView);
+        swipeRefreshLayout_pending.setColorSchemeResources(R.color.dark_blue);
+        swipeRefreshLayout_pending.setVisibility(View.INVISIBLE);
+        swipeRefreshLayout_accepted = v.findViewById(R.id.swipeList_refreshView);
+        swipeRefreshLayout_accepted.setColorSchemeResources(R.color.dark_blue);
+        swipeRefreshLayout_accepted.setVisibility(View.VISIBLE);
+
+        adapter1 = new ListViewAdapter_of_pending_invitations();
+        adapter = new ListViewAdapter_of_accepted_invitations();
+
+        //test_b = v.findViewById(R.id.test);
+
+        swipeRefreshLayout_pending.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                no_pending_tv.setVisibility(View.INVISIBLE);
+                no_accepted_tv.setVisibility(View.INVISIBLE);
+
+                invitation_list_view.setVisibility(View.VISIBLE);
+                swipeMenuListView.setVisibility(View.INVISIBLE);
+
+                swipeRefreshLayout_pending.setVisibility(View.VISIBLE);
+                swipeRefreshLayout_accepted.setVisibility(View.INVISIBLE);
+
+                invitation_list_view.setAdapter(null);
+
+                Call<InvitationList_accept_list> call = api.getInvitaionList_pending_Json(api_key, "Token " + pref.getString("token", null));
+
+                if (!((Activity) getActivity()).isFinishing()) {
+                    //show dialog
+                    progressDialog.show();
+                }
+
+                call.enqueue(new Callback<InvitationList_accept_list>() {
+                    @Override
+                    public void onResponse(Call<InvitationList_accept_list> call, Response<InvitationList_accept_list> response) {
+                        progressDialog.dismiss();
+                        if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+
+                            adapter1 = null;
+                            invitation_list = response.body().getData();
+
+                            adapter1 = new ListViewAdapter_of_pending_invitations(getActivity(), invitation_list);
+
+                            invitation_list_view.setAdapter(adapter1);
+
+
+                        } else {
+                            progressDialog.dismiss();
+
+                            try {
+
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                /* String status = jObjError.getString("detail");
+                                 */
+
+                                if (jObjError.has("detail")) {
+                                    if (jObjError.getString("detail").equals("Invalid Token")) {
+                                        update_token_pending();
+
+                                    }
+                                }
+
+                                no_pending_tv.setVisibility(View.VISIBLE);
+
+                            } catch (Exception e) {
+                                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<InvitationList_accept_list> call, Throwable t) {
+                        progressDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        swipeRefreshLayout_accepted.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                no_pending_tv.setVisibility(View.INVISIBLE);
+                no_accepted_tv.setVisibility(View.INVISIBLE);
+
+                swipeMenuListView.setVisibility(View.VISIBLE);
+                invitation_list_view.setVisibility(View.INVISIBLE);
+
+                swipeRefreshLayout_accepted.setVisibility(View.VISIBLE);
+                swipeRefreshLayout_pending.setVisibility(View.INVISIBLE);
+
+
+                Call<InvitationList_accept_list> call = api.getInvitaionList_accept_Json(api_key, "Token " + pref.getString("token", null));
+
+
+                call.enqueue(new Callback<InvitationList_accept_list>() {
+                    @Override
+                    public void onResponse(Call<InvitationList_accept_list> call, Response<InvitationList_accept_list> response) {
+                        swipeRefreshLayout_accepted.setRefreshing(false);
+                        if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+
+                            invitation_list = response.body().getData();
+                            //if(invitation_list!=null || invitation_list.size() == 0){
+
+                            adapter = null;
+                            adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
+                            //invitation_list_view.setAdapter(null);
+                            //adapter.notifyDataSetChanged();
+                            swipeMenuListView.setAdapter(adapter);
+
+                            SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
+                                @Override
+                                public void create(SwipeMenu menu) {
+                                    SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
+                                    deleteItem.setBackground(new ColorDrawable(Color.RED));
+                                    deleteItem.setTitle("Delete");
+                                    deleteItem.setTitleColor(Color.WHITE);
+                                    deleteItem.setWidth(200);
+
+                                    deleteItem.setTitleSize(15);
+                                    menu.addMenuItem(deleteItem);
+                                }
+                            };
+                            swipeMenuListView.setMenuCreator(swipeMenuCreator);
+
+
+                            // }
+
+                        } else {
+
+                            swipeRefreshLayout_accepted.setRefreshing(false);
+
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                /* String status = jObjError.getString("detail");
+                                 */
+
+
+                                if (jObjError.has("detail")) {
+                                    if (jObjError.getString("detail").equals("Invalid Token")) {
+                                        update_token_accept();
+
+                                    }
+                                }
+
+                                no_accepted_tv.setVisibility(View.VISIBLE);
+
+                            } catch (Exception e) {
+                                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<InvitationList_accept_list> call, Throwable t) {
+
+                        swipeRefreshLayout_accepted.setRefreshing(false);
+                    }
+                });
+
+                swipeMenuListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(int position, SwipeMenu menu, final int index) {
+                        Log.d("delete", "deleted Item id:" + invitation_list.get(index).getId().toString().trim());
+                        Call<InviteDelete> call1 = api.getDelete_invitaitonJson(api_key, "Token " + pref.getString("token", null),
+                                invitation_list.get(index).getId().toString().trim());
+                        if (!((Activity) getActivity()).isFinishing()) {
+                            //show dialog
+                            progressDialog.show();
+                        }
+
+                        call1.enqueue(new Callback<InviteDelete>() {
+                            @Override
+                            public void onResponse(Call<InviteDelete> call, Response<InviteDelete> response) {
+                                if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                                    progressDialog.dismiss();
+                                    invitation_list.remove(index);
+                                    adapter.notifyDataSetChanged();
+                                } else {
+
+
+                                    progressDialog.dismiss();
+
+                                    try {
+
+
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                                        //check for invalid token
+                                        if (jObjError.has("detail")) {
+                                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                                update_token_accept();
+                                            }
+
+                                        } else {
+                                            Toast.makeText(getActivity(), "No response Received from server", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        if (invitation_list.size() == 0) {
+                                            no_accepted_tv.setVisibility(View.VISIBLE);
+                                            swipeMenuListView.setVisibility(View.INVISIBLE);
+                                        }
+
+                                    } catch (Exception e) {
+                                        //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<InviteDelete> call, Throwable t) {
+                                progressDialog.dismiss();
+                            }
+                        });
+
+                        return false;
+                    }
+                });
+            }
+        });
 
         pending_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,9 +408,8 @@ public class InvitaionList extends Fragment {
             }
         });
 
+
         pending_button.callOnClick();
-
-
 
 
        /* test_b.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +427,11 @@ public class InvitaionList extends Fragment {
         no_pending_tv.setVisibility(View.INVISIBLE);
         no_accepted_tv.setVisibility(View.INVISIBLE);
 
-        invitation_list_view.setAdapter(null);
+        swipeMenuListView.setVisibility(View.VISIBLE);
+        invitation_list_view.setVisibility(View.INVISIBLE);
+
+        swipeRefreshLayout_accepted.setVisibility(View.VISIBLE);
+        swipeRefreshLayout_pending.setVisibility(View.INVISIBLE);
 
 
         Call<InvitationList_accept_list> call = api.getInvitaionList_accept_Json(api_key, "Token " + pref.getString("token", null));
@@ -207,17 +450,25 @@ public class InvitaionList extends Fragment {
                     invitation_list = response.body().getData();
                     //if(invitation_list!=null || invitation_list.size() == 0){
 
-                    ListViewAdapter_of_accepted_invitations adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
+                    adapter = new ListViewAdapter_of_accepted_invitations(getActivity(), invitation_list);
                     //invitation_list_view.setAdapter(null);
                     //adapter.notifyDataSetChanged();
-                    invitation_list_view.setAdapter(adapter);
+                    swipeMenuListView.setAdapter(adapter);
 
-                    invitation_list_view.setOnTouchListener(new View.OnTouchListener() {
+                    SwipeMenuCreator swipeMenuCreator = new SwipeMenuCreator() {
                         @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            return false;
+                        public void create(SwipeMenu menu) {
+                            SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
+                            deleteItem.setBackground(new ColorDrawable(Color.RED));
+                            deleteItem.setTitle("Delete");
+                            deleteItem.setTitleColor(Color.WHITE);
+                            deleteItem.setWidth(200);
+
+                            deleteItem.setTitleSize(15);
+                            menu.addMenuItem(deleteItem);
                         }
-                    });
+                    };
+                    swipeMenuListView.setMenuCreator(swipeMenuCreator);
 
 
                     // }
@@ -238,7 +489,7 @@ public class InvitaionList extends Fragment {
                             }
                         }
 
-                            no_accepted_tv.setVisibility(View.VISIBLE);
+                        no_accepted_tv.setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -252,11 +503,77 @@ public class InvitaionList extends Fragment {
                 progressDialog.dismiss();
             }
         });
+
+        swipeMenuListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, final int index) {
+                Log.d("delete", "deleted Item id:" + invitation_list.get(index).getId().toString().trim());
+                Call<InviteDelete> call1 = api.getDelete_invitaitonJson(api_key, "Token " + pref.getString("token", null),
+                        invitation_list.get(index).getId().toString().trim());
+                if (!((Activity) getActivity()).isFinishing()) {
+                    //show dialog
+                    progressDialog.show();
+                }
+
+                call1.enqueue(new Callback<InviteDelete>() {
+                    @Override
+                    public void onResponse(Call<InviteDelete> call, Response<InviteDelete> response) {
+                        if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                            progressDialog.dismiss();
+                            invitation_list.remove(index);
+                            adapter.notifyDataSetChanged();
+                        } else {
+
+
+                            progressDialog.dismiss();
+
+                            try {
+
+
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                                //check for invalid token
+                                if (jObjError.has("detail")) {
+                                    if (jObjError.getString("detail").equals("Invalid Token")) {
+                                        update_token_accept();
+                                    }
+
+                                } else {
+                                    Toast.makeText(getActivity(), "No response Received from server", Toast.LENGTH_SHORT).show();
+                                }
+
+                                if (invitation_list.size() == 0) {
+                                    no_accepted_tv.setVisibility(View.VISIBLE);
+                                    swipeMenuListView.setVisibility(View.INVISIBLE);
+                                }
+
+                            } catch (Exception e) {
+                                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<InviteDelete> call, Throwable t) {
+                        progressDialog.dismiss();
+                    }
+                });
+
+                return false;
+            }
+        });
     }
+
 
     private void get_pending_list_call() {
         no_pending_tv.setVisibility(View.INVISIBLE);
         no_accepted_tv.setVisibility(View.INVISIBLE);
+
+        invitation_list_view.setVisibility(View.VISIBLE);
+        swipeMenuListView.setVisibility(View.INVISIBLE);
+
+        swipeRefreshLayout_pending.setVisibility(View.VISIBLE);
+        swipeRefreshLayout_accepted.setVisibility(View.INVISIBLE);
 
         invitation_list_view.setAdapter(null);
 
@@ -279,18 +596,12 @@ public class InvitaionList extends Fragment {
 
                     invitation_list_view.setAdapter(adapter);
 
-                    //}
-
                 } else {
                     progressDialog.dismiss();
 
                     try {
 
-
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        /* String status = jObjError.getString("detail");
-                         */
-
 
                         if (jObjError.has("detail")) {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
@@ -298,15 +609,12 @@ public class InvitaionList extends Fragment {
 
                             }
                         }
-
-
-                            no_pending_tv.setVisibility(View.VISIBLE);
+                        no_pending_tv.setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
-
             }
 
             @Override
@@ -414,8 +722,10 @@ public class InvitaionList extends Fragment {
         });
     }
 
-
     class ListViewAdapter_of_pending_invitations extends BaseAdapter {
+
+        public ListViewAdapter_of_pending_invitations() {
+        }
 
         private List<com.rohan.myvoice.pojo.invitation_accepted_list.Datum> list;
         private Context context;
@@ -575,12 +885,17 @@ public class InvitaionList extends Fragment {
                 }
             });
         }
+
+
     }
 
     class ListViewAdapter_of_accepted_invitations extends BaseAdapter {
 
         private List<Datum> list;
         private Context context;
+
+        public ListViewAdapter_of_accepted_invitations() {
+        }
 
         public ListViewAdapter_of_accepted_invitations(Context context, List<com.rohan.myvoice.pojo.invitation_accepted_list.Datum> list) {
             this.list = list;

@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".SplashScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,31 +27,41 @@
         </activity>
         <activity
             android:name=".Verification"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".Dashboard"
+            android:screenOrientation="portrait"
             android:theme="@style/dashBoardTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".preference"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme">
 
         </activity>
         <activity
             android:name=".SignIn"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
             android:name=".SignUp"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
-        <activity android:name=".GetStarted" />
+        <activity
+            android:name=".GetStarted"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".personal_info_1"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
             android:name=".personal_info_2"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
 
         <meta-data

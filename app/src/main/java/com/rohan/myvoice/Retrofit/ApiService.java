@@ -1,5 +1,6 @@
 package com.rohan.myvoice.Retrofit;
 
+import com.rohan.myvoice.pojo.Invitation_delete.InviteDelete;
 import com.rohan.myvoice.pojo.invitation_accepted_list.InvitationList_accept_list;
 import com.rohan.myvoice.pojo.Notification_details.Notifications;
 import com.rohan.myvoice.pojo.Register.Register;
@@ -188,6 +189,10 @@ public interface ApiService {
     //Pending invitaion list
     @GET("mobileapp/api/v1/invitation/Pending")
     Call<InvitationList_accept_list> getInvitaionList_pending_Json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
+
+    //delete the accepted invitaion
+    @GET("mobileapp/api/v1/invite/delete/{path}")
+    Call<InviteDelete> getDelete_invitaitonJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization, @Path("path") String path);
 
     //user profile get request used in settings fragment
     @GET("mobileapp/api/v1/user/profile/get/")
