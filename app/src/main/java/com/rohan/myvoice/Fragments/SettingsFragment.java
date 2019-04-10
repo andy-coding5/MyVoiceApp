@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.CustomDialogs.DeleteAccountConfirmationDialogFragment;
 import com.rohan.myvoice.CustomDialogs.DeleteAccountDialogFragment;
 import com.rohan.myvoice.CustomDialogs.LogoutDialogFragment;
 import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
@@ -112,10 +113,7 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
 
                 LogoutDialogFragment logoutDialogFragment = new LogoutDialogFragment();
-
                 logoutDialogFragment.show(getFragmentManager(), "logoutDialog");
-
-
             }
         });
 
@@ -126,6 +124,12 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 DeleteAccountDialogFragment deleteAccountDialogFragment = new DeleteAccountDialogFragment();
                 deleteAccountDialogFragment.show(getFragmentManager(), "deleteAccountDialog");
+
+                /*if (DeleteAccountDialogFragment.ACCDELETESTATUS == true) {
+                    DeleteAccountConfirmationDialogFragment deleteAccountConfirmationDialogFragment = new DeleteAccountConfirmationDialogFragment();
+                    // AppCompatActivity activity = (AppCompatActivity) getActivity();
+                    deleteAccountConfirmationDialogFragment.show(getFragmentManager(), "deleteAccountConfirmationDialogFragment");
+                }*/
             }
         });
 

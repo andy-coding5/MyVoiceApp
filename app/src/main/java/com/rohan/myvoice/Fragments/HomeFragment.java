@@ -89,6 +89,8 @@ public class HomeFragment extends Fragment {
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
         pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
+        Log.v("fcm_token", "Fcm_token: in homefragment activity " + pref2.getString("fcm_token", "null or empty"));
+
 
         api = RetroClient.getApiService();
         //update_token();

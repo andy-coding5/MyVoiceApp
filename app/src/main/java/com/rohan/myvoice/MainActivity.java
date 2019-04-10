@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Log.v("fcm_token", "Fcm_token:" + pref2.getString("fcm_token", "not retrived"));
+        Log.v("fcm_token", "Fcm_token: in main activity " + pref2.getString("fcm_token", "null or empty"));
     }
 
 

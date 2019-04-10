@@ -73,10 +73,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-        Log.d("TokenTag", s);
+        Log.v("TokenTag", s);
         PublicClass.FCM_TOKEN = s;
+        if (!"".equals(s) || s != null) {
+            MyFirebaseMessagingService.preferences.edit().putString("fcm_token", s).commit();
 
-        MyFirebaseMessagingService.preferences.edit().putString("fcm_token", s).commit();
+            Log.v("fcm_token", "fcm_token(in service class) enrty , FCm token overwrite to this :"+s);
+        }
+        else{
+            Log.v("fcm_token", "fcm_token(in service class) enrty , FCM has received null or empty; so I have not write it in a FCM_PREF!~rohan");
+        }
 
 
     }

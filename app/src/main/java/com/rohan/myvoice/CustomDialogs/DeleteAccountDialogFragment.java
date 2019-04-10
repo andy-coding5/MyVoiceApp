@@ -3,13 +3,15 @@ package com.rohan.myvoice.CustomDialogs;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,14 +20,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
-import com.rohan.myvoice.GlobalValues.PublicClass;
-import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.delete_account.DeleteAccount;
-import com.rohan.myvoice.pojo.resent_otp.Data;
 
 import org.json.JSONObject;
 
@@ -42,6 +41,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
     private ProgressDialog progressDialog;
     private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
+    public static boolean ACCDELETESTATUS;
 
 
     public DeleteAccountDialogFragment() {
@@ -90,7 +90,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
         dialogButton_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                //dismiss();
 
                 call_delete_account();
 
@@ -100,9 +100,12 @@ public class DeleteAccountDialogFragment extends DialogFragment {
     }
 
     private void call_delete_account() {
+        ACCDELETESTATUS = false;
+
+
         String FcmToken = pref2.getString("fcm_token", null);
 
-        Call<DeleteAccount> call = api.getDelete_accountJson(api_key, "Token " + pref.getString("token", null), FcmToken,"Android");
+        Call<DeleteAccount> call = api.getDelete_accountJson(api_key, "Token " + pref.getString("token", null), FcmToken, "Android");
         if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
@@ -113,21 +116,39 @@ public class DeleteAccountDialogFragment extends DialogFragment {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
 
+                    //dismiss();
+                    Log.v("all_log", "delete_accout_reponse: success");
+                    ACCDELETESTATUS = true;
+                    /*DeleteAccountConfirmationDialogFragment deleteAccountConfirmationDialogFragment = new DeleteAccountConfirmationDialogFragment();
+                    AppCompatActivity activity = (AppCompatActivity) getActivity();
+                    deleteAccountConfirmationDialogFragment.show(activity.getSupportFragmentManager(), "deleteAccountConfirmationDialogFragment");*/
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    Fragment f = getFragmentManager().findFragmentByTag("deleteAccountDialog");
+                    if (f != null) {
+                        ft.remove(f);
+                    }
+                    ft.commit();
+
+                    //now show the dialog fragment of delete confirmation
                     DeleteAccountConfirmationDialogFragment deleteAccountConfirmationDialogFragment = new DeleteAccountConfirmationDialogFragment();
-                    deleteAccountConfirmationDialogFragment.show(getFragmentManager(), "deleteAccConfirmationDialog");
+                    //AppCompatActivity activity = (AppCompatActivity) getActivity();
+                    deleteAccountConfirmationDialogFragment.show(getFragmentManager(), "deleteAccountConfirmationDialogFragment");
+
                 } else {
                     try {
+                        ACCDELETESTATUS = false;
+                        dismiss();
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-
-
+                        Log.v("all_log", "delete_accout_reponse: NOT success");
                         if (jObjError.has("detail")) {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
 
                             }
                         }
+                        Log.v("all_log", "message detail: " + jObjError.getString("detail"));
 
                     } catch (Exception e) {
                     }
@@ -138,6 +159,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
             public void onFailure(Call<DeleteAccount> call, Throwable t) {
 
                 progressDialog.dismiss();
+                dismiss();
             }
         });
     }

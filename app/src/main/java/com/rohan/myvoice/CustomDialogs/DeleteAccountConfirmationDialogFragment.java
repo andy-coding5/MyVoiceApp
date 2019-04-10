@@ -33,6 +33,7 @@ public class DeleteAccountConfirmationDialogFragment extends DialogFragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+
         View view = inflater.inflate(R.layout.custom_dialog_delete_account_confirmation, container, false);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
@@ -40,6 +41,7 @@ public class DeleteAccountConfirmationDialogFragment extends DialogFragment {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             getDialog().getWindow().setGravity(Gravity.CENTER);
             getDialog().setCancelable(false);
+            getDialog().setCanceledOnTouchOutside(false);
         }
 
 
