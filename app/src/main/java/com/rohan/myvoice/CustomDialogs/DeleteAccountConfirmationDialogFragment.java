@@ -1,4 +1,4 @@
-package com.rohan.myvoice;
+package com.rohan.myvoice.CustomDialogs;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,16 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
-public class LogoutDialogFragment extends DialogFragment {
+import com.rohan.myvoice.MainActivity;
+import com.rohan.myvoice.R;
+
+public class DeleteAccountConfirmationDialogFragment extends DialogFragment {
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
 
-    public LogoutDialogFragment() {
+    public DeleteAccountConfirmationDialogFragment() {
 
     }
 
@@ -31,26 +33,20 @@ public class LogoutDialogFragment extends DialogFragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
-        View view = inflater.inflate(R.layout.logout_custom_dialog, container, false);
+        View view = inflater.inflate(R.layout.custom_dialog_delete_account_confirmation, container, false);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             getDialog().getWindow().setGravity(Gravity.CENTER);
+            getDialog().setCancelable(false);
         }
 
-        Button dialogButton_no = (Button) view.findViewById(R.id.no_btn);
-        Button dialogButton_yes = (Button) view.findViewById(R.id.yes_btn);
-        // if button is clicked, close the custom dialog
-        dialogButton_no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
 
-            }
-        });
+        Button dialogButton_OK = (Button) view.findViewById(R.id.ok_btn);
 
-        dialogButton_yes.setOnClickListener(new View.OnClickListener() {
+
+        dialogButton_OK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();

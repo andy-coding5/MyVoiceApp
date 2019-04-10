@@ -2,14 +2,10 @@ package com.rohan.myvoice.Fragments;
 
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -17,19 +13,17 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.CustomDialogs.DeleteAccountDialogFragment;
+import com.rohan.myvoice.CustomDialogs.LogoutDialogFragment;
 import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
-import com.rohan.myvoice.LogoutDialogFragment;
-import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -45,8 +39,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -55,11 +47,11 @@ public class SettingsFragment extends Fragment {
     View v;
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private TextView profile_tv, allow_notification_ans, account_verification_ans;
+    private TextView profile_tv, allow_notification_ans, account_verification_ans, delete_account_tv;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -83,6 +75,7 @@ public class SettingsFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
         api_key = getResources().getString(R.string.APIKEY);
@@ -118,44 +111,21 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                // custom dialog
-              /*  final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.logout_custom_dialog);
-                Button dialogButton_no = (Button) dialog.findViewById(R.id.no_btn);
-                Button dialogButton_yes = (Button) dialog.findViewById(R.id.yes_btn);
-                // if button is clicked, close the custom dialog
-                dialogButton_no.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-
-                    }
-                });
-
-                dialogButton_yes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        editor.clear();
-                        editor.commit();
-                        startActivity(new Intent(getActivity(), MainActivity.class));
-
-                    }
-                });
-
-                // Show the Alert Dialog box
-                if (!((Activity) getActivity()).isFinishing()) {
-                    //show dialog
-                    dialog.show();
-                }
-*/
-
                 LogoutDialogFragment logoutDialogFragment = new LogoutDialogFragment();
 
                 logoutDialogFragment.show(getFragmentManager(), "logoutDialog");
 
 
+            }
+        });
 
+
+        delete_account_tv = v.findViewById(R.id.delete_account_text);
+        delete_account_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteAccountDialogFragment deleteAccountDialogFragment = new DeleteAccountDialogFragment();
+                deleteAccountDialogFragment.show(getFragmentManager(), "deleteAccountDialog");
             }
         });
 
@@ -180,7 +150,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final String FcmToken = PublicClass.FCM_TOKEN;
+                final String FcmToken = pref2.getString("fcm_token", null);
                 final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -321,12 +291,13 @@ public class SettingsFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if (!((Activity) getActivity()).isFinishing()) {

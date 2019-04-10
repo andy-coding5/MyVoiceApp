@@ -5,21 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,12 +24,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
+        SharedPreferences pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
+        ;
 
 
         // startActivity(new Intent(this, preference.class));
         //If user is already logged in then send him to getstarted activity and user has filled
         //all the detils already then from getStarted,send him to the main Dashboard activity
         //Boolean temp = pref.getBoolean("isUserLoggedIn", false);
+
+       /* Map<String, ?> allEntries = MyFirebaseMessagingService.preferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+        }*/
+
         String IsComplete = pref.getString("IsComplete", "false");
         String IsVerified = pref.getString("isVerified", "false");
 
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        Log.v("fcm_token", "Fcm_token:" + pref2.getString("fcm_token", "not retrived"));
     }
 
 

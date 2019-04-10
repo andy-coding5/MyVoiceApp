@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -21,7 +23,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /*
     SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = pref.edit();
+
     */
+//    Context ctx = getApplicationContext();
+    public static SharedPreferences preferences;
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        preferences = getSharedPreferences("FCM_PREF", MODE_PRIVATE);
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -63,6 +75,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(s);
         Log.d("TokenTag", s);
         PublicClass.FCM_TOKEN = s;
+
+        MyFirebaseMessagingService.preferences.edit().putString("fcm_token", s).commit();
+
 
     }
 }

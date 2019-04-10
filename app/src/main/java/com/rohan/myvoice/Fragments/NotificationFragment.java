@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,7 +23,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -37,7 +34,6 @@ import com.rohan.myvoice.pojo.invitation_details.Invite;
 
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +42,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -55,7 +49,7 @@ public class NotificationFragment extends Fragment {
     View v;
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
     private ArrayList<Datum> invitations_list;
@@ -90,6 +84,7 @@ public class NotificationFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
 
@@ -230,12 +225,13 @@ public class NotificationFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+*/
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
         if (!((Activity) getActivity()).isFinishing()) {
@@ -395,12 +391,13 @@ public class NotificationFragment extends Fragment {
             ApiService api = RetroClient.getApiService();
 
             //if fcm token is null then do not write in shared pref!
-            if (PublicClass.FCM_TOKEN != null) {
+           /* if (PublicClass.FCM_TOKEN != null) {
                 editor.putString("fcm_token", PublicClass.FCM_TOKEN);
                 editor.commit();
             }
-
-            Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+*/
+            Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                    pref2.getString("fcm_token", null),
                     "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
             if (!((Activity) getActivity()).isFinishing()) {

@@ -21,12 +21,9 @@ import android.widget.TextView;
 
 import com.rohan.myvoice.ActivityListAdapter;
 import com.rohan.myvoice.Activity_tab_obj;
-import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
-import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.Verification;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.activity_details.Activities;
 import com.rohan.myvoice.pojo.activity_details.AnswerDatum;
@@ -44,8 +41,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -53,7 +48,7 @@ public class ActivityFragment extends Fragment {
     View v;
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
@@ -85,6 +80,7 @@ public class ActivityFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
 
@@ -187,12 +183,13 @@ public class ActivityFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
         if(!((Activity) getActivity()).isFinishing())

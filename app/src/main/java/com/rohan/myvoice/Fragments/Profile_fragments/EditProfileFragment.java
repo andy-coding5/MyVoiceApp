@@ -66,7 +66,7 @@ public class EditProfileFragment extends Fragment {
     View v;
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
@@ -113,6 +113,7 @@ public class EditProfileFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
 
@@ -394,12 +395,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if (!((Activity) getActivity()).isFinishing()) {
@@ -583,12 +585,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -757,12 +760,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -946,12 +950,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -1131,12 +1136,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+*/
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -1362,12 +1368,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -1426,7 +1433,7 @@ public class EditProfileFragment extends Fragment {
             if (selected_gender.equals("not_selected") || selected_education.equals("not_selected") || selected_dob.equals("not_selected") || selected_salary.equals("not_selected")) {
                 Build_alert_dialog(getActivity(), "Incomplete Details", "Please fill all the details");
             } else {
-                String FcmToken = PublicClass.FCM_TOKEN;
+                String FcmToken = pref2.getString("fcm_token", null);
                 String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
                 int isPushNotification = PublicClass.isNotificationAllowed ? 1 : 0;
                 //ALL OK , SUBMIT THE DETAILS
@@ -1492,12 +1499,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+*/
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())
@@ -1545,12 +1553,13 @@ public class EditProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+              pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if(!((Activity) getActivity()).isFinishing())

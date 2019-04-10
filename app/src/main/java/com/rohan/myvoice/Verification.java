@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rohan.myvoice.GlobalValues.PublicClass;
+import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -41,7 +42,7 @@ public class Verification extends AppCompatActivity {
 
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
@@ -69,6 +70,7 @@ public class Verification extends AppCompatActivity {
         //mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
+        pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
 
         api = RetroClient.getApiService();
@@ -230,9 +232,9 @@ public class Verification extends AppCompatActivity {
         clear_all();
         hide_keyboard();
 
-        String FcmToken = PublicClass.FCM_TOKEN;
+        String FcmToken = pref2.getString("fcm_token", null);
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        Call<Data> call = api.getresend_otp_request(api_key, "Token ll" + pref.getString("token", null), FcmToken, device_id, "Android");
+        Call<Data> call = api.getresend_otp_request(api_key, "Token " + pref.getString("token", null), FcmToken, device_id, "Android");
         progressDialog.show();
         call.enqueue(new Callback<Data>() {
             @Override
@@ -281,12 +283,13 @@ public class Verification extends AppCompatActivity {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+*/
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();
@@ -326,12 +329,13 @@ public class Verification extends AppCompatActivity {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+               pref2.getString("fcm_token",null),
                 "Android", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();

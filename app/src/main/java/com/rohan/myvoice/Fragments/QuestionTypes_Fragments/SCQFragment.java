@@ -72,7 +72,7 @@ public class SCQFragment extends Fragment {
 
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private String selected_radio_button;
     private Data data;
@@ -143,6 +143,7 @@ public class SCQFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api_key = getResources().getString(R.string.APIKEY);
 
@@ -191,8 +192,7 @@ public class SCQFragment extends Fragment {
                     data.getParentID().toString(), ja,
                     "Android", PublicClass.MainParentID.trim());
 
-            if(!((Activity) getActivity()).isFinishing())
-            {
+            if (!((Activity) getActivity()).isFinishing()) {
                 //show dialog
                 progressDialog.show();
             }
@@ -282,8 +282,7 @@ public class SCQFragment extends Fragment {
         //textView.setText(q_text);       //q_text
         Call<com.rohan.myvoice.pojo.survey_question_detail_SCQ_MCQ_RNK.QuestionDetail> call = api.getSCQ_MCQ_RNKJson(api_key, "Token " + pref.getString("token", null), q_id);
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -417,16 +416,16 @@ public class SCQFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+              pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -467,16 +466,16 @@ public class SCQFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null),
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }

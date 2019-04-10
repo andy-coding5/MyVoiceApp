@@ -2,6 +2,7 @@ package com.rohan.myvoice;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -37,14 +39,14 @@ import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 public class preference extends AppCompatActivity {
     private static final int NOTIFICATION_PERMISSION_CODE = 123;
     private static final int RECORD_PERMISSION_CODE = 122;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     ApiService api;
     String api_key;
     private ProgressDialog progressDialog;
     String is_notification_allowed = "false";
 
-    String i_country_code, i_state_code, i_city_name, i_zip_code, i_education_code, i_gender_code, i_dob, i_income, fcm_token, devide_id;
+    String i_country_code, i_state_code, i_city_name, i_zip_code, i_education_code, i_gender_code, i_dob, i_income, devide_id;
 
 
     @Override
@@ -78,6 +80,7 @@ public class preference extends AppCompatActivity {
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
 
@@ -98,7 +101,7 @@ public class preference extends AppCompatActivity {
         i_gender_code = i.getStringExtra("gender_code");
         i_dob = i.getStringExtra("dob");
         i_income = i.getStringExtra("income");
-        fcm_token = i.getStringExtra("fcm_token");
+
         devide_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
     }
@@ -109,12 +112,13 @@ public class preference extends AppCompatActivity {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
         progressDialog.show();
 
@@ -212,7 +216,7 @@ public class preference extends AppCompatActivity {
                 pref.getString("username", " "), pref.getString("lastname", " "),
                 i_zip_code, i_country_code, i_state_code, i_city_name,
                 i_education_code, i_gender_code, i_dob,
-                "3", i_income, fcm_token, "Android",
+                "3", i_income, pref2.getString("fcm_token", null), "Android",
                 devide_id, 0, "1", "Yes");
 
         progressDialog.show();
@@ -225,7 +229,7 @@ public class preference extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     if (response.body().getStatus().equals("Success")) {
-                        Toast.makeText(preference.this, "SUCCESS>>redirecting to dashboard..", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(preference.this, "SUCCESS>>redirecting to dashboard..", Toast.LENGTH_SHORT).show();
 
                         Log.d("chk", "country code: " + i_country_code);
                         Log.d("chk", "state code: " + i_state_code);
@@ -235,7 +239,7 @@ public class preference extends AppCompatActivity {
                         Log.d("chk", "gender code: " + i_gender_code);
                         Log.d("chk", "dob: " + i_dob);
                         Log.d("chk", "income: " + i_income);
-                        Log.d("chk", "fcm_token: " + fcm_token);
+
                         Log.d("chk", "device Id: " + devide_id);
 
                         //writing in database (shared pref)

@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.GlobalValues.PublicClass;
@@ -34,7 +35,7 @@ public class SignIn extends AppCompatActivity {
     private TextView password;
     private String email, pass;
     private String LOGIN_STATUS = "NoT Initilize";
-    SharedPreferences pref;
+    SharedPreferences pref, pref2;
     SharedPreferences.Editor editor;
     public static String DEVICE_ID;
     private ProgressDialog progressDialog;
@@ -63,6 +64,8 @@ public class SignIn extends AppCompatActivity {
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
+
         email_address = findViewById(R.id.email_address);
         password = findViewById(R.id.password);
 
@@ -119,11 +122,11 @@ public class SignIn extends AppCompatActivity {
          * Calling JSON
          */
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+      /*  if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
-        String FcmToken = pref.getString("fcm_token", null);
+        }*/
+        String FcmToken = pref2.getString("fcm_token", null);
         Call<Login> call = api.getLoginJason(email, pass, FcmToken, "Android", DEVICE_ID);
 
         progressDialog.show();

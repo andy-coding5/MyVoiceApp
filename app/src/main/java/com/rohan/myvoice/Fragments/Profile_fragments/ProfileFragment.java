@@ -24,15 +24,11 @@ import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
 
-import org.json.JSONObject;
-
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +38,7 @@ public class ProfileFragment extends Fragment {
     View v;
     ApiService api;
     String api_key;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
@@ -69,6 +65,7 @@ public class ProfileFragment extends Fragment {
 
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         api = RetroClient.getApiService();
 
@@ -140,16 +137,16 @@ public class ProfileFragment extends Fragment {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+       /* if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), PublicClass.FCM_TOKEN,
+*/
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -166,7 +163,7 @@ public class ProfileFragment extends Fragment {
                     editor.commit();
                     Log.d("token", "Token " + pref.getString("token", null));
 
-                    username_title.setText("Hi " + response.body().getData().getFirstName().toString().trim()+", ");
+                    username_title.setText("Hi " + response.body().getData().getFirstName().toString().trim() + ", ");
 
                     first_name_tv.setText(response.body().getData().getFirstName().toString().trim());
                     last_name_tv.setText(response.body().getData().getLastName().toString().trim());

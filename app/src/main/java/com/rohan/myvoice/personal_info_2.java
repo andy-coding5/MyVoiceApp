@@ -3,6 +3,7 @@ package com.rohan.myvoice;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -49,7 +51,7 @@ public class personal_info_2 extends AppCompatActivity {
 
     private TextView textview_gender_info, textview_education_info, textview_dob_info, textview_income_info;
     private EditText edittext_income_info;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private String country_code, state_code, city_name, zip_code;
     private ApiService api;
@@ -98,6 +100,7 @@ public class personal_info_2 extends AppCompatActivity {
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         textview_gender_info = findViewById(R.id.gender);
         textview_education_info = findViewById(R.id.highest_qualification);
@@ -123,7 +126,8 @@ public class personal_info_2 extends AppCompatActivity {
         //Toast.makeText(this, "email from pref: " + pref.getString("email", "not fetched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
         Log.d("update_token", "login called");
         progressDialog.show();
@@ -604,7 +608,7 @@ public class personal_info_2 extends AppCompatActivity {
 
 
                 //start the activity of taking the permission
-                String FcmToken = pref.getString("fcm_token", null);
+
                 Intent i = new Intent(personal_info_2.this, preference.class);
                 i.putExtra("country_code", country_code);
                 i.putExtra("state_code", state_code);
@@ -614,7 +618,7 @@ public class personal_info_2 extends AppCompatActivity {
                 i.putExtra("gender_code", gender_code);
                 i.putExtra("dob", selected_dob);
                 i.putExtra("income", selected_salary);
-                i.putExtra("fcm_token", FcmToken);
+
 
 
                 startActivity(i);

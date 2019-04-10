@@ -1,6 +1,7 @@
 package com.rohan.myvoice.Retrofit;
 
 import com.rohan.myvoice.pojo.Invitation_delete.InviteDelete;
+import com.rohan.myvoice.pojo.delete_account.DeleteAccount;
 import com.rohan.myvoice.pojo.invitation_accepted_list.InvitationList_accept_list;
 import com.rohan.myvoice.pojo.Notification_details.Notifications;
 import com.rohan.myvoice.pojo.Register.Register;
@@ -158,7 +159,6 @@ public interface ApiService {
                                       @Field("ParentID") String ParentID, @Field("Response") JSONArray Response,
                                       @Field("Source") String Source, @Field("MainParentID") String MainParentID);
 
-
     //Activity tab
     @GET("mobileapp/api/v1/data/questions/get/activities/")
     Call<Activities> getActivityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
@@ -174,7 +174,6 @@ public interface ApiService {
     //ignore the invitation
     @GET("mobileapp/api/v1/invitation/Ignore/")
     Call<Notifications> getIgnoreInvitationJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
-
 
     //for Invite
     @POST("mobileapp/api/v1/invite/")
@@ -198,7 +197,7 @@ public interface ApiService {
     @GET("mobileapp/api/v1/user/profile/get/")
     Call<UserProfile> getUserProfile_json(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
-    //resend otp
+    //submit otp
     @POST("accounts/api/v1/user/account/confirm/")
     @FormUrlEncoded
     Call<Data> getSubmit_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
@@ -210,5 +209,11 @@ public interface ApiService {
     Call<Data> getresend_otp_request(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                                      @Field("DeviceToken") String DeviceToken, @Field("device_id") String device_id,
                                      @Field("Source") String Source);
+
+    //delete account
+    @POST("accounts/api/v1/user/delete/request/")
+    @FormUrlEncoded
+    Call<DeleteAccount> getDelete_accountJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                              @Field("DeviceToken") String DeviceToken, @Field("Source") String Source);
 
 }

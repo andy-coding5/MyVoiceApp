@@ -2,6 +2,7 @@ package com.rohan.myvoice;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,7 +22,6 @@ import android.widget.Toast;
 
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.SignIn.Login;
 import com.rohan.myvoice.pojo.citi_details.Cities;
 import com.rohan.myvoice.pojo.citi_details.CityList;
@@ -48,7 +48,7 @@ public class personal_info_1 extends AppCompatActivity {
 
     private TextView textview_country_info, textview_state_info, textview_city_info;
     private EditText edittext_zip_info;
-    private SharedPreferences pref;
+    private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
     private static String[] country_name, state_name, city_name;
     private ArrayList<String> country_name_list, state_name_list, city_name_list;
@@ -89,6 +89,7 @@ public class personal_info_1 extends AppCompatActivity {
 
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
+        pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         textview_country_info = findViewById(R.id.country);
         textview_state_info = findViewById(R.id.state);
@@ -131,12 +132,13 @@ public class personal_info_1 extends AppCompatActivity {
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
-        if (PublicClass.FCM_TOKEN != null) {
+      /*  if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
-        }
+        }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null), pref.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null), "Android", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
         Log.d("update_token", "login called");
         progressDialog.show();
 
