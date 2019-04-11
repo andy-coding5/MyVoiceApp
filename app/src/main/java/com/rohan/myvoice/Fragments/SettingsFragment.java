@@ -27,6 +27,8 @@ import com.rohan.myvoice.CustomDialogs.DeleteAccountDialogFragment;
 import com.rohan.myvoice.CustomDialogs.LogoutDialogFragment;
 import com.rohan.myvoice.CustomDialogs.ResetPasswordDialogFragment;
 import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
+import com.rohan.myvoice.Fragments.aboutUs_contactUs_fragments.AboutUsFragment;
+import com.rohan.myvoice.Fragments.aboutUs_contactUs_fragments.ContactUsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
@@ -55,7 +57,7 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private TextView profile_tv, allow_notification_ans, account_verification_ans, delete_account_tv, reset_password_tv;
+    private TextView profile_tv, allow_notification_ans, account_verification_ans, delete_account_tv, reset_password_tv, about_us_tv, contact_us_tv;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -176,90 +178,23 @@ public class SettingsFragment extends Fragment {
                 //allow_notification_ans.setText(PublicClass.isNotificationAllowed == true ? "Yes" : "No");
 
                 Log.v("test_settings", "back_in settings's allow_notification method");
-                /*final String FcmToken = pref2.getString("fcm_token", null);
-                final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
-*/
-               /* AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Allow Push Notifications?");
-                builder.setCancelable(true);
 
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            }
+        });
 
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
+        about_us_tv = v.findViewById(R.id.about_us_text);
+        about_us_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new AboutUsFragment()).commit();
+            }
+        });
 
-                        if (!allow_notification_ans.getText().toString().toLowerCase().equals("yes")) {
-                            Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
-                                    FcmToken, device_id, "Android", 1);
-                            if (!((Activity) getActivity()).isFinishing()) {
-                                //show dialog
-                                progressDialog.show();
-                            }
-                            call.enqueue(new Callback<UpdateProfile>() {
-                                @Override
-                                public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
-                                    if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
-                                        progressDialog.dismiss();
-                                        dialog.cancel();
-                                        allow_notification_ans.setText("Yes");
-                                    } else {
-                                        progressDialog.dismiss();
-                                        dialog.dismiss();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<UpdateProfile> call, Throwable t) {
-                                    progressDialog.dismiss();
-                                }
-                            });
-                        }
-
-                    }
-                });
-
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
-                        if (!allow_notification_ans.getText().toString().toLowerCase().equals("no")) {
-                            Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
-                                    FcmToken, device_id, "Android", 0);
-                            if (!((Activity) getActivity()).isFinishing()) {
-                                //show dialog
-                                progressDialog.show();
-                            }
-                            call.enqueue(new Callback<UpdateProfile>() {
-                                @Override
-                                public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
-                                    if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
-                                        progressDialog.dismiss();
-                                        dialog.cancel();
-                                        allow_notification_ans.setText("No");
-                                    } else {
-                                        progressDialog.dismiss();
-                                        dialog.dismiss();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onFailure(Call<UpdateProfile> call, Throwable t) {
-                                    progressDialog.dismiss();
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // Create the Alert dialog
-                AlertDialog alertDialog = builder.create();
-
-                // Show the Alert Dialog box
-                if (!((Activity) getActivity()).isFinishing()) {
-                    //show dialog
-                    alertDialog.show();
-                }*/
+        contact_us_tv = v.findViewById(R.id.contact_us_text);
+        contact_us_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ContactUsFragment()).commit();
             }
         });
     }
@@ -267,7 +202,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             allow_notification_ans.setText(PublicClass.isNotificationAllowed == true ? "Yes" : "No");
         }
     }

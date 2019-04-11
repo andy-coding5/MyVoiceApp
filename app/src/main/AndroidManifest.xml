@@ -52,7 +52,8 @@
         <activity
             android:name=".SignUp"
             android:screenOrientation="portrait"
-            android:theme="@style/CustomTheme" />
+            android:theme="@style/CustomTheme"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".GetStarted"
             android:screenOrientation="portrait" />
