@@ -136,8 +136,6 @@ public class ResetPasswordDialogFragment extends DialogFragment {
                                 dialog.dismiss();
                             }
                         });
-
-
                         // Create the Alert dialog
                         AlertDialog alertDialog = builder.create();
 
@@ -216,7 +214,6 @@ public class ResetPasswordDialogFragment extends DialogFragment {
                                 }
                             });
 
-
                             // Create the Alert dialog
                             AlertDialog alertDialog = builder.create();
 
@@ -225,8 +222,6 @@ public class ResetPasswordDialogFragment extends DialogFragment {
                                 //show dialog
                                 alertDialog.show();
                             }
-
-
                         }
 
                     } catch (Exception e) {
@@ -250,7 +245,6 @@ public class ResetPasswordDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-
 
         Window window = getDialog().getWindow();
         window.setLayout(800, ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -117,8 +117,8 @@ public class SignUp extends AppCompatActivity {
                         editor.putBoolean("isUserLoggedIn", true);
                         editor.putString("isVerified", "false");
                         editor.putString("IsComplete", "false");
-
                         editor.commit();
+
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), GetStarted.class);
 

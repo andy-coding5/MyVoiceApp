@@ -1,5 +1,6 @@
 package com.rohan.myvoice;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,16 +9,19 @@ import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.myvoice.CustomDialogs.ForgetPasswordDialogFragment;
 import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.GlobalValues.PublicClass;
+import com.rohan.myvoice.pojo.Forget_password_request.ForgetPasswordRequest;
 import com.rohan.myvoice.pojo.SignIn.Data;
 import com.rohan.myvoice.pojo.SignIn.Login;
 
@@ -34,6 +38,8 @@ public class SignIn extends AppCompatActivity {
     private TextView email_address;
     private TextView password;
     private String email, pass;
+    ApiService api;
+    String api_key;
     private String LOGIN_STATUS = "NoT Initilize";
     SharedPreferences pref, pref2;
     SharedPreferences.Editor editor;
@@ -66,6 +72,9 @@ public class SignIn extends AppCompatActivity {
         editor = pref.edit();
         pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
+        api = RetroClient.getApiService();
+        api_key = getResources().getString(R.string.APIKEY);
+
         email_address = findViewById(R.id.email_address);
         password = findViewById(R.id.password);
 
@@ -77,14 +86,76 @@ public class SignIn extends AppCompatActivity {
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-
     }
 
     public void ForgetPassword(View view) {
 
+        //pop up the dialog fragment
+        if (!"".equals(email_address.getText().toString().trim())) {
+            //call first to send otp
+            call_forget_password_request();
+        } else {
+            Build_alert_dialog(SignIn.this, "Please Enter an Email ID.");
+        }
+    }
 
+    private void call_forget_password_request() {
 
+        Call<ForgetPasswordRequest> call = api.getForget_passwordJson(api_key, "Android",
+                email_address.getText().toString().trim());
 
+        progressDialog.show();
+
+        call.enqueue(new Callback<ForgetPasswordRequest>() {
+            @Override
+            public void onResponse(Call<ForgetPasswordRequest> call, Response<ForgetPasswordRequest> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
+                    //Now call to this dialog frgamt to enter Otp and new password
+                    Log.v("all_log", "Forget password request sent successfully");
+                    Toast.makeText(SignIn.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                    ForgetPasswordDialogFragment forgetPasswordDialogFragment = new ForgetPasswordDialogFragment();
+                    Bundle b = new Bundle();
+                    b.putString("email", email_address.getText().toString().trim());
+                    forgetPasswordDialogFragment.setArguments(b);
+                    forgetPasswordDialogFragment.show(SignIn.this.getSupportFragmentManager(), "ForgetPassDialogFragment");
+
+                } else {
+                    progressDialog.dismiss();
+
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Log.v("all_log", "(in sign in)json response: " + "\n" + jObjError.toString(4));
+                        /* String status = jObjError.getString("detail");
+                         */
+                        Log.v("all_log", "Forget passwoprd request response not received successfully : NOT success");
+                        Log.v("all_log", "check if jErrObj has detail : " + jObjError.has("detail"));
+                        if(jObjError.has("detail")) {
+                            Build_alert_dialog(SignIn.this, jObjError.getString("detail"));
+                        }
+                        else if(jObjError.has("message")){
+                            Build_alert_dialog(SignIn.this, jObjError.getString("message"));
+                            Log.v("all_log", "error is: " + jObjError.getString("message"));
+                        }
+                        Log.v("all_log", "error is: " + jObjError.getString("detail"));
+                        /*if (jObjError.has("detail")) {
+                            //use contains because , it returns invalid token and other stuff too.!
+                            // so use contains rather then ".equals"
+                            if (jObjError.getString("detail").contains("Invalid token")) {
+                                update_token_forget_password_request();
+                            }
+                        }*/
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ForgetPasswordRequest> call, Throwable t) {
+                progressDialog.dismiss();
+            }
+        });
     }
 
 
@@ -126,7 +197,7 @@ public class SignIn extends AppCompatActivity {
          * Calling JSON
          */
         //if fcm token is null then do not write in shared pref!
-      /*  if (PublicClass.FCM_TOKEN != null) {
+        /*if (PublicClass.FCM_TOKEN != null) {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }*/

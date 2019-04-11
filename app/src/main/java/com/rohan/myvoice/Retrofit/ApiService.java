@@ -1,5 +1,6 @@
 package com.rohan.myvoice.Retrofit;
 
+import com.rohan.myvoice.pojo.Forget_password_request.ForgetPasswordRequest;
 import com.rohan.myvoice.pojo.Invitation_delete.InviteDelete;
 import com.rohan.myvoice.pojo.delete_account.DeleteAccount;
 import com.rohan.myvoice.pojo.invitation_accepted_list.InvitationList_accept_list;
@@ -223,5 +224,19 @@ public interface ApiService {
     Call<ResetPassword> getReset_passwordJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                                               @Field("Source") String Source, @Field("old_pass") String old_pass,
                                               @Field("new_pass") String new_pass, @Field("confirm_pass") String confirm_pass);
+
+    //Forget password request
+    @POST("accounts/api/v1/user/password/reset/request/")
+    @FormUrlEncoded
+    Call<ForgetPasswordRequest> getForget_passwordJson(@Header("APIKEY") String APIKEY,
+                                                       @Field("Source") String Source, @Field("email") String email);
+
+    //Forget password verify
+    @POST("accounts/api/v1/user/password/reset/")
+    @FormUrlEncoded
+    Call<ForgetPasswordRequest> getForget_password_verifyJson(@Header("APIKEY") String APIKEY,
+                                                              @Field("email") String email,
+                                                              @Field("otp") String otp, @Field("new_pass") String new_pass,
+                                                              @Field("Source") String Source);
 
 }
