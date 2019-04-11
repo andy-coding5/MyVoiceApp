@@ -110,7 +110,7 @@ public class personal_info_2 extends AppCompatActivity {
         // Set up progress before call
         progressDialog = new ProgressDialog(personal_info_2.this);
         progressDialog.setMax(100);
-        progressDialog.setMessage("Fetching Data");
+        progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
@@ -43,6 +44,10 @@ public class DeleteAccountConfirmationDialogFragment extends DialogFragment {
             getDialog().setCancelable(false);
             getDialog().setCanceledOnTouchOutside(false);
         }
+
+        Bundle b = getArguments();
+        TextView title = view.findViewById(R.id.message_text);
+        title.setText(b.getString("message"));
 
 
         Button dialogButton_OK = (Button) view.findViewById(R.id.ok_btn);

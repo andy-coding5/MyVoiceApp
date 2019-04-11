@@ -74,13 +74,17 @@ public class SignIn extends AppCompatActivity {
         // Set up progress before call
         progressDialog = new ProgressDialog(SignIn.this);
         progressDialog.setMax(100);
-        progressDialog.setMessage("Fetching Data");
+        progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 
     }
 
     public void ForgetPassword(View view) {
+
+
+
+
     }
 
 

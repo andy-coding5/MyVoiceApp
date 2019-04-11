@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,9 +21,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.CustomDialogs.AllowNotificationDialogFragment;
 import com.rohan.myvoice.CustomDialogs.DeleteAccountConfirmationDialogFragment;
 import com.rohan.myvoice.CustomDialogs.DeleteAccountDialogFragment;
 import com.rohan.myvoice.CustomDialogs.LogoutDialogFragment;
+import com.rohan.myvoice.CustomDialogs.ResetPasswordDialogFragment;
 import com.rohan.myvoice.Fragments.Profile_fragments.ProfileFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.R;
@@ -52,7 +55,7 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences.Editor editor;
     private ProgressDialog progressDialog;
 
-    private TextView profile_tv, allow_notification_ans, account_verification_ans, delete_account_tv;
+    private TextView profile_tv, allow_notification_ans, account_verification_ans, delete_account_tv, reset_password_tv;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -134,6 +137,16 @@ public class SettingsFragment extends Fragment {
         });
 
 
+        reset_password_tv = v.findViewById(R.id.password_reset_ans);
+        reset_password_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ResetPasswordDialogFragment rp = new ResetPasswordDialogFragment();
+                rp.show(getFragmentManager(), "resetPassDialogFragment");
+            }
+        });
+
+
         profile_tv = v.findViewById(R.id.profile);
         profile_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,20 +157,29 @@ public class SettingsFragment extends Fragment {
 
         PublicClass.CURRENT_FRAG = 22;
 
-        allow_notification_ans = v.findViewById(R.id.allow_notification_ans);
+
         account_verification_ans = v.findViewById(R.id.account_verification_ans);
 
         call_user_profile();
 
-
+        allow_notification_ans = v.findViewById(R.id.allow_notification_ans);
         allow_notification_ans.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final String FcmToken = pref2.getString("fcm_token", null);
-                final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+                AllowNotificationDialogFragment allowNotificationDialogFragment = new AllowNotificationDialogFragment();
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                allowNotificationDialogFragment.setTargetFragment(SettingsFragment.this, 111);
+                //allowNotificationDialogFragment.setTargetFragment(new SettingsFragment(), 0);
+                allowNotificationDialogFragment.show(getFragmentManager(), "notificationDialogFragment");
+
+                //allow_notification_ans.setText(PublicClass.isNotificationAllowed == true ? "Yes" : "No");
+
+                Log.v("test_settings", "back_in settings's allow_notification method");
+                /*final String FcmToken = pref2.getString("fcm_token", null);
+                final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
+*/
+               /* AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("Allow Push Notifications?");
                 builder.setCancelable(true);
 
@@ -237,9 +259,17 @@ public class SettingsFragment extends Fragment {
                 if (!((Activity) getActivity()).isFinishing()) {
                     //show dialog
                     alertDialog.show();
-                }
+                }*/
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            allow_notification_ans.setText(PublicClass.isNotificationAllowed == true ? "Yes" : "No");
+        }
     }
 
     private void call_user_profile() {
@@ -338,4 +368,6 @@ public class SettingsFragment extends Fragment {
         });
 
     }
+
+
 }

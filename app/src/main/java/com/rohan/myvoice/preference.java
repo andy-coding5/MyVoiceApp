@@ -74,7 +74,7 @@ public class preference extends AppCompatActivity {
         // Set up progress before call
         progressDialog = new ProgressDialog(preference.this);
         progressDialog.setMax(100);
-        progressDialog.setMessage("Fetching Data");
+        progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
 

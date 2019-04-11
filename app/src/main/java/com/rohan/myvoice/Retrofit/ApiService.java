@@ -14,6 +14,7 @@ import com.rohan.myvoice.pojo.education_details.Education;
 import com.rohan.myvoice.pojo.gender_details.Gender;
 import com.rohan.myvoice.pojo.invitation_details.Invite;
 import com.rohan.myvoice.pojo.resent_otp.Data;
+import com.rohan.myvoice.pojo.reset_password.ResetPassword;
 import com.rohan.myvoice.pojo.salary_details.Salary;
 import com.rohan.myvoice.pojo.state_details.States;
 import com.rohan.myvoice.pojo.survey_details.Survey;
@@ -215,5 +216,12 @@ public interface ApiService {
     @FormUrlEncoded
     Call<DeleteAccount> getDelete_accountJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
                                               @Field("DeviceToken") String DeviceToken, @Field("Source") String Source);
+
+    //reset password
+    @POST("accounts/api/v1/user/password/change/")
+    @FormUrlEncoded
+    Call<ResetPassword> getReset_passwordJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                              @Field("Source") String Source, @Field("old_pass") String old_pass,
+                                              @Field("new_pass") String new_pass, @Field("confirm_pass") String confirm_pass);
 
 }

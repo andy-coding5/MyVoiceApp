@@ -3,15 +3,17 @@ package com.rohan.myvoice.CustomDialogs;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,38 +21,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.rohan.myvoice.GlobalValues.PublicClass;
+import com.rohan.myvoice.MainActivity;
 import com.rohan.myvoice.R;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
 import com.rohan.myvoice.pojo.SignIn.Login;
-import com.rohan.myvoice.pojo.delete_account.DeleteAccount;
+import com.rohan.myvoice.pojo.update_profile.UpdateProfile;
 
 import org.json.JSONObject;
 
 import java.util.Map;
+import java.util.zip.Inflater;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DeleteAccountDialogFragment extends DialogFragment {
-
+public class AllowNotificationDialogFragment extends DialogFragment {
+    View v;
     ApiService api;
     String api_key;
-    private ProgressDialog progressDialog;
     private SharedPreferences pref, pref2;
     private SharedPreferences.Editor editor;
-    public static boolean ACCDELETESTATUS;
+    private ProgressDialog progressDialog;
 
 
-    public DeleteAccountDialogFragment() {
-
+    public AllowNotificationDialogFragment() {
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+
+        pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
+        editor = pref.edit();
+        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
         // Set up progress before call
         progressDialog = new ProgressDialog(this.getActivity());
@@ -58,113 +67,121 @@ public class DeleteAccountDialogFragment extends DialogFragment {
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        // mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeToRefresh);
-        //mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_blue);
-
-        pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
-        pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
-        editor = pref.edit();
-
         api = RetroClient.getApiService();
         api_key = getResources().getString(R.string.APIKEY);
 
-        View view = inflater.inflate(R.layout.custom_dialog_delete_account, container, false);
+        View view = inflater.inflate(R.layout.custom_dialog_allow_notification, container, false);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             getDialog().getWindow().setGravity(Gravity.CENTER);
+            getDialog().setCancelable(false);
+            getDialog().setCanceledOnTouchOutside(false);
         }
 
         Button dialogButton_no = (Button) view.findViewById(R.id.no_btn);
-        Button dialogButton_yes = (Button) view.findViewById(R.id.yes_btn);
-        // if button is clicked, close the custom dialog
+        Button dialogButton_OK = (Button) view.findViewById(R.id.yes_btn);
+
+
         dialogButton_no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment f = getFragmentManager().findFragmentByTag("notificationDialogFragment");
+                if (f != null) {
+                    ft.remove(f);
+                }
+                ft.commit();
+
+
+                call_allow_notification(0);
 
             }
         });
 
-        dialogButton_yes.setOnClickListener(new View.OnClickListener() {
+        dialogButton_OK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //dismiss();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment f = getFragmentManager().findFragmentByTag("notificationDialogFragment");
+                if (f != null) {
+                    ft.remove(f);
+                }
+                ft.commit();
 
-                call_delete_account();
+
+                call_allow_notification(1);
 
             }
         });
         return view;
     }
 
-    private void call_delete_account() {
-        ACCDELETESTATUS = false;
+    private void call_allow_notification(final int operation_code) {
+        final String FcmToken = pref2.getString("fcm_token", null);
+        final String device_id = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        String FcmToken = pref2.getString("fcm_token", null);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment f = getFragmentManager().findFragmentByTag("notificationDialogFragment");
+        if (f != null) {
+            ft.remove(f);
+        }
+        ft.commit();
 
-        Call<DeleteAccount> call = api.getDelete_accountJson(api_key, "Token " + pref.getString("token", null), FcmToken, "Android");
+        //call for setting the preference of allowing push notifications
+
+        Call<UpdateProfile> call = api.getPushUpdateJson(api_key, "Token " + pref.getString("token", null),
+                FcmToken, device_id, "Android", operation_code);
         if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
+
         }
-        call.enqueue(new Callback<DeleteAccount>() {
+        call.enqueue(new Callback<UpdateProfile>() {
             @Override
-            public void onResponse(Call<DeleteAccount> call, Response<DeleteAccount> response) {
-                progressDialog.dismiss();
+            public void onResponse(Call<UpdateProfile> call, Response<UpdateProfile> response) {
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
-
-                    //dismiss();
-                    Log.v("all_log", "delete_accout_reponse: success");
-                    ACCDELETESTATUS = true;
-                    /*DeleteAccountConfirmationDialogFragment deleteAccountConfirmationDialogFragment = new DeleteAccountConfirmationDialogFragment();
-                    AppCompatActivity activity = (AppCompatActivity) getActivity();
-                    deleteAccountConfirmationDialogFragment.show(activity.getSupportFragmentManager(), "deleteAccountConfirmationDialogFragment");*/
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    Fragment f = getFragmentManager().findFragmentByTag("deleteAccountDialog");
-                    if (f != null) {
-                        ft.remove(f);
-                    }
-                    ft.commit();
-
-                    //now show the dialog fragment of delete confirmation
-                    DeleteAccountConfirmationDialogFragment deleteAccountConfirmationDialogFragment = new DeleteAccountConfirmationDialogFragment();
-                    //AppCompatActivity activity = (AppCompatActivity) getActivity();
-                    Bundle b = new Bundle();
-                    b.putString("message", response.body().getMessage().toString().trim());
-                    deleteAccountConfirmationDialogFragment.setArguments(b);
-                    deleteAccountConfirmationDialogFragment.show(getFragmentManager(), "deleteAccountConfirmationDialogFragment");
+                    progressDialog.dismiss();
+                    // View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_settings, null);
+                    // TextView t = view.findViewById(R.id.allow_notification_ans);
+                    PublicClass.isNotificationAllowed = (operation_code == 1) ? true : false;
+                    //getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+                    Intent i = new Intent();
+                    i.putExtra("status", PublicClass.isNotificationAllowed);
+                   // TextView t = v.findViewById(R.id.allow_notification_ans);
+                   // t.setText(PublicClass.isNotificationAllowed == true ? "Yes" : "No");
+                    getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);
 
                 } else {
+                    progressDialog.dismiss();
                     try {
-                        ACCDELETESTATUS = false;
-                        dismiss();
+
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        Log.v("all_log", "delete_accout_reponse: NOT success");
+                        Log.v("all_log", "allow_notification response: NOT success");
                         if (jObjError.has("detail")) {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token();
+                                update_token(operation_code);
 
                             }
                         }
-                        Log.v("all_log", "message detail: " + jObjError.getString("detail"));
+                        ///Log.v("all_log", "message detail: " + jObjError.getString("detail"));
 
                     } catch (Exception e) {
                     }
+
                 }
             }
 
             @Override
-            public void onFailure(Call<DeleteAccount> call, Throwable t) {
-
+            public void onFailure(Call<UpdateProfile> call, Throwable t) {
                 progressDialog.dismiss();
-                dismiss();
             }
         });
     }
+
 
     @Override
     public void onResume() {
@@ -177,7 +194,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
 
     }
 
-    public void update_token() {
+    public void update_token(final int operation_code) {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
@@ -213,7 +230,7 @@ public class DeleteAccountDialogFragment extends DialogFragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
-                    call_delete_account();
+                    call_allow_notification(operation_code);
                     //call_api_coutry();
                 }
             }
@@ -226,4 +243,5 @@ public class DeleteAccountDialogFragment extends DialogFragment {
         });
 
     }
+
 }
