@@ -130,24 +130,24 @@
                 android:id="@+id/textView18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="33dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/quicksand_light"
                 android:text="Minimum 8 Characters"
-                android:textColor="@color/grey"
-                android:textSize="13sp"
+                android:textColor="@color/light_grey"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/password" />
 
             <TextView
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
-                android:layout_height="19dp"
-                android:layout_marginStart="32dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="33dp"
                 android:fontFamily="@font/quicksand_light"
                 android:text="Include letter &amp; number"
-                android:textColor="@color/grey"
-                android:textSize="13sp"
+                android:textColor="@color/light_grey"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
@@ -155,11 +155,11 @@
                 android:id="@+id/textView19"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="33dp"
                 android:fontFamily="@font/quicksand_light"
                 android:text="Include special Character"
-                android:textColor="@color/grey"
-                android:textSize="13sp"
+                android:textColor="@color/light_grey"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -186,7 +186,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/toc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -195,7 +195,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/quicksand_light"
                 android:text="By signing up, you agree to our Privacy Policy and Terms of Use"
-                android:textSize="14sp"
+                android:textSize="13sp"
 
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
