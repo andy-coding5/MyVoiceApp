@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,7 +23,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.rohan.myvoice.BottomManuHelper;
 import com.rohan.myvoice.R;
+import com.rohan.myvoice.RecyclerViewAdapterQuestionList;
 import com.rohan.myvoice.RecyclerViewAdapterSurveyList;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
@@ -85,12 +88,10 @@ public class HomeFragment extends Fragment {
         progressDialog.setMessage("Loading");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-
         pref = this.getActivity().getSharedPreferences("MYVOICEAPP_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
         pref2 = this.getActivity().getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
         Log.v("fcm_token", "Fcm_token: in homefragment activity " + pref2.getString("fcm_token", "null or empty"));
-
 
         api = RetroClient.getApiService();
         //update_token();
@@ -122,8 +123,14 @@ public class HomeFragment extends Fragment {
         /*BottomNavigationView bv = getActivity().findViewById(R.id.bottom_navigation);
         //bv.getMenu().getItem(0).setChecked(true);
         bv.setSelectedItemId(R.id.home_menu_item);*/
-        BottomNavigationView mBottomNavigationView=(BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation);
+        BottomNavigationView mBottomNavigationView = (BottomNavigationView) getActivity().findViewById(R.id.bottom_navigation);
         mBottomNavigationView.getMenu().findItem(R.id.home_menu_item).setChecked(true);
+
+        //View v = mBottomNavigationView.getChildAt(2);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+
+        // BottomManuHelper.showBadge(getActivity(), mBottomNavigationView, R.id.notifications_menu_item, "7");
+
 
         survey_list = new ArrayList<>();
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -153,7 +160,8 @@ public class HomeFragment extends Fragment {
                                 //survey_list = response.body().getProjectData();
                                 if (survey_list != null) {
                                     survey_list = response.body().getProjectData();
-                                    recyclerViewAdapeter.notifyDataSetChanged();
+                                    recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                                    recyclerView.setAdapter(recyclerViewAdapeter);
                                     // recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
                                     // recyclerView.setAdapter(recyclerViewAdapeter);
 

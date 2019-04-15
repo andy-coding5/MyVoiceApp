@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -15,7 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
@@ -46,6 +49,7 @@ public class preference extends AppCompatActivity {
     private ProgressDialog progressDialog;
     String is_notification_allowed = "false";
 
+    private ImageView tick_mark;
     String i_country_code, i_state_code, i_city_name, i_zip_code, i_education_code, i_gender_code, i_dob, i_income, devide_id;
 
 
@@ -90,6 +94,8 @@ public class preference extends AppCompatActivity {
         //   String t = Token.token_string;
         //update_token();
         api_key = getResources().getString(R.string.APIKEY);
+        tick_mark = findViewById(R.id.tickmark);
+        tick_mark.setVisibility(View.INVISIBLE);
 
         Intent i = getIntent();
 
@@ -101,9 +107,7 @@ public class preference extends AppCompatActivity {
         i_gender_code = i.getStringExtra("gender_code");
         i_dob = i.getStringExtra("dob");
         i_income = i.getStringExtra("income");
-
         devide_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
     }
 
     public void update_token(final View view) {
@@ -161,17 +165,27 @@ public class preference extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void allow_record_audio(View view) {
         if (is_recording_allowed()) {
+            change_button_format();
             Toast.makeText(this, "You already have the permission of recording Audio", Toast.LENGTH_SHORT).show();
             is_notification_allowed = "true";
             return;
 
         }
         request_recording_permission();
+    }
+
+    private void change_button_format() {
+        //chnage the button style if permisison is granted
+        Button b = findViewById(R.id.button4);
+        b.setBackgroundColor(getResources().getColor(R.color.grey));
+        b.setTextColor(Color.WHITE);
+        tick_mark.setVisibility(View.VISIBLE);
+
+
     }
 
     private boolean is_recording_allowed() {
@@ -198,6 +212,7 @@ public class preference extends AppCompatActivity {
             //If permission is granted
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                change_button_format();
                 //Displaying a toast
                 Toast.makeText(this, "Permission granted. now app can record audio.", Toast.LENGTH_LONG).show();
                 is_notification_allowed = "true";
@@ -217,7 +232,7 @@ public class preference extends AppCompatActivity {
                 i_zip_code, i_country_code, i_state_code, i_city_name,
                 i_education_code, i_gender_code, i_dob,
                 "3", i_income, pref2.getString("fcm_token", null), "Android",
-                devide_id, 0, "1", "Yes");
+                devide_id, 1, "1", "Yes");
 
         progressDialog.show();
 

@@ -172,6 +172,7 @@ public class NotificationFragment extends Fragment {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
 
+                   // Log.v("all_log", "notification api response: "+response.body());
                     //setting the invitation list
                     mSwipeRefreshLayout.setRefreshing(false);
                     invitations_list = (ArrayList<Datum>) response.body().getData();
@@ -184,6 +185,7 @@ public class NotificationFragment extends Fragment {
 
                     //setting the notification list
                     notification_list = (ArrayList<Notification>) response.body().getNotification();
+                    Log.v("all_log", "notifixation list: "+response.body().getNotification());
                     if (notification_list == null || notification_list.size() == 0) {
                         noNotification.setVisibility(View.VISIBLE);
                     } else {

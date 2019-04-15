@@ -217,10 +217,12 @@ public class SCQFragment extends Fragment {
                         }
                         //if IsNext = No
                         if ("No".equals(response.body().getIsNext())) {
+                            progressDialog.dismiss();
                             Log.v("test", "from SCQ: response.body().getIsNext()" + response.body().getIsNext());
                             getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                         } else {
+                            progressDialog.dismiss();
                             //if IsNext = Yes
                             //there are children question(s)...we got id and and question type from the response.
                             AppCompatActivity activity = (AppCompatActivity) v.getContext();
@@ -260,10 +262,6 @@ public class SCQFragment extends Fragment {
                             myFragment.setArguments(b);
 
                             Log.v("test", "from SCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
-
-                                      /*  final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                        ft.replace(R.id.framelayout_container, new NewFragmentToReplace(), "NewFragmentTag");
-                                        ft.commit();*/
 
                             activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
                         }
@@ -422,7 +420,7 @@ public class SCQFragment extends Fragment {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-              pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         if (!((Activity) getActivity()).isFinishing()) {

@@ -561,7 +561,6 @@ public class InvitaionList extends Fragment {
         });
     }
 
-
     private void get_pending_list_call() {
         no_pending_tv.setVisibility(View.INVISIBLE);
         no_accepted_tv.setVisibility(View.INVISIBLE);

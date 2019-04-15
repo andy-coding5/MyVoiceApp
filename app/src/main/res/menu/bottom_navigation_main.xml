@@ -17,7 +17,7 @@
     <item
         android:id="@+id/notifications_menu_item"
         android:enabled="true"
-        android:icon="@drawable/notification"
+        android:icon="@drawable/icon_notification"
         android:orderInCategory="2"
         android:title="Notifications" />
     <item

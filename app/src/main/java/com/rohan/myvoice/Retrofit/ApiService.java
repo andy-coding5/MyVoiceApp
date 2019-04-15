@@ -118,7 +118,7 @@ public interface ApiService {
                                       @Field("device_id") String device_id, @Field("is_pushnotification") int is_pushnotification,
                                       @Field("is_complete") String is_complete, @Field("firstTimeRegister") String firstTimeRegister);
 
-    //for push notification update in settings fragment
+    //for push icon_notification update in settings fragment
     @POST("mobileapp/api/v1/user/profile/update/")
     @FormUrlEncoded
     Call<UpdateProfile> getPushUpdateJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
@@ -165,7 +165,7 @@ public interface ApiService {
     @GET("mobileapp/api/v1/data/questions/get/activities/")
     Call<Activities> getActivityJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 
-    //notification tab
+    //icon_notification tab
     @GET("mobileapp/api/v1/notification/list/")
     Call<Notifications> getnotificationssJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization);
 

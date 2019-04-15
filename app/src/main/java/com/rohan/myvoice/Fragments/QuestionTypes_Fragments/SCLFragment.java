@@ -262,10 +262,12 @@ public class SCLFragment extends Fragment {
                         }
                         //if IsNext = No
                         if ("No".equals(response.body().getIsNext())) {
+                            progressDialog.dismiss();
                             Log.v("test", "from SCL: response.body().getIsNext()" + response.body().getIsNext());
                             getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                         } else {
+                            progressDialog.dismiss();
                             //if IsNext = Yes
                             //there are children question(s)...we got id and and question type from the response.
                             AppCompatActivity activity = (AppCompatActivity) v.getContext();

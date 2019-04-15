@@ -351,13 +351,14 @@ public class OTNFragment extends Fragment {
                                 }
 
                                 if ("No".equals(response.body().getIsNext())) {
-
+                                    progressDialog.dismiss();
                                     Log.v("test", "from OTN: response.body().getIsNext()" + response.body().getIsNext());
                                     getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
                                 } else {
                                     //if IsNext = Yes
                                     //there are children question(s)...we got id and and question type from the response.
+                                    progressDialog.dismiss();
                                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                                     Fragment myFragment = null;
                                     String q_type = String.valueOf(response.body().getQuestionType());

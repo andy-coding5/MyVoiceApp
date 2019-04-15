@@ -347,6 +347,7 @@ public class OTTFragment extends Fragment {
                             } else {
                                 //if IsNext = Yes
                                 //there are children question(s)...we got id and and question type from the response.
+                                progressDialog.dismiss();
                                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
                                 Fragment myFragment = null;
                                 String q_type = String.valueOf(response.body().getQuestionType());
