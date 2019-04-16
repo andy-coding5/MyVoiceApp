@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.rohan.myvoice.CustomTextView
+    <com.e2excel.myvoice.CustomTextView
         android:id="@+id/textViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

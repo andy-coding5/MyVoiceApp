@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rohan.myvoice">
+    package="com.e2excel.myvoice">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashScreen"
+            android:name="com.e2excel.myvoice.SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -26,42 +26,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Verification"
+            android:name="com.e2excel.myvoice.Verification"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
         <activity
-            android:name=".Dashboard"
+            android:name="com.e2excel.myvoice.Dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/dashBoardTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".preference"
+            android:name="com.e2excel.myvoice.preference"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.e2excel.myvoice.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme">
 
         </activity>
         <activity
-            android:name=".SignIn"
+            android:name="com.e2excel.myvoice.SignIn"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
-            android:name=".SignUp"
+            android:name="com.e2excel.myvoice.SignUp"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".GetStarted"
+            android:name="com.e2excel.myvoice.GetStarted"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".personal_info_1"
+            android:name="com.e2excel.myvoice.personal_info_1"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity
-            android:name=".personal_info_2"
+            android:name="com.e2excel.myvoice.personal_info_2"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
 
@@ -73,7 +73,7 @@
 
             android:resource="@drawable/myvoice_appicon" />
 
-        <service android:name=".NotificationService.MyFirebaseMessagingService">
+        <service android:name="com.e2excel.myvoice.NotificationService.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

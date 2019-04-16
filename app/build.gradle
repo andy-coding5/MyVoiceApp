@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId 'com.rohan.myvoice'
+        applicationId 'com.e2excel.myvoice'
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
@@ -42,4 +42,4 @@ dependencies {
     //SwipeMenuListView
     implementation 'com.baoyz.swipemenulistview:library:1.3.0'
 }
-apply plugin: 'com.google.gms.google-services'
+
