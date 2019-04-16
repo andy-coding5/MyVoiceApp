@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/quicksand_bold"
-        android:text="Welcome Back"
+        android:text="Sign in"
         android:textAlignment="center"
         android:textColor="#0e68af"
 
@@ -105,7 +105,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/quicksand_bold"
         android:onClick="ForgetPassword"
-        android:text="Forget Password"
+        android:text="Forgot Password"
         android:textSize="16sp"
         android:clickable="true"
 

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -32,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.graphics.Typeface.BOLD;
 import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 public class SignUp extends AppCompatActivity {
@@ -101,6 +103,7 @@ public class SignUp extends AppCompatActivity {
                 super.updateDrawState(ds);
                 ds.setColor(getResources().getColor(R.color.dark_blue));
                 ds.setUnderlineText(false);
+
             }
         };
 
@@ -122,6 +125,8 @@ public class SignUp extends AppCompatActivity {
 
         ss.setSpan(clickableSpan1, 32, 46, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss.setSpan(clickableSpan2, 51, 63, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
         toc.setText(ss);
         toc.setMovementMethod(LinkMovementMethod.getInstance());
 

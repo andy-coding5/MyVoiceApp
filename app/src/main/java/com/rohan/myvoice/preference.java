@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.R.color.white;
 import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 
@@ -95,7 +100,8 @@ public class preference extends AppCompatActivity {
         //update_token();
         api_key = getResources().getString(R.string.APIKEY);
         tick_mark = findViewById(R.id.tickmark);
-        tick_mark.setVisibility(View.INVISIBLE);
+        //tick_mark.setBackgroundTintList(ColorStateList.valueOf(Color.argb(255, 255, 255, 255)));
+        // tick_mark.setVisibility(View.INVISIBLE);
 
         Intent i = getIntent();
 
@@ -181,9 +187,26 @@ public class preference extends AppCompatActivity {
     private void change_button_format() {
         //chnage the button style if permisison is granted
         Button b = findViewById(R.id.button4);
-        b.setBackgroundColor(getResources().getColor(R.color.grey));
+        b.setBackground(getDrawable(R.drawable.edit_text_notification_allowed));
         b.setTextColor(Color.WHITE);
+
+       /* Drawable drawable = getResources().getDrawable(R.drawable.checksymbol);
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));*/
+
+
+        //show drawable on right side of button with this call (in your onclick method)
+        //b.setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
+        //b.setCompoundDrawablePadding(3);
+
+
+
         tick_mark.setVisibility(View.VISIBLE);
+        //tick_mark.bringToFront();
+
+        tick_mark.setImageDrawable(getResources().getDrawable(R.drawable.checksymbol));
+
+        //tick_mark.setBackgroundTintList(ColorStateList.valueOf(Color.argb(255, 255, 255, 255)));        //white
 
 
     }
