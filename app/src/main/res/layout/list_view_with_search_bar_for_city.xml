@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,7 +20,23 @@
             android:textAlignment="center"
             android:textSize="14sp" />
 
+        <EditText
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text"
+            android:ellipsize="end"
+            android:fontFamily="@font/quicksand_regular"
+            android:hint="Search City name here"
+            android:maxLines="1"
+            android:paddingStart="5dp"
+            android:singleLine="true"
+            android:textColor="@color/light_grey"
+            android:textSize="12sp"
+            app:queryHint="Search city name">
 
+        </EditText>
 
 
         <ListView

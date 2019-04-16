@@ -53,6 +53,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -202,8 +203,7 @@ public class OTTFragment extends Fragment {
     private void load_question() {
         Call<QuestionDetail> call = api.getOTTJson(api_key, "Token " + pref.getString("token", null), q_id);
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -315,8 +315,7 @@ public class OTTFragment extends Fragment {
                         data.getParentID().toString(), ja,
                         "Android", PublicClass.MainParentID.trim());
 
-                if(!((Activity) getActivity()).isFinishing())
-                {
+                if (!((Activity) getActivity()).isFinishing()) {
                     //show dialog
                     progressDialog.show();
                 }
@@ -335,6 +334,10 @@ public class OTTFragment extends Fragment {
                                         update_token_submit();
 
                                     }
+                                }
+
+                                if (jObjError.has("message")) {
+                                    Build_alert_dialog(getActivity(), jObjError.getString("message"));
                                 }
                             } catch (Exception e) {
 
@@ -413,11 +416,10 @@ public class OTTFragment extends Fragment {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -465,8 +467,7 @@ public class OTTFragment extends Fragment {
                 pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }

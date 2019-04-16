@@ -54,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static com.rohan.myvoice.MainActivity.Build_alert_dialog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -345,6 +346,10 @@ public class OTNFragment extends Fragment {
                                             update_token_submit();
 
                                         }
+                                    }
+
+                                    if(jObjError.has("message")){
+                                        Build_alert_dialog(getActivity(),jObjError.getString("message"));
                                     }
                                 } catch (Exception e) {
 

@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -551,7 +555,7 @@ public class personal_info_1 extends AppCompatActivity {
                         if (city_name_list.size() != 0) {            //if not fetched any data than state filed should not be clicked; Otherwise it will be crashed.! __Rv__
 
                             dialog = new Dialog(personal_info_1.this);
-                            dialog.setContentView(R.layout.list_view);
+                            dialog.setContentView(R.layout.list_view_with_search_bar_for_city);
                             dialog.setTitle("Select City");
                             dialog.setCancelable(true);
                             dialog.setCanceledOnTouchOutside(true);
@@ -561,12 +565,18 @@ public class personal_info_1 extends AppCompatActivity {
                             //prepare a list view in dialog
                             listview_city = dialog.findViewById(R.id.dialogList);
                             TextView t = dialog.findViewById(R.id.title_textView);
+                            //SearchView s = dialog.findViewById(R.id.search_view);
+                            EditText search_edit_tv = dialog.findViewById(R.id.search_view);
+
+
                             t.setText("Please select City");
 
-
                             //String[] aray = {"rohn0", "fdad", "aqwe"};
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, city_name);
+                            final ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.list_item, R.id.textViewStyle, city_name);
                             listview_city.setAdapter(adapter);
+                            listview_city.setTextFilterEnabled(true);
+
+
                             listview_city.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -582,7 +592,26 @@ public class personal_info_1 extends AppCompatActivity {
                                     textview_city_info.setText(selected_city);
                                     dialog.dismiss();
                                 }
+
+
                             });
+                            search_edit_tv.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                    adapter.getFilter().filter(s);
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
                             View view1 = dialog.findViewById(R.id.cancel_btn);
                             Button cancel_btn = view1.findViewById(R.id.cancel_btn);
                             cancel_btn.setOnClickListener(new View.OnClickListener() {

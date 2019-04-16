@@ -1,14 +1,13 @@
 package com.rohan.myvoice;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,10 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rohan.myvoice.CustomDialogs.ForgetPasswordDialogFragment;
-import com.rohan.myvoice.NotificationService.MyFirebaseMessagingService;
 import com.rohan.myvoice.Retrofit.ApiService;
 import com.rohan.myvoice.Retrofit.RetroClient;
-import com.rohan.myvoice.GlobalValues.PublicClass;
 import com.rohan.myvoice.pojo.Forget_password_request.ForgetPasswordRequest;
 import com.rohan.myvoice.pojo.SignIn.Data;
 import com.rohan.myvoice.pojo.SignIn.Login;
@@ -41,8 +38,8 @@ public class SignIn extends AppCompatActivity {
     ApiService api;
     String api_key;
     private String LOGIN_STATUS = "NoT Initilize";
-    SharedPreferences pref, pref2;
-    SharedPreferences.Editor editor;
+    SharedPreferences pref, pref2, email_pref;
+    SharedPreferences.Editor editor, email_pref_editor;
     public static String DEVICE_ID;
     private ProgressDialog progressDialog;
 
@@ -72,10 +69,14 @@ public class SignIn extends AppCompatActivity {
         editor = pref.edit();
         pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
 
+        email_pref = getSharedPreferences("MYVOICE_EMAIL_PREF", MODE_PRIVATE);
+        email_pref_editor = email_pref.edit();
+
         api = RetroClient.getApiService();
         api_key = getResources().getString(R.string.APIKEY);
 
         email_address = findViewById(R.id.email_address);
+        email_address.setText(email_pref.getString("email", ""));       //global preference : even when user unistalls the app, and reinstall that time also, it should give lastly used email address
         password = findViewById(R.id.password);
 
         DEVICE_ID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -113,7 +114,7 @@ public class SignIn extends AppCompatActivity {
                 if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
                     //Now call to this dialog frgamt to enter Otp and new password
                     Log.v("all_log", "Forget password request sent successfully");
-                    Toast.makeText(SignIn.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SignIn.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
                     ForgetPasswordDialogFragment forgetPasswordDialogFragment = new ForgetPasswordDialogFragment();
                     Bundle b = new Bundle();
@@ -235,6 +236,9 @@ public class SignIn extends AppCompatActivity {
 
                     editor.commit();
 
+                    email_pref_editor.putString("email", email);
+                    email_pref_editor.commit();
+
                     //token used also in ApiService Interface
 
                     Boolean is_complete = response.body().getData().getProfile().getIsComplete();
@@ -255,7 +259,7 @@ public class SignIn extends AppCompatActivity {
 
                         Boolean isVerified = response.body().getData().getProfile().getIsVerified();
                         if (isVerified) {
-                            Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(SignIn.this, "details filled already...redirecting to the main dashboard", Toast.LENGTH_SHORT).show();
                             editor.putString("IsComplete", "true");
                             editor.commit();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
@@ -281,7 +285,7 @@ public class SignIn extends AppCompatActivity {
 
 
                     } catch (Exception e) {
-                        Toast.makeText(SignIn.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(SignIn.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -292,8 +296,8 @@ public class SignIn extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Login> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(SignIn.this, t.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SignIn.this, t.toString(), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
 

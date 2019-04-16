@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -38,8 +39,8 @@ public class SignUp extends AppCompatActivity {
 
     private Dialog dialog;
     private TextView first_name, last_name, email_id, pass;
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private SharedPreferences pref, email_pref;
+    private SharedPreferences.Editor editor, email_pref_editor;
     private ProgressDialog progressDialog;
     private TextView toc;
 
@@ -66,11 +67,16 @@ public class SignUp extends AppCompatActivity {
         pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         editor = pref.edit();
 
+        email_pref = getSharedPreferences("MYVOICE_EMAIL_PREF", MODE_PRIVATE);
+        email_pref_editor = email_pref.edit();
+
         dialog = new Dialog(this, android.R.style.Theme_NoTitleBar_Fullscreen);
 
 
         first_name = findViewById(R.id.f_name);
+        first_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         last_name = findViewById(R.id.l_name);
+        last_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         email_id = findViewById(R.id.email_id);
         pass = findViewById(R.id.password);
 
@@ -82,7 +88,6 @@ public class SignUp extends AppCompatActivity {
 
         toc = findViewById(R.id.toc);
         SpannableString ss = new SpannableString(toc.getText().toString().trim());
-
 
         //for privacy policy
         ClickableSpan clickableSpan1 = new ClickableSpan() {
@@ -115,8 +120,8 @@ public class SignUp extends AppCompatActivity {
             }
         };
 
-        ss.setSpan(clickableSpan1, 32, 45, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss.setSpan(clickableSpan2, 51, 62, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan1, 32, 46, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan2, 51, 63, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         toc.setText(ss);
         toc.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -165,6 +170,9 @@ public class SignUp extends AppCompatActivity {
                         editor.putString("isVerified", "false");
                         editor.putString("IsComplete", "false");
                         editor.commit();
+
+                        email_pref_editor.putString("email", mail);
+                        email_pref_editor.commit();
 
                         Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), GetStarted.class);
@@ -329,6 +337,12 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View widget) {
                     TermsAndConditions();
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.dark_blue));
+                ds.setUnderlineText(false);
             }
         };
 

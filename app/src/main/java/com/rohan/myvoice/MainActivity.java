@@ -9,6 +9,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -91,6 +96,25 @@ public class MainActivity extends AppCompatActivity {
                     "            range of topics.\n" +
                     "   </pre>"));
         }
+
+        String t = t_view.getText().toString();
+
+        ClickableSpan c = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+
+            }
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.dark_blue));
+                ds.setUnderlineText(false);
+            }
+        };
+
+        SpannableString s = new SpannableString(t);
+        s.setSpan(c, 15, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        t_view.setText(s);
 
 
         Log.v("fcm_token", "Fcm_token: in main activity " + pref2.getString("fcm_token", "null or empty"));

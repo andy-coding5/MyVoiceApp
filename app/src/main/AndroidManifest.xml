@@ -12,7 +12,6 @@
         android:icon="@mipmap/ic_launcher_foreground"
         android:label="MyVoice"
         android:roundIcon="@mipmap/ic_launcher_round"
-android:largeHeap="true"
 
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -69,6 +68,10 @@ android:largeHeap="true"
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCreI3jUpdeXl0GeMipjqcIEyjrzSsXPQY" />
+
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+
+            android:resource="@drawable/myvoice_appicon" />
 
         <service android:name=".NotificationService.MyFirebaseMessagingService">
             <intent-filter>

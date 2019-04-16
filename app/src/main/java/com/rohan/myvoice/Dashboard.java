@@ -2,12 +2,15 @@ package com.rohan.myvoice;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.rohan.myvoice.Fragments.ActivityFragment;
@@ -18,11 +21,17 @@ import com.rohan.myvoice.Fragments.QuestionsListFragment;
 import com.rohan.myvoice.Fragments.SettingsFragment;
 import com.rohan.myvoice.GlobalValues.PublicClass;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 public class Dashboard extends AppCompatActivity {
 
 
     private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
+
+    private View notificationBadge;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +55,13 @@ public class Dashboard extends AppCompatActivity {
         viewPagerAdapter.addFragments(new SettingsFragment());
 
         viewPager.setAdapter(viewPagerAdapter);*/
+
+      /*  BottomNavigationItemView itemView = (BottomNavigationItemView) bottomNavigationView.getChildAt(2);
+
+        notificationBadge = LayoutInflater.from(this).inflate(R.layout.notification_badge_lauout, bottomNavigationView, false);
+
+        itemView.addView(notificationBadge);
+        */
 
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -93,6 +109,7 @@ public class Dashboard extends AppCompatActivity {
         }*/
 
     }
+
 
     @Override
     public void onBackPressed() {

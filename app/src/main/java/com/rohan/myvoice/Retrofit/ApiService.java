@@ -239,4 +239,11 @@ public interface ApiService {
                                                               @Field("otp") String otp, @Field("new_pass") String new_pass,
                                                               @Field("Source") String Source);
 
+    //Logout
+    //delete account
+    @POST("accounts/api/v1/user/logout/")
+    @FormUrlEncoded
+    Call<DeleteAccount> getLogout_accountJson(@Header("APIKEY") String APIKEY, @Header("Authorization") String Authorization,
+                                              @Field("DeviceToken") String DeviceToken, @Field("Source") String Source);
+
 }

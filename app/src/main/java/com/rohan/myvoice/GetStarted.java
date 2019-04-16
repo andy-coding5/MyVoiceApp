@@ -32,7 +32,7 @@ public class GetStarted extends AppCompatActivity {
 
         //Toast.makeText(this, "USERNAME: "+u_name, Toast.LENGTH_SHORT).show();
 
-        username.setText("Hi, " + u_name);
+        username.setText("Hi, " + u_name+"!");
 
         bold.setText("Thank you for downloading the\n" +
                 "MyVoice app, Please complete your profile.\n");
