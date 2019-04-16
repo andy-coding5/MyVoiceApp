@@ -180,7 +180,8 @@ public class SCLFragment extends Fragment {
                     current.setText(current_string);
                 } else {
                     //int logic
-                    current.setText(String.valueOf(progress));
+                    int progress2 = (progress * step_int) + min_int;
+                    current.setText(String.valueOf(progress2));
                     Log.v("seekbar", "current (in int) " + current.getText());
                 }
             }
@@ -429,12 +430,27 @@ public class SCLFragment extends Fragment {
 
                     } else {
                         //it's int
+
+
+
                         max_int = Integer.valueOf(response.body().getData().getQuestionOptions().getMax());
                         min_int = Integer.valueOf(response.body().getData().getQuestionOptions().getMin());
                         step_int = Integer.valueOf(response.body().getData().getQuestionOptions().getStep());
-                        seekbar.setMax(max_int);
-                        seekbar.incrementProgressBy(step_int);
-                        seekbar.setProgress(min_int);
+
+                        int temp2 = min_int;
+
+                        while(temp2<=max_int){
+                            step_count++;
+                            temp2 = temp2 + step_int;
+                        }
+                        step_count -= 2;      //because we have started from 0
+                        Log.v("all_log", "int step count: "+step_count);
+
+                        seekbar.setMax(step_count);
+
+                        //seekbar.setMax(max_int);
+                       // seekbar.incrementProgressBy(step_int);
+                        //seekbar.setProgress(min_int);
                     }
                 } else {
                     try {

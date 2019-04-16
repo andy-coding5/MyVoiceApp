@@ -4,7 +4,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroClient {
-    private static final String ROOT_URL = "http://192.168.0.106:8000/";
+    private static final String ROOT_URL = "http://sporel.ddns.net:9088/";
+    // private static final String ROOT_URL = "http://192.168.0.106:8000/";
 
     /**
      * Get Retrofit Instance

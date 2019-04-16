@@ -258,7 +258,7 @@ public class OTTFragment extends Fragment {
                     //inti the data obj
                     data = response.body().getData();
 
-                    MAX_SIZE = Integer.parseInt(response.body().getData().getQuestionOptions().getMAXLength());
+                    MAX_SIZE = Integer.parseInt(response.body().getData().getQuestionOptions().getMAXLength().trim());
                     response_text_view.setMaxLines(MAX_SIZE);
                     //question is now load comopletely and user can now type or speak for enter his response in the edittext of response.
 

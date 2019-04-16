@@ -246,8 +246,7 @@ public class EditProfileFragment extends Fragment {
         Call<Country> call = api.getCountryJson(api_key, "Token " + pref.getString("token", null));
         Log.d("token_detail", "used for country: " + pref.getString("token", null));
         // show it
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -319,7 +318,7 @@ public class EditProfileFragment extends Fragment {
                                     state_tv.setText("Select State");
 
                                 }
-                                city_tv.setText(selected_country);
+                                country_tv.setText(selected_country);
 
                                 dialog.dismiss();
 
@@ -345,8 +344,7 @@ public class EditProfileFragment extends Fragment {
                         });
 
 
-                        if(!((Activity) getActivity()).isFinishing())
-                        {
+                        if (!((Activity) getActivity()).isFinishing()) {
                             //show dialog
                             dialog.show();
                         }
@@ -596,8 +594,7 @@ public class EditProfileFragment extends Fragment {
                 pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -638,8 +635,7 @@ public class EditProfileFragment extends Fragment {
         if (state_name_list.size() != 0) {
             Call<Cities> call = api.getCityJson(api_key, "Token " + pref.getString("token", null), country_code, state_code);
             Log.d("token_detail", "used for cities: " + pref.getString("token", null));
-            if(!((Activity) getActivity()).isFinishing())
-            {
+            if (!((Activity) getActivity()).isFinishing()) {
                 //show dialog
                 progressDialog.show();
             }
@@ -733,8 +729,7 @@ public class EditProfileFragment extends Fragment {
                                     dialog.dismiss();
                                 }
                             });
-                            if(!((Activity) getActivity()).isFinishing())
-                            {
+                            if (!((Activity) getActivity()).isFinishing()) {
                                 //show dialog
                                 dialog.show();
                             }
@@ -791,8 +786,7 @@ public class EditProfileFragment extends Fragment {
                 pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -835,8 +829,7 @@ public class EditProfileFragment extends Fragment {
         Call<Education> call2 = api.getEducationJson(api_key, "Token " + pref.getString("token", null), country_code);
         Log.d("token_detail", "used for education: " + pref.getString("token", null));
         // show it
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -923,8 +916,7 @@ public class EditProfileFragment extends Fragment {
                         });
 
 
-                        if(!((Activity) getActivity()).isFinishing())
-                        {
+                        if (!((Activity) getActivity()).isFinishing()) {
                             //show dialog
                             dialog.show();
                         }
@@ -978,11 +970,10 @@ public class EditProfileFragment extends Fragment {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1023,8 +1014,7 @@ public class EditProfileFragment extends Fragment {
         //FOR GENDER
         Call<Gender> call = api.getGenderJson(api_key, "Token " + pref.getString("token", null));
         Log.d("token_detail", "used for gender: " + pref.getString("token", null));
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1109,8 +1099,7 @@ public class EditProfileFragment extends Fragment {
                         });
 
 
-                        if(!((Activity) getActivity()).isFinishing())
-                        {
+                        if (!((Activity) getActivity()).isFinishing()) {
                             //show dialog
                             dialog.show();
                         }
@@ -1164,11 +1153,10 @@ public class EditProfileFragment extends Fragment {
         }
 */
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1221,14 +1209,16 @@ public class EditProfileFragment extends Fragment {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        dob_tv.setText((monthOfYear + 1) + "-" + dayOfMonth + "-" + year);       //for showing - format is: m-d-y
+
 
                         isValid = age_validation(dayOfMonth, monthOfYear + 1, year);
                         if (Integer.parseInt(isValid) < 13) {
                             selected_dob = "not_selected";
                             Build_alert_dialog(getActivity(), "Age restriction", "you must be 13+");
+                        } else {
+                            dob_tv.setText((monthOfYear + 1) + "-" + dayOfMonth + "-" + year);       //for showing - format is: m-d-y
+                            selected_dob = (String) (year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);        //for database_sending, format is : y-m-d
                         }
-                        selected_dob = (String) (year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);        //for database_sending, format is : y-m-d
 
                     }
                 }, mYear, mMonth, mDay);
@@ -1262,8 +1252,7 @@ public class EditProfileFragment extends Fragment {
         //For INCOME
         Call<Salary> call3 = api.getSalaryJson(api_key, "Token " + pref.getString("token", null));
         Log.d("token_detail", "used for salary: " + pref.getString("token", null));
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1341,8 +1330,7 @@ public class EditProfileFragment extends Fragment {
                         });
 
 
-                        if(!((Activity) getActivity()).isFinishing())
-                        {
+                        if (!((Activity) getActivity()).isFinishing()) {
                             //show dialog
                             dialog.show();
                         }
@@ -1396,11 +1384,10 @@ public class EditProfileFragment extends Fragment {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1466,8 +1453,7 @@ public class EditProfileFragment extends Fragment {
                         "3", selected_salary, FcmToken, "Android",
                         device_id, isPushNotification, "true");
 
-                if(!((Activity) getActivity()).isFinishing())
-                {
+                if (!((Activity) getActivity()).isFinishing()) {
                     //show dialog
                     progressDialog.show();
                 }
@@ -1527,11 +1513,10 @@ public class EditProfileFragment extends Fragment {
         }
 */
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
@@ -1581,11 +1566,10 @@ public class EditProfileFragment extends Fragment {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-              pref2.getString("fcm_token", null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
 
-        if(!((Activity) getActivity()).isFinishing())
-        {
+        if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
