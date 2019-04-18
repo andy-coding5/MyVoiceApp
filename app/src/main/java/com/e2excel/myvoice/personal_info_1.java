@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
 import com.e2excel.myvoice.pojo.SignIn.Login;
@@ -307,6 +308,10 @@ public class personal_info_1 extends AppCompatActivity {
                             update_token();
                             country_selection(view);
                         }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
+                        }
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -438,6 +443,10 @@ public class personal_info_1 extends AppCompatActivity {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token();
                             fetch_states();
+                        }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                         }
                         Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -635,6 +644,10 @@ public class personal_info_1 extends AppCompatActivity {
                                 update_token();
                                 fetch_cities();
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                             Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                             //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -767,6 +780,10 @@ public class personal_info_1 extends AppCompatActivity {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
                                 next_activity(view);
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                             }
 
                             Toast.makeText(getApplicationContext(), jObjError.toString(), Toast.LENGTH_LONG).show();

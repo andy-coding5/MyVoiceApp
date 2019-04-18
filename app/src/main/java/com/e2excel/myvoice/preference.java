@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
 import com.e2excel.myvoice.pojo.SignIn.Login;
@@ -193,7 +194,6 @@ public class preference extends AppCompatActivity {
         //b.setCompoundDrawablePadding(3);
 
 
-
         tick_mark.setVisibility(View.VISIBLE);
         //tick_mark.bringToFront();
 
@@ -296,6 +296,9 @@ public class preference extends AppCompatActivity {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token(view);
 
+                        } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                         }
                         String status = jObjError.getString("message");
                         String error_msg = jObjError.getJSONObject("data").getString("errors");

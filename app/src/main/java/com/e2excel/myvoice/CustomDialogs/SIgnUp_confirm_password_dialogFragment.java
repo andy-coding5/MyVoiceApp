@@ -104,7 +104,7 @@ public class SIgnUp_confirm_password_dialogFragment extends DialogFragment {
 
                 if (confirm_pass.getText().toString().trim().equals(b.getString("pass"))) {
 
-                    SignUp_process(b.getString("firstname"), b.getString("lastname"), b.getString("email_id"), b.getString("pass"));
+                    SignUp_process(b.getString("username"), b.getString("lastname"), b.getString("email_id"), b.getString("pass"));
                 } else {
                     Build_alert_dialog(getActivity(), "password mismatch");
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -214,6 +214,5 @@ public class SIgnUp_confirm_password_dialogFragment extends DialogFragment {
         window.setGravity(Gravity.CENTER);
 
     }
-
 
 }

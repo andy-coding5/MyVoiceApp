@@ -129,6 +129,10 @@ public class LogoutDialogFragment extends DialogFragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         } else if (jObjError.has("message")) {
                             Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }

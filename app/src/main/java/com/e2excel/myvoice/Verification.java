@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
 import com.e2excel.myvoice.pojo.SignIn.Login;
@@ -200,9 +201,12 @@ public class Verification extends AppCompatActivity {
                             if (jObjError.getJSONObject("detail").equals("Invalid Token")) {
                                 update_token_submit_otp(view);
 
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         } else {
-                            String status = jObjError.getString("message");
+                            String status = jObjError.getString("message")  ;
 
                             Log.v("otp", "'submit_otp' message: " + status);
                             //String error_msg = jObjError.getJSONObject("data").getString("errors");
@@ -252,6 +256,10 @@ public class Verification extends AppCompatActivity {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_reset_otp(view);
 
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         } else {
                             String status = jObjError.getString("message");
@@ -332,7 +340,7 @@ public class Verification extends AppCompatActivity {
         }*/
 
         Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-               pref2.getString("fcm_token",null),
+                pref2.getString("fcm_token", null),
                 "Android", Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID));
 
         progressDialog.show();

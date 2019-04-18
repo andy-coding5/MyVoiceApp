@@ -230,6 +230,9 @@ public class SignIn extends AppCompatActivity {
                     //If user(after fresh install of apk), sign in directly rather signup then signIn , Then for that scenario i have to store email and pass.!
                     editor.putString("email", email);
                     editor.putString("password", pass);
+                    editor.putString("lastname", lastname);
+
+
                     editor.putString("isVerified", response.body().getData().getProfile().getIsVerified().toString());
                     editor.putString("IsComplete", response.body().getData().getProfile().getIsComplete().toString());
 

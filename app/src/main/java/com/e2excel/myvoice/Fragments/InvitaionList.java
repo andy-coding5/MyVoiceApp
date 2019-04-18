@@ -29,6 +29,7 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.bumptech.glide.Glide;
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
@@ -197,6 +198,10 @@ public class InvitaionList extends Fragment {
                                         update_token_pending();
 
                                     }
+                                    else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                        DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                        deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                    }
                                 }
 
                                 no_pending_tv.setVisibility(View.VISIBLE);
@@ -280,6 +285,10 @@ public class InvitaionList extends Fragment {
                                         update_token_accept();
 
                                     }
+                                    else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                        DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                        deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                    }
                                 }
 
                                 no_accepted_tv.setVisibility(View.VISIBLE);
@@ -330,6 +339,10 @@ public class InvitaionList extends Fragment {
                                         if (jObjError.has("detail")) {
                                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                                 update_token_accept();
+                                            }
+                                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                             }
 
                                         } else {
@@ -484,6 +497,10 @@ public class InvitaionList extends Fragment {
                                 update_token_accept();
 
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
 
                         no_accepted_tv.setVisibility(View.VISIBLE);
@@ -536,6 +553,10 @@ public class InvitaionList extends Fragment {
                                 if (jObjError.has("detail")) {
                                     if (jObjError.getString("detail").equals("Invalid Token")) {
                                         update_token_accept();
+                                    }
+                                    else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                        DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                        deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                     }
 
                                 } else {
@@ -606,6 +627,10 @@ public class InvitaionList extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_pending();
 
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         }
                         no_pending_tv.setVisibility(View.VISIBLE);
@@ -822,6 +847,10 @@ public class InvitaionList extends Fragment {
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token_invitation_operation(idOfInvitaiton, operation);
 
+                                }
+                                else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                 }
                             }
                         } catch (Exception e) {

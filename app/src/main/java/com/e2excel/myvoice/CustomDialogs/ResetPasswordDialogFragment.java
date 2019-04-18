@@ -191,6 +191,10 @@ public class ResetPasswordDialogFragment extends DialogFragment {
                                 update_token();
 
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
                         // Log.v("all_log", "message detail: " + jObjError.getString("detail"));
 

@@ -17,12 +17,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.Fragments.SettingsFragment;
 import com.e2excel.myvoice.GlobalValues.PublicClass;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
 import com.e2excel.myvoice.pojo.SignIn.Login;
+import com.e2excel.myvoice.pojo.user_profile_settings_page.UserProfile;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -119,7 +123,7 @@ public class ProfileFragment extends Fragment {
         gender_tv = v.findViewById(R.id.gender);
         dob_tv = v.findViewById(R.id.dob);
         income_tv = v.findViewById(R.id.income);
-
+        api_key = getResources().getString(R.string.APIKEY);
 
         /*
         now we call the update token function but here not for
@@ -127,11 +131,11 @@ public class ProfileFragment extends Fragment {
         we have to display over the profile fragment fields
         */
 
-        update_token();
+        profile_call();
     }
 
     //update token function with some changes
-    public void update_token() {
+    public void profile_call() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
@@ -141,32 +145,27 @@ public class ProfileFragment extends Fragment {
             editor.putString("fcm_token", PublicClass.FCM_TOKEN);
             editor.commit();
         }
-*/
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-                pref2.getString("fcm_token", null),
-                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+*/      Call<UserProfile> call = api.getUserProfile_json(api_key, "Token " + pref.getString("token", null));
 
         if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
 
-        call.enqueue(new Callback<Login>() {
+        call.enqueue(new Callback<UserProfile>() {
             @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
+            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
                 progressDialog.dismiss();
 
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
 
-                    editor.commit();
                     Log.d("token", "Token " + pref.getString("token", null));
 
-                    username_title.setText("Hi " + response.body().getData().getFirstName().toString().trim() + ", ");
+                    username_title.setText("Hi " + pref.getString("firstname", "user") + ", ");
 
-                    first_name_tv.setText(response.body().getData().getFirstName().toString().trim());
-                    last_name_tv.setText(response.body().getData().getLastName().toString().trim());
+                    first_name_tv.setText(pref.getString("username", "user"));
+                    last_name_tv.setText(pref.getString("lastname", " "));
                     email_tv.setText(pref.getString("email", null));
                     country_tv.setText(response.body().getData().getProfile().getCountry().toString().trim());
                     state_tv.setText(response.body().getData().getProfile().getState().toString().trim());
@@ -188,6 +187,77 @@ public class ProfileFragment extends Fragment {
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
+                    //call_api_coutry();
+                }
+                else{
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+
+
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token();
+
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        }
+
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+    }
+
+    public void update_token() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        /*if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }*/
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    profile_call();
                     //call_api_coutry();
                 }
             }

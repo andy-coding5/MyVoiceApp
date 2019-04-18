@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.e2excel.myvoice.CustomDialogs.AllowNotificationDialogFragment;
 import com.e2excel.myvoice.CustomDialogs.DeleteAccountDialogFragment;
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.CustomDialogs.LogoutDialogFragment;
 import com.e2excel.myvoice.CustomDialogs.ResetPasswordDialogFragment;
 import com.e2excel.myvoice.Fragments.Profile_fragments.ProfileFragment;
@@ -235,6 +236,10 @@ public class SettingsFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
 
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         }
 

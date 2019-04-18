@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.e2excel.myvoice.ActivityListAdapter;
 import com.e2excel.myvoice.Activity_tab_obj;
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
@@ -147,7 +148,13 @@ public class ActivityFragment extends Fragment {
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
 
-                                } else {
+                                }
+                                else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                }
+
+                                else {
                                     progressDialog.dismiss();
                                     mSwipeRefreshLayout.setRefreshing(false);
                                 }
@@ -313,6 +320,10 @@ public class ActivityFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
 
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         } else {
                             String status = null;

@@ -2,10 +2,12 @@ package com.e2excel.myvoice.Fragments.Profile_fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.GlobalValues.PublicClass;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.Retrofit.ApiService;
@@ -46,9 +49,13 @@ import com.e2excel.myvoice.pojo.salary_details.Salary;
 import com.e2excel.myvoice.pojo.state_details.StateList;
 import com.e2excel.myvoice.pojo.state_details.States;
 import com.e2excel.myvoice.pojo.update_profile.UpdateProfile;
+import com.e2excel.myvoice.pojo.user_profile_settings_page.UserProfile;
 
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -96,7 +103,6 @@ public class EditProfileFragment extends Fragment {
     private String isValid = "not_initialized";
 
     private Button save_info_button;
-
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -182,7 +188,7 @@ public class EditProfileFragment extends Fragment {
         we have to display over the profile fragment fields
         */
 
-        update_token_edited();
+        profile_call();
 
 
         //set onclick listners on country, state, city, zip, education details, dob, gender, income
@@ -371,6 +377,10 @@ public class EditProfileFragment extends Fragment {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token_country();
 
+                        }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                         }
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
@@ -561,6 +571,10 @@ public class EditProfileFragment extends Fragment {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token_state();
 
+                        }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                         }
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
@@ -754,6 +768,10 @@ public class EditProfileFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_city();
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                             // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                             //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -942,6 +960,10 @@ public class EditProfileFragment extends Fragment {
                             update_token_education();
 
                         }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        }
 
                         /* String status = jObjError.getString("detail");
                          */
@@ -1124,6 +1146,10 @@ public class EditProfileFragment extends Fragment {
                             update_token_gender();
 
                         }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        }
                         /* String status = jObjError.getString("detail");
                          */
                         // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
@@ -1204,13 +1230,16 @@ public class EditProfileFragment extends Fragment {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
 
+        //dob_tv.getText().toString().trim();          //its y-m-d from the database
         date = dob_tv.getText().toString().trim().split("-");
 
-        Log.v("all_log", "YEAR: "+Integer.parseInt(date[2])+", Month: "+ Integer.parseInt(date[0])+", day: "+Integer.parseInt(date[1]));
 
-        c.set(Calendar.YEAR, Integer.parseInt(date[2]));
-        c.set(Calendar.MONTH, Integer.parseInt(date[0]) - 1);
-        c.set(Calendar.DATE, Integer.parseInt(date[1]));
+
+
+
+            c.set(Calendar.YEAR, mYear);
+            c.set(Calendar.MONTH, mMonth);
+            c.set(Calendar.DATE, mDay);
 
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
@@ -1237,7 +1266,6 @@ public class EditProfileFragment extends Fragment {
                 }, mYear, mMonth, mDay);
 
         datePickerDialog.show();
-
 
     }
 
@@ -1362,6 +1390,10 @@ public class EditProfileFragment extends Fragment {
                             update_token_income();
 
                         }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        }
                         /* String status = jObjError.getString("detail");
                          */
                         // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
@@ -1436,7 +1468,6 @@ public class EditProfileFragment extends Fragment {
         });
     }
 
-
     //called when press the save button
     public void save_button() {
         //FIRST check if ZIP code is valid or not then go for final submit info call
@@ -1478,9 +1509,9 @@ public class EditProfileFragment extends Fragment {
 
                         if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
 
-
                             //writing in database (shared pref)
                             editor.putString("username", first_name_tv.getText().toString().trim());
+                            editor.putString("lastname", last_name_tv.getText().toString().trim());
                             editor.putString("country_code", country_code);
                             editor.putString("state_code", state_code);
                             editor.putString("city_name", selected_city);
@@ -1491,11 +1522,23 @@ public class EditProfileFragment extends Fragment {
                             editor.putString("income", selected_salary);
                             editor.putString("IsComplete", "true");
                             editor.commit();
-                            getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
 
+                            new AlertDialog.Builder(getActivity())
+
+                                    .setMessage(response.body().getMessage())
+
+                                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // Continue with delete operation
+                                            getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
+                                        }
+                                    })
+                                    // A null listener allows the button to dismiss the dialog and take no further action.
+                                    .show();
 
                         } else {
-
 
                             //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                             try {
@@ -1505,12 +1548,15 @@ public class EditProfileFragment extends Fragment {
                                     update_token_save();
 
                                 }
+                                else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                }
                                 /* String status = jObjError.getString("detail");
                                  */
                                 // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                                 //Build_alert_dialog(getApplicationContext(), "Error", status);
-
 
                             } catch (Exception e) {
                                 // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -1524,12 +1570,9 @@ public class EditProfileFragment extends Fragment {
                     }
                 });
 
-
             }
 
-
         }
-
 
     }
 
@@ -1587,7 +1630,7 @@ public class EditProfileFragment extends Fragment {
     }
 
     //update token function with some changes
-    public void update_token_edited() {
+    public void profile_call() {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
@@ -1598,29 +1641,25 @@ public class EditProfileFragment extends Fragment {
             editor.commit();
         }*/
 
-        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
-                pref2.getString("fcm_token", null),
-                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+        Call<UserProfile> call = api.getUserProfile_json(api_key, "Token " + pref.getString("token", null));
 
         if (!((Activity) getActivity()).isFinishing()) {
             //show dialog
             progressDialog.show();
         }
 
-        call.enqueue(new Callback<Login>() {
+        call.enqueue(new Callback<UserProfile>() {
             @Override
-            public void onResponse(Call<Login> call, Response<Login> response) {
+            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
                 progressDialog.dismiss();
 
                 if (response.isSuccessful()) {
                     //editor = pref.edit();
-                    editor.putString("token", response.body().getData().getToken());
 
-                    editor.commit();
                     Log.d("token", "Token " + pref.getString("token", null));
 
-                    first_name_tv.setText(response.body().getData().getFirstName().toString().trim());
-                    last_name_tv.setText(response.body().getData().getLastName().toString().trim());
+                    first_name_tv.setText(pref.getString("username", "user"));
+                    last_name_tv.setText(pref.getString("lastname", " "));
 
                     country_tv.setText(response.body().getData().getProfile().getCountryname().toString().trim());
                     country_code = response.body().getData().getProfile().getCountry().toString().trim();
@@ -1646,6 +1685,9 @@ public class EditProfileFragment extends Fragment {
 
                     dob_tv.setText(response.body().getData().getProfile().getDob().toString().trim());          //its y-m-d from the database
                     date = dob_tv.getText().toString().trim().split("-");
+                    mYear = Integer.parseInt(date[0]);
+                    mMonth = Integer.parseInt(date[1]) - 1;
+                    mDay = Integer.parseInt(date[2]);
 
                     dob_tv.setText(date[1] + "-" + date[2] + "-" + date[0]);        //now its m-d-y for showing purpise
 
@@ -1662,6 +1704,77 @@ public class EditProfileFragment extends Fragment {
                     }
                     //call_api_coutry();
                 }
+                else{
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        /* String status = jObjError.getString("detail");
+                         */
+
+
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_profile_call();
+
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        }
+
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                progressDialog.dismiss();
+                //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
+            }
+        });
+
+    }
+
+    private void update_token_profile_call() {
+        //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        //Toast.makeText(getActivity(), "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        ApiService api = RetroClient.getApiService();
+
+        //if fcm token is null then do not write in shared pref!
+        /*if (PublicClass.FCM_TOKEN != null) {
+            editor.putString("fcm_token", PublicClass.FCM_TOKEN);
+            editor.commit();
+        }*/
+
+        Call<Login> call = api.getLoginJason(pref.getString("email", null), pref.getString("password", null),
+                pref2.getString("fcm_token", null),
+                "Android", Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID));
+
+        if (!((Activity) getActivity()).isFinishing()) {
+            //show dialog
+            progressDialog.show();
+        }
+
+        call.enqueue(new Callback<Login>() {
+            @Override
+            public void onResponse(Call<Login> call, Response<Login> response) {
+                progressDialog.dismiss();
+
+                if (response.isSuccessful()) {
+                    //editor = pref.edit();
+                    editor.putString("token", response.body().getData().getToken());
+
+                    editor.commit();
+                    Log.d("token", "Token " + pref.getString("token", null));
+
+                    Map<String, ?> allEntries = pref.getAll();
+                    for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                        Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
+                    }
+                    profile_call();
+                    //call_api_coutry();
+                }
             }
 
             @Override
@@ -1670,7 +1783,6 @@ public class EditProfileFragment extends Fragment {
                 //Build_alert_dialog(getActivity(), "Connection Error", "Please Check You Internet Connection");
             }
         });
-
     }
 
 

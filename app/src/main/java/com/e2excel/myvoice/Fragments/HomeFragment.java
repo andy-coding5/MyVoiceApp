@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.RecyclerViewAdapterSurveyList;
 import com.e2excel.myvoice.Retrofit.ApiService;
@@ -188,6 +189,10 @@ public class HomeFragment extends Fragment {
                                 if (jObjError.getString("detail").equals("Invalid Token")) {
                                     update_token();
                                 }
+                                else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                }
                                 if (response.body().getMessage().equals("Survey not found")) {
                                     recyclerView.setVisibility(View.INVISIBLE);
 
@@ -267,8 +272,9 @@ public class HomeFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
 
-                            } else if (jObjError.getString("detail").equals("Accountdeleted")) {
-
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         }
                         else {

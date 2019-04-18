@@ -163,6 +163,10 @@ public class AllowNotificationDialogFragment extends DialogFragment {
                                 update_token(operation_code);
 
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
                         ///Log.v("all_log", "message detail: " + jObjError.getString("detail"));
 

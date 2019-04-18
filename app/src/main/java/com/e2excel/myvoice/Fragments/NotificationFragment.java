@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.R;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
@@ -203,7 +204,12 @@ public class NotificationFragment extends Fragment {
                         if (jObjError.getString("detail").equals("Invalid Token")) {
                             update_token_load_data();
 
-                        } else {
+                        }
+                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        }
+                        else {
                             noInvitation.setVisibility(View.VISIBLE);
                             noNotification.setVisibility(View.VISIBLE);
                         }
@@ -369,7 +375,12 @@ public class NotificationFragment extends Fragment {
                              */
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_invitation_operation(idOfInvitaiton, operation);
-                            } else {
+                            }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                            else {
                                 noInvitation.setVisibility(View.VISIBLE);
                                 noNotification.setVisibility(View.VISIBLE);
                             }

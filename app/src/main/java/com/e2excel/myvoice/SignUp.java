@@ -136,7 +136,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
-                b.putString("firstname", first_name.getText().toString().trim());
+                b.putString("username", first_name.getText().toString().trim());
                 b.putString("lastname", last_name.getText().toString().trim());
                 b.putString("email_id", email_id.getText().toString().trim());
                 b.putString("pass", pass.getText().toString().trim());
