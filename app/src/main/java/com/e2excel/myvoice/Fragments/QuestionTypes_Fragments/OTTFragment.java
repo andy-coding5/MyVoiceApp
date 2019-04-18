@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
 import com.e2excel.myvoice.Fragments.QuestionsListFragment;
 import com.e2excel.myvoice.GlobalValues.PublicClass;
 import com.e2excel.myvoice.R;
@@ -272,6 +273,10 @@ public class OTTFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_que();
                             }
+                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
 
                     } catch (Exception e) {
@@ -333,6 +338,10 @@ public class OTTFragment extends Fragment {
                                     if (jObjError.getString("detail").equals("Invalid Token")) {
                                         update_token_submit();
 
+                                    }
+                                    else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                        DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                        deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                     }
                                 }
 
