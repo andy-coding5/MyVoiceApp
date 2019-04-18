@@ -277,6 +277,9 @@ public class OTNFragment extends Fragment {
                                 deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
                         }
+                        else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
+                        }
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();

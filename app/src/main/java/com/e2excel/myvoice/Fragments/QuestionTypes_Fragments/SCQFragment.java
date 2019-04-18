@@ -217,6 +217,10 @@ public class SCQFragment extends Fragment {
                                     deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                 }
                             }
+                            else if (jObjError.has("message")) {
+                                Build_alert_dialog(getActivity(), jObjError.getString("message"));
+                            }
+
                         } catch (Exception e) {
 
                         }
@@ -397,13 +401,18 @@ public class SCQFragment extends Fragment {
                         /* String status = jObjError.getString("detail");
                          */
                         //call update token function only when Error is "Invalid token" received form the server
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_que();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_que();
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
+
 
                     } catch (Exception e) {
                         //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();

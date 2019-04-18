@@ -345,8 +345,6 @@ public class InvitaionList extends Fragment {
                                                 deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                             }
 
-                                        } else {
-                                            Toast.makeText(getActivity(), "No response Received from server", Toast.LENGTH_SHORT).show();
                                         }
 
                                         if (invitation_list.size() == 0) {
@@ -503,6 +501,7 @@ public class InvitaionList extends Fragment {
                             }
                         }
 
+
                         no_accepted_tv.setVisibility(View.VISIBLE);
 
                     } catch (Exception e) {
@@ -559,8 +558,6 @@ public class InvitaionList extends Fragment {
                                         deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                                     }
 
-                                } else {
-                                    Toast.makeText(getActivity(), "No response Received from server", Toast.LENGTH_SHORT).show();
                                 }
 
                                 if (invitation_list.size() == 0) {

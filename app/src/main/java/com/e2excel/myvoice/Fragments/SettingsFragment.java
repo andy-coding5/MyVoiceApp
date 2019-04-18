@@ -42,6 +42,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.e2excel.myvoice.MainActivity.Build_alert_dialog;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -241,6 +243,8 @@ public class SettingsFragment extends Fragment {
                                 DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
                                 deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
+                        }else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
 
                     } catch (Exception e) {

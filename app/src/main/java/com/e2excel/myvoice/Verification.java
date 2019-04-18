@@ -205,12 +205,8 @@ public class Verification extends AppCompatActivity {
                                 DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
                                 deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                             }
-                        } else {
-                            String status = jObjError.getString("message")  ;
-
-                            Log.v("otp", "'submit_otp' message: " + status);
-                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
-                            Build_alert_dialog(Verification.this, status);
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(Verification.this, jObjError.getString("message"));
                         }
 
                     } catch (Exception e) {
@@ -261,12 +257,9 @@ public class Verification extends AppCompatActivity {
                                 DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
                                 deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
                             }
-                        } else {
-                            String status = jObjError.getString("message");
-
-                            Log.v("otp", "'resend_otp' message: " + status);
-                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
-                            Build_alert_dialog(Verification.this, status);
+                        }
+                        else if (jObjError.has("message")) {
+                            Build_alert_dialog(Verification.this, jObjError.getString("message"));
                         }
                     } catch (Exception e) {
                         Toast.makeText(Verification.this, e.getMessage(), Toast.LENGTH_LONG).show();

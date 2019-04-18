@@ -43,6 +43,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.e2excel.myvoice.MainActivity.Build_alert_dialog;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -201,13 +203,14 @@ public class NotificationFragment extends Fragment {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_load_data();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_load_data();
 
-                        }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
                         else {
                             noInvitation.setVisibility(View.VISIBLE);
@@ -373,12 +376,13 @@ public class NotificationFragment extends Fragment {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
                             /* String status = jObjError.getString("detail");
                              */
-                            if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token_invitation_operation(idOfInvitaiton, operation);
-                            }
-                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            if (jObjError.has("detail")) {
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token_invitation_operation(idOfInvitaiton, operation);
+                                } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                }
                             }
                             else {
                                 noInvitation.setVisibility(View.VISIBLE);

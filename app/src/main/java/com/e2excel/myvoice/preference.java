@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.preference.Preference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -293,16 +294,17 @@ public class preference extends AppCompatActivity {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token(view);
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token(view);
 
-                        } else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getSupportFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(preference.this, jObjError.getString("message"));
                         }
-                        String status = jObjError.getString("message");
-                        String error_msg = jObjError.getJSONObject("data").getString("errors");
-                        Build_alert_dialog(getApplicationContext(), status, error_msg);
 
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();

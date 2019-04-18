@@ -374,14 +374,19 @@ public class EditProfileFragment extends Fragment {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
                          */
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_country();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_country();
 
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
-                        }
+
+
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                         //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -568,13 +573,16 @@ public class EditProfileFragment extends Fragment {
 //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_state();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_state();
 
-                        }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
                         //Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
@@ -765,13 +773,18 @@ public class EditProfileFragment extends Fragment {
                         Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            if (jObjError.getString("detail").equals("Invalid Token")) {
-                                update_token_city();
+
+                            if (jObjError.has("detail")) {
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token_city();
+                                } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                }
+                            } else if (jObjError.has("message")) {
+                                Build_alert_dialog(getActivity(), jObjError.getString("message"));
                             }
-                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
-                            }
+
                             // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
 
                             //Build_alert_dialog(getApplicationContext(), "Error", status);
@@ -956,14 +969,19 @@ public class EditProfileFragment extends Fragment {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_education();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_education();
 
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
-                        }
+
+
 
                         /* String status = jObjError.getString("detail");
                          */
@@ -1142,13 +1160,17 @@ public class EditProfileFragment extends Fragment {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_gender();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_gender();
 
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
                         /* String status = jObjError.getString("detail");
                          */
@@ -1234,12 +1256,9 @@ public class EditProfileFragment extends Fragment {
         date = dob_tv.getText().toString().trim().split("-");
 
 
-
-
-
-            c.set(Calendar.YEAR, mYear);
-            c.set(Calendar.MONTH, mMonth);
-            c.set(Calendar.DATE, mDay);
+        c.set(Calendar.YEAR, mYear);
+        c.set(Calendar.MONTH, mMonth);
+        c.set(Calendar.DATE, mDay);
 
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
@@ -1386,13 +1405,17 @@ public class EditProfileFragment extends Fragment {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                        if (jObjError.getString("detail").equals("Invalid Token")) {
-                            update_token_income();
+                        if (jObjError.has("detail")) {
+                            if (jObjError.getString("detail").equals("Invalid Token")) {
+                                update_token_income();
 
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                            }
                         }
-                        else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                            DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                            deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                        else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
                         /* String status = jObjError.getString("detail");
                          */
@@ -1544,13 +1567,16 @@ public class EditProfileFragment extends Fragment {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
 
-                                if (jObjError.getString("detail").equals("Invalid Token")) {
-                                    update_token_save();
+                                if (jObjError.has("detail")) {
+                                    if (jObjError.getString("detail").equals("Invalid Token")) {
+                                        update_token_save();
 
-                                }
-                                else if (jObjError.getString("detail").equals("AccountDeleted")) {
-                                    DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
-                                    deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                    } else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                                        DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
+                                        deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
+                                    }
+                                }else if (jObjError.has("message")) {
+                                    Build_alert_dialog(getActivity(), jObjError.getString("message"));
                                 }
                                 /* String status = jObjError.getString("detail");
                                  */
@@ -1703,8 +1729,7 @@ public class EditProfileFragment extends Fragment {
                         Log.d("map values", entry.getKey() + ": " + entry.getValue().toString());
                     }
                     //call_api_coutry();
-                }
-                else{
+                } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");
@@ -1715,12 +1740,14 @@ public class EditProfileFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token_profile_call();
 
-                            }
-                            else if (jObjError.getString("detail").equals("AccountDeleted")) {
+                            } else if (jObjError.getString("detail").equals("AccountDeleted")) {
                                 DeleteAccountNotificationErrorDialogFragment deleteAccountNotificationErrorDialogFragment = new DeleteAccountNotificationErrorDialogFragment();
                                 deleteAccountNotificationErrorDialogFragment.show(getFragmentManager(), "DeleteNotificationDialogFragment");
                             }
+                        } else if (jObjError.has("message")) {
+                            Build_alert_dialog(getActivity(), jObjError.getString("message"));
                         }
+
 
                     } catch (Exception e) {
                     }

@@ -41,6 +41,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.e2excel.myvoice.MainActivity.Build_alert_dialog;
+
 /**
  * A simple {@link Fragment} subclass.
  */
