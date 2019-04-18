@@ -111,7 +111,7 @@
         android:background="@drawable/edit_text"
         android:ems="10"
         android:fontFamily="@font/quicksand_light"
-
+android:maxLength="5"
         android:hint="Select Zip Code"
         android:singleLine="true"
         android:padding="10dp"

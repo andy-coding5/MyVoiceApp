@@ -41,6 +41,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.e2excel.myvoice.MainActivity.Build_alert_dialog;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -227,24 +229,30 @@ public class HomeFragment extends Fragment {
             public void onResponse(Call<Survey> call, Response<Survey> response) {
 
                 progressDialog.dismiss();
-                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    if (response.body().getProjectData().size() == 0) {
-                        mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
-                        empty_textview.setVisibility(View.VISIBLE);
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equals("Success")) {
+                        if (response.body().getProjectData().size() == 0) {
+                            mSwipeRefreshLayout.setVisibility(View.INVISIBLE);
+                            empty_textview.setVisibility(View.VISIBLE);
 
-                    } else {
-                        empty_textview.setVisibility(View.INVISIBLE);
-                        survey_list = response.body().getProjectData();
-                        Context context = getActivity();
+                        } else {
+                            empty_textview.setVisibility(View.INVISIBLE);
+                            survey_list = response.body().getProjectData();
+                            Context context = getActivity();
 
-                        if ((survey_list != null || survey_list.size() != 0) && context != null) {
-                            recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            if ((survey_list != null || survey_list.size() != 0) && context != null) {
+                                recyclerViewAdapeter = new RecyclerViewAdapterSurveyList(getActivity(), survey_list);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-                            recyclerView.setAdapter(recyclerViewAdapeter);
-                            recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                                    DividerItemDecoration.VERTICAL));
+                                recyclerView.setAdapter(recyclerViewAdapeter);
+                                recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                        DividerItemDecoration.VERTICAL));
+                            }
                         }
+                    }else {
+                        recyclerView.setVisibility(View.INVISIBLE);
+
+                        empty_textview.setVisibility(View.VISIBLE);
                     }
 
                 } else {
@@ -259,8 +267,11 @@ public class HomeFragment extends Fragment {
                             if (jObjError.getString("detail").equals("Invalid Token")) {
                                 update_token();
 
+                            } else if (jObjError.getString("detail").equals("Accountdeleted")) {
+
                             }
-                        } else if (response.body().getMessage().equals("Survey not found")) {
+                        }
+                        else {
                             recyclerView.setVisibility(View.INVISIBLE);
 
                             empty_textview.setVisibility(View.VISIBLE);

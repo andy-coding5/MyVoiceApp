@@ -67,6 +67,10 @@ public class personal_info_2 extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private DatePicker datePicker;
+    int mYear, mMonth, mDay;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -410,7 +414,7 @@ public class personal_info_2 extends AppCompatActivity {
 
 
                     } catch (Exception e) {
-                       // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -425,12 +429,20 @@ public class personal_info_2 extends AppCompatActivity {
     }
 
     public void dob_selection(View view) {
-        int mYear, mMonth, mDay;
+
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        if (mYear != 0) {
+            c.set(Calendar.YEAR, mYear);
+            c.set(Calendar.MONTH, mMonth-1);
+            c.set(Calendar.DATE, mDay);
+
+        } else {
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        }
 
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
@@ -444,8 +456,17 @@ public class personal_info_2 extends AppCompatActivity {
                         isValid = age_validation(dayOfMonth, monthOfYear + 1, year);
                         selected_dob = (String) (year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);        //for database_sending, format is : y-m-d
 
+                        mYear = year;
+                        mMonth = monthOfYear;
+                        mDay = dayOfMonth;
+
                     }
                 }, mYear, mMonth, mDay);
+
+//        if (datepicker != null) {
+//            datePickerDialog.updateDate(datepicker.getYear(), datepicker.getMonth() - 1, datepicker.getDayOfMonth());
+//
+//        }
         datePickerDialog.show();
     }
 
@@ -597,8 +618,8 @@ public class personal_info_2 extends AppCompatActivity {
             if (Integer.parseInt(isValid) >= 13) {
 
 
-               // Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
-                       // + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this, "Education :" + selected_education + ", Code: " + education_code + "\n" + "gender: " + selected_gender + ", code: " + gender_code + "\n"
+                // + "dob: " + selected_dob + "\n" + "income: " + selected_salary, Toast.LENGTH_SHORT).show();
 
                 //if all ok then redirect to thenext activity
                 //but first store all the gethered info. of 8 items into shared pref.
@@ -617,7 +638,6 @@ public class personal_info_2 extends AppCompatActivity {
                 i.putExtra("gender_code", gender_code);
                 i.putExtra("dob", selected_dob);
                 i.putExtra("income", selected_salary);
-
 
 
                 startActivity(i);

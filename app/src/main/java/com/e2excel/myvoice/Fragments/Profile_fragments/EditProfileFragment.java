@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -73,6 +74,9 @@ public class EditProfileFragment extends Fragment {
     private ProgressDialog progressDialog;
 
     private Dialog dialog;
+
+    int mYear, mMonth, mDay;
+    String date[];
 
     private EditText first_name_tv, last_name_tv, email_tv, country_tv, state_tv, city_tv, zip_tv, education_tv, gender_tv, dob_tv, income_tv;
 
@@ -168,6 +172,8 @@ public class EditProfileFragment extends Fragment {
         gender_name_list = new ArrayList<>();
         education_name_list = new ArrayList<>();
         salary_name_list = new ArrayList<>();
+
+        date = new String[3];
 
 
         /*
@@ -1194,12 +1200,17 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void dob_selection() {
-        int mYear, mMonth, mDay;
+
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        date = dob_tv.getText().toString().trim().split("-");
+
+        Log.v("all_log", "YEAR: "+Integer.parseInt(date[2])+", Month: "+ Integer.parseInt(date[0])+", day: "+Integer.parseInt(date[1]));
+
+        c.set(Calendar.YEAR, Integer.parseInt(date[2]));
+        c.set(Calendar.MONTH, Integer.parseInt(date[0]) - 1);
+        c.set(Calendar.DATE, Integer.parseInt(date[1]));
 
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
@@ -1209,8 +1220,6 @@ public class EditProfileFragment extends Fragment {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-
-
                         isValid = age_validation(dayOfMonth, monthOfYear + 1, year);
                         if (Integer.parseInt(isValid) < 13) {
                             selected_dob = "not_selected";
@@ -1218,11 +1227,14 @@ public class EditProfileFragment extends Fragment {
                         } else {
                             dob_tv.setText((monthOfYear + 1) + "-" + dayOfMonth + "-" + year);       //for showing - format is: m-d-y
                             selected_dob = (String) (year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);        //for database_sending, format is : y-m-d
+
+                            mMonth = monthOfYear;
+                            mDay = dayOfMonth;
+                            mYear = year;
                         }
 
                     }
                 }, mYear, mMonth, mDay);
-
 
         datePickerDialog.show();
 
@@ -1342,7 +1354,7 @@ public class EditProfileFragment extends Fragment {
                     //calling a function
 
 
-                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
 
@@ -1482,6 +1494,27 @@ public class EditProfileFragment extends Fragment {
                             getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new ProfileFragment()).commit();
 
 
+                        } else {
+
+
+                            //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+
+                                if (jObjError.getString("detail").equals("Invalid Token")) {
+                                    update_token_save();
+
+                                }
+                                /* String status = jObjError.getString("detail");
+                                 */
+                                // Toast.makeText(getActivity(), jObjError.toString(), Toast.LENGTH_LONG).show();
+
+                                //Build_alert_dialog(getApplicationContext(), "Error", status);
+
+
+                            } catch (Exception e) {
+                                // Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
 
@@ -1611,7 +1644,11 @@ public class EditProfileFragment extends Fragment {
                     gender_code = response.body().getData().getProfile().getGender().toString().trim();
                     selected_gender = response.body().getData().getProfile().getGendername().toString().trim();
 
-                    dob_tv.setText(response.body().getData().getProfile().getDob().toString().trim());
+                    dob_tv.setText(response.body().getData().getProfile().getDob().toString().trim());          //its y-m-d from the database
+                    date = dob_tv.getText().toString().trim().split("-");
+
+                    dob_tv.setText(date[1] + "-" + date[2] + "-" + date[0]);        //now its m-d-y for showing purpise
+
                     selected_dob = response.body().getData().getProfile().getDob().toString().trim();
 
 

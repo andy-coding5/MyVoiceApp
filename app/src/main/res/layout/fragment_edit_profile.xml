@@ -17,7 +17,7 @@
 
             <TextView
                 android:id="@+id/first_name_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -32,7 +32,6 @@
                 android:id="@+id/first_name"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="88dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -63,7 +62,7 @@
 
             <TextView
                 android:id="@+id/last_name_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -78,7 +77,6 @@
                 android:id="@+id/last_name"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="89dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -109,7 +107,7 @@
 
             <TextView
                 android:id="@+id/country_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -124,7 +122,6 @@
                 android:id="@+id/country"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="113dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -169,7 +166,7 @@
 
             <TextView
                 android:id="@+id/state_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -184,7 +181,6 @@
                 android:id="@+id/state"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="136dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -228,7 +224,7 @@
 
             <TextView
                 android:id="@+id/city_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -243,7 +239,6 @@
                 android:id="@+id/city"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="147dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -287,7 +282,7 @@
 
             <TextView
                 android:id="@+id/zip_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -302,7 +297,6 @@
                 android:id="@+id/zip"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="105dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -310,6 +304,7 @@
                 android:fontFamily="@font/quicksand_regular"
                 android:gravity="center_vertical"
                 android:imeOptions="actionNext"
+                android:maxLength="5"
                 android:maxLines="1"
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp"
@@ -333,7 +328,7 @@
 
             <TextView
                 android:id="@+id/education_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -349,7 +344,6 @@
                 android:id="@+id/education"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -394,7 +388,7 @@
 
             <TextView
                 android:id="@+id/gender_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -410,7 +404,6 @@
                 android:id="@+id/gender"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="115dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -454,7 +447,7 @@
 
             <TextView
                 android:id="@+id/dob_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -470,7 +463,6 @@
                 android:id="@+id/dob"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="75dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"
@@ -516,7 +508,7 @@
 
             <TextView
                 android:id="@+id/income_text"
-                android:layout_width="wrap_content"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
@@ -534,7 +526,6 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
 
-                android:layout_marginStart="115dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/edit_text_profile_edit"

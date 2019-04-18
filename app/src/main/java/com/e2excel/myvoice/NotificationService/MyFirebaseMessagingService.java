@@ -43,7 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void showNotification(String title, String body) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "com.rohan.myvoice";
+        String NOTIFICATION_CHANNEL_ID = "com.e2excel.myvoice";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
@@ -61,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notiBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.logo)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentInfo("Info");

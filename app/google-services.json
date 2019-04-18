@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "264236134417",
+    "firebase_url": "https://myvoice-73858.firebaseio.com",
+    "project_id": "myvoice-73858",
+    "storage_bucket": "myvoice-73858.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264236134417:android:2f1ee5a1aa692451",
+        "android_client_info": {
+          "package_name": "com.e2excel.myvoice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264236134417-akvladi8ku1ra56cnn4phj3fqhtgs3h2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTwotAmdLh11PdwuSAwFk-L8ZnP5TNxnE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264236134417-akvladi8ku1ra56cnn4phj3fqhtgs3h2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

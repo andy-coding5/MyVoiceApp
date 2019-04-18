@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MyVoice</string>
+    <string name="welcome_text">Welcome to the MyVoice App </string>
+    <string name="APIKEY">6815ab00be4c46b597b1567db6cb3def</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

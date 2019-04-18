@@ -176,8 +176,13 @@ public class ProfileFragment extends Fragment {
                     education_tv.setText(response.body().getData().getProfile().getEducation().toString().trim());
                     gender_tv.setText(response.body().getData().getProfile().getGender().toString().trim());
                     dob_tv.setText(response.body().getData().getProfile().getDob().toString().trim());
-                    income_tv.setText(response.body().getData().getProfile().getIncome().toString().trim());
+                    //change the date representation format from y-m-d to m-d-y
 
+                    String date[] = dob_tv.getText().toString().trim().split("-");
+
+                    dob_tv.setText(date[1] + "-" + date[2] + "-" + date[0]);        //now its m-d-y
+
+                    income_tv.setText(response.body().getData().getProfile().getIncome().toString().trim());
 
                     Map<String, ?> allEntries = pref.getAll();
                     for (Map.Entry<String, ?> entry : allEntries.entrySet()) {

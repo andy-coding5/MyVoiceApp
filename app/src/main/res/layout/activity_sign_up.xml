@@ -176,7 +176,7 @@
 
                 android:fontFamily="@font/quicksand_bold"
                 android:gravity="center"
-                android:onClick="SignUp_process"
+
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="SIGN UP"

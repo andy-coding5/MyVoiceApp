@@ -518,7 +518,10 @@ public class InvitaionList extends Fragment {
                         if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
                             progressDialog.dismiss();
                             invitation_list.remove(index);
-                            adapter.notifyDataSetChanged();
+                           adapter.notifyDataSetChanged();
+
+                            get_accept_list_call();
+
                         } else {
 
 

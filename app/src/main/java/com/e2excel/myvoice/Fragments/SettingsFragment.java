@@ -221,7 +221,7 @@ public class SettingsFragment extends Fragment {
 
                     String isPushNotification = response.body().getData().getProfile().getIsPushnotification() ? "Yes" : "No";
                     allow_notification_ans.setText(isPushNotification);
-                    String acc_verificaiton_status = response.body().getData().getProfile().getIsVerified() ? "Yes" : "No";
+                    String acc_verificaiton_status = response.body().getData().getProfile().getIsVerified() ? "Verified" : "Not";
                     account_verification_ans.setText(acc_verificaiton_status);
 
                 } else {

@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.e2excel.myvoice.CustomDialogs.SIgnUp_confirm_password_dialogFragment;
 import com.e2excel.myvoice.Retrofit.ApiService;
 import com.e2excel.myvoice.Retrofit.RetroClient;
 import com.e2excel.myvoice.pojo.Register.Register;
@@ -42,6 +43,7 @@ public class SignUp extends AppCompatActivity {
     private SharedPreferences.Editor editor, email_pref_editor;
     private ProgressDialog progressDialog;
     private TextView toc;
+    private Button sign_up_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class SignUp extends AppCompatActivity {
         last_name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         email_id = findViewById(R.id.email_id);
         pass = findViewById(R.id.password);
+        sign_up_btn = findViewById(R.id.button5);
+
 
         // Set up progress before call
         progressDialog = new ProgressDialog(SignUp.this);
@@ -128,82 +132,31 @@ public class SignUp extends AppCompatActivity {
         toc.setMovementMethod(LinkMovementMethod.getInstance());
 
 
+        sign_up_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putString("firstname", first_name.getText().toString().trim());
+                b.putString("lastname", last_name.getText().toString().trim());
+                b.putString("email_id", email_id.getText().toString().trim());
+                b.putString("pass", pass.getText().toString().trim());
+
+
+                SIgnUp_confirm_password_dialogFragment sIgnUp_confirm_password_dialogFragment = new SIgnUp_confirm_password_dialogFragment();
+
+                sIgnUp_confirm_password_dialogFragment.setArguments(b);
+
+                sIgnUp_confirm_password_dialogFragment.show(getSupportFragmentManager(), "signUpConfirmPassword");
+
+
+            }
+        });
+
     }
 
 
     //sign_up process function --RV
-    public void SignUp_process(View view) {
-        //take data from all the fields
-        final String f_name, l_name, mail, passwrd;
-        f_name = first_name.getText().toString().trim();
-        l_name = last_name.getText().toString().trim();
-        mail = email_id.getText().toString();
-        passwrd = pass.getText().toString();
 
-        if (f_name.equals("") || l_name.equals("") || mail.equals("") || passwrd.equals("")) {
-            Build_alert_dialog(this, "ALERT", "Please enter all the details!");
-        } else {
-            //Creating an object of our api interface
-            ApiService api = RetroClient.getApiService();
-
-            /**
-             * Calling JSON
-             */
-            Call<Register> call = api.getRegisterJason(mail, passwrd, f_name, l_name);
-
-            progressDialog.show();
-            //waiting for response
-            call.enqueue(new Callback<Register>() {
-                @Override
-                public void onResponse(Call<Register> call, Response<Register> response) {
-
-                    progressDialog.dismiss();
-
-                    if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-
-                        String temp = response.body().getMessage();
-                        editor.putString("email", mail);
-                        editor.putString("password", passwrd);
-                        editor.putString("username", f_name);
-                        editor.putString("lastname", l_name);
-
-                        editor.putString("token", response.body().getData().getToken());
-                        editor.putBoolean("isUserLoggedIn", true);
-                        editor.putString("isVerified", "false");
-                        editor.putString("IsComplete", "false");
-                        editor.commit();
-
-                        email_pref_editor.putString("email", mail);
-                        email_pref_editor.commit();
-
-                        Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(getApplicationContext(), GetStarted.class);
-
-                        startActivity(i);
-
-                    } else {
-                        try {
-
-                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            String status = jObjError.getString("status");
-                            String msg = jObjError.getString("message");
-                            //String error_msg = jObjError.getJSONObject("data").getString("errors");
-                            Build_alert_dialog(SignUp.this, status, msg);
-
-                        } catch (Exception e) {
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Register> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), "Error fetching the details from the server!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
-    }
 
 
     //TERMS OF USE BUTTON DIALOG POPUP
@@ -331,15 +284,16 @@ public class SignUp extends AppCompatActivity {
 
         String privacy_policy_text = pop_up_text.getText().toString().trim();
         int index = privacy_policy_text.indexOf("Terms of Use");
-        int last_index = index+ "Terms of Use".length();
+        int last_index = index + "Terms of Use".length();
 
         SpannableString ss = new SpannableString(privacy_policy_text);
 
         ClickableSpan c1 = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                    TermsAndConditions();
+                TermsAndConditions();
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
@@ -351,7 +305,6 @@ public class SignUp extends AppCompatActivity {
         ss.setSpan(c1, index, last_index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         pop_up_text.setText(ss);
         pop_up_text.setMovementMethod(LinkMovementMethod.getInstance());
-
 
 
         Log.v("toc", pop_up_text.getText().toString().trim());
