@@ -532,6 +532,8 @@ public class EditProfileFragment extends Fragment {
                                     prev_selected_state = selected_state;
 
                                     city_tv.setText("Select City");
+                                    zip_tv.setText("");
+                                    zip_tv.setHint("Enter Zip Code");
 
                                 }
                                 state_tv.setText(selected_state);
@@ -724,7 +726,8 @@ public class EditProfileFragment extends Fragment {
                                     if (!prev_selected_city.equals(selected_city)) {
                                         prev_selected_city = selected_city;
 
-                                        zip_tv.setHint("Select Zip Code");
+                                        zip_tv.setText("");
+                                        zip_tv.setHint("Enter Zip Code");
 
                                     }
                                     city_tv.setText(selected_city);
@@ -1505,7 +1508,8 @@ public class EditProfileFragment extends Fragment {
 
             //NOW GO FOR FINAL SUBMIT CALL BECAUSE SELECTED_ZIP iS now compltely valid
 
-            if (selected_gender.equals("not_selected") || selected_education.equals("not_selected") || selected_dob.equals("not_selected") || selected_salary.equals("not_selected")) {
+            if (selected_gender.equals("not_selected") || selected_education.equals("not_selected") || selected_dob.equals("not_selected") || selected_salary.equals("not_selected")
+            || "".equals(selected_zip) || "".equals(selected_dob) || "".equals(first_name_tv.getText().toString().trim()) || "".equals(last_name_tv.getText().toString().trim())) {
                 Build_alert_dialog(getActivity(), "Incomplete Details", "Please fill all the details");
             } else {
                 String FcmToken = pref2.getString("fcm_token", null);

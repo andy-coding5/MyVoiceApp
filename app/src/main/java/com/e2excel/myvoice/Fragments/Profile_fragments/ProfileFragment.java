@@ -164,18 +164,18 @@ public class ProfileFragment extends Fragment {
 
                     Log.d("token", "Token " + pref.getString("token", null));
 
-                    username_title.setText("Hi " + pref.getString("firstname", "user") + ", ");
+                    username_title.setText("Hi " + pref.getString("username", "user") + ", ");
 
                     first_name_tv.setText(pref.getString("username", "user"));
                     last_name_tv.setText(pref.getString("lastname", " "));
                     email_tv.setText(pref.getString("email", null));
-                    country_tv.setText(response.body().getData().getProfile().getCountry().toString().trim());
-                    state_tv.setText(response.body().getData().getProfile().getState().toString().trim());
+                    country_tv.setText(response.body().getData().getProfile().getCountryname().toString().trim());
+                    state_tv.setText(response.body().getData().getProfile().getStatename().toString().trim());
                     city_tv.setText(response.body().getData().getProfile().getCity().toString().trim());
                     zip_tv.setText(response.body().getData().getProfile().getZipcode().toString().trim());
 
-                    education_tv.setText(response.body().getData().getProfile().getEducation().toString().trim());
-                    gender_tv.setText(response.body().getData().getProfile().getGender().toString().trim());
+                    education_tv.setText(response.body().getData().getProfile().getEducationname().toString().trim());
+                    gender_tv.setText(response.body().getData().getProfile().getGendername().toString().trim());
                     dob_tv.setText(response.body().getData().getProfile().getDob().toString().trim());
                     //change the date representation format from y-m-d to m-d-y
 

@@ -407,6 +407,8 @@ public class personal_info_1 extends AppCompatActivity {
                                     prev_selected_state = selected_state;
 
                                     textview_city_info.setText("Select City");
+                                    edittext_zip_info.setText("");
+                                    edittext_zip_info.setHint("Enter Zip Code");
                                 }
                                 textview_state_info.setText(selected_state);
 
@@ -602,7 +604,8 @@ public class personal_info_1 extends AppCompatActivity {
                                     if (!prev_selected_city.equals(selected_city)) {
                                         prev_selected_city = selected_city;
 
-                                        edittext_zip_info.setHint("Select Zip Code");
+                                        edittext_zip_info.setText("");
+                                        edittext_zip_info.setHint("Enter Zip Code");
 
                                     }
                                     textview_city_info.setText(selected_city);

@@ -85,6 +85,7 @@ public class ActivityFragment extends Fragment {
 
         api = RetroClient.getApiService();
 
+
         return v;
     }
 
@@ -112,6 +113,7 @@ public class ActivityFragment extends Fragment {
 
         username = v.findViewById(R.id.user_name);
         no_ans = v.findViewById(R.id.no_of_answers);
+        no_ans.setText("You have answered 0  questions");        //You have answered 7 questions
         stickyList = v.findViewById(R.id.list);
 
         not_answers_tv = v.findViewById(R.id.no_ansers_textview);
