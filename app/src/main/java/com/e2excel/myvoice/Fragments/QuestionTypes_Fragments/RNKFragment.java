@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.e2excel.myvoice.CustomDialogs.DeleteAccountNotificationErrorDialogFragment;
@@ -215,6 +217,21 @@ public class RNKFragment extends Fragment {
                 public void onResponse(Call<response> call, Response<response> response) {
                     if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
                         progressDialog.dismiss();
+                        Toast toast = new Toast(getActivity());
+                        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);
+                        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+
+
+                        View toastLayout = inflater.inflate(R.layout.custom_toast,
+                                null);
+
+                        TextView  view1=(TextView)toastLayout.findViewById(R.id.toast_text);
+                        view1.setText("Answer submitted successfully");
+
+                        toast.setDuration(Toast.LENGTH_SHORT);
+                        toast.setView(toastLayout);
+                        toast.show();
 
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());

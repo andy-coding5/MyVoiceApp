@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -14,8 +15,12 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +36,19 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
         ;
 
+        Toast toast = new Toast(MainActivity.this);
+        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);
+        LayoutInflater inflater = getLayoutInflater();
+
+        View toastLayout = inflater.inflate(R.layout.custom_toast,
+                null);
+
+        TextView  view1=(TextView)toastLayout.findViewById(R.id.toast_text);
+        view1.setText("Toast for Testing");
+
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(toastLayout);
+        toast.show();
 
         // startActivity(new Intent(this, preference.class));
         //If user is already logged in then send him to getstarted activity and user has filled
