@@ -61,10 +61,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notiBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
+                //.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setContentInfo("Info");
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notiBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            notiBuilder.setColor(getResources().getColor(R.color.dark_blue));
+        } else {
+            notiBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        }
 
         notificationManager.notify(new Random().nextInt(), notiBuilder.build());
     }

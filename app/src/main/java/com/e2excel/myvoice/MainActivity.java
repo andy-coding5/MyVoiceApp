@@ -34,21 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("MYVOICEAPP_PREF", MODE_PRIVATE);
         SharedPreferences pref2 = getSharedPreferences("FCM_PREF", Context.MODE_PRIVATE);
-        ;
-
-        Toast toast = new Toast(MainActivity.this);
-        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);
-        LayoutInflater inflater = getLayoutInflater();
-
-        View toastLayout = inflater.inflate(R.layout.custom_toast,
-                null);
-
-        TextView  view1=(TextView)toastLayout.findViewById(R.id.toast_text);
-        view1.setText("Toast for Testing");
-
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(toastLayout);
-        toast.show();
 
         // startActivity(new Intent(this, preference.class));
         //If user is already logged in then send him to getstarted activity and user has filled

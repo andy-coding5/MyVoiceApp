@@ -218,21 +218,7 @@ public class MCQFragment extends Fragment {
                     if (response.isSuccessful() && "Success".equals(response.body().getStatus())) {
                         progressDialog.dismiss();
                         //if IsNext = No
-                        Toast toast = new Toast(getActivity());
-                        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);
-                        LayoutInflater inflater = getActivity().getLayoutInflater();
 
-
-
-                        View toastLayout = inflater.inflate(R.layout.custom_toast,
-                               null);
-
-                        TextView  view1=(TextView)toastLayout.findViewById(R.id.toast_text);
-                        view1.setText("Answer submitted successfully");
-
-                        toast.setDuration(Toast.LENGTH_SHORT);
-                        toast.setView(toastLayout);
-                        toast.show();
 
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -256,6 +242,23 @@ public class MCQFragment extends Fragment {
 
                         if ("No".equals(response.body().getIsNext())) {
                             progressDialog.dismiss();
+
+                            Toast toast = new Toast(getActivity());
+                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);
+                            LayoutInflater inflater = getActivity().getLayoutInflater();
+
+
+
+                            View toastLayout = inflater.inflate(R.layout.custom_toast,
+                                    null);
+
+                            TextView  view1=(TextView)toastLayout.findViewById(R.id.toast_text);
+                            view1.setText(response.body().getMessage());
+
+                            toast.setDuration(Toast.LENGTH_SHORT);
+                            toast.setView(toastLayout);
+                            toast.show();
+
                             Log.v("test", "from MCQ: response.body().getIsNext()" + response.body().getIsNext());
                             getFragmentManager().beginTransaction().replace(R.id.framelayout_container, new QuestionsListFragment()).commit();
 
