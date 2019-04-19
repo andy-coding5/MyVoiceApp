@@ -31,7 +31,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
             if (ni != null && ni.isConnectedOrConnecting()) {
 
 
-                toast.cancel();
+                //toast.cancel();
 
              /*   Toast toast = new Toast(context);
                 toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,20);

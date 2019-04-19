@@ -113,7 +113,7 @@ public class preference extends AppCompatActivity {
 
     public void update_token(final View view) {
         //pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "email from pref: " + pref.getString("email", "not fatched from pref"), Toast.LENGTH_SHORT).show();
         ApiService api = RetroClient.getApiService();
 
         //if fcm token is null then do not write in shared pref!
@@ -154,7 +154,7 @@ public class preference extends AppCompatActivity {
                         Build_alert_dialog(getApplicationContext(), status, error_msg);
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -307,7 +307,7 @@ public class preference extends AppCompatActivity {
                         }
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

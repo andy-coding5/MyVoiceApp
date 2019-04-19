@@ -369,7 +369,7 @@ public class EditProfileFragment extends Fragment {
                     //calling a function
 
 
-                    Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "response not received", Toast.LENGTH_SHORT).show();
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
                         /* String status = jObjError.getString("detail");

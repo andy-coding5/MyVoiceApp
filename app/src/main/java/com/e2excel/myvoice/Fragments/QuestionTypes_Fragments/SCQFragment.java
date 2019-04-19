@@ -289,8 +289,9 @@ public class SCQFragment extends Fragment {
                             myFragment.setArguments(b);
 
                             Log.v("test", "from SCQ: redirect to the new fragmnent :" + String.valueOf(response.body().getQuestionType()));
-
+                            //System.gc();
                             activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout_container, myFragment).commit();
+
                         }
                     }
                 }

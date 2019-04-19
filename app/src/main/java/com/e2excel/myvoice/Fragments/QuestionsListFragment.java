@@ -128,6 +128,7 @@ public class QuestionsListFragment extends Fragment {
         api = RetroClient.getApiService();
 
         Glide.with(getActivity()).load(PublicClass.survey_logo).into(logo);
+
         question_title.setText(PublicClass.survey_text);
         recyclerViewAdapeter = new RecyclerViewAdapterQuestionList(getActivity(), question_list);
 
